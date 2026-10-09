@@ -15,7 +15,7 @@ public class ChapterFiveTest {
         g.map = g.maps.get(map); g.tx = x; g.ty = y; g.state = Game.PLAY;
     }
     static void interact(Game g, String id) {
-        Game.Npc n = g.map.npcs.stream().filter(v -> v.id.equals(id) && g.vis(v)).findFirst().orElseThrow();
+        Npc n = g.map.npcs.stream().filter(v -> v.id.equals(id) && g.vis(v)).findFirst().orElseThrow();
         Set<Point> area = VillageLifeTest.reachable(g, g.tx, g.ty);
         for (int d = 0; d < 4; d++) {
             int x = n.x - Game.DX[d], y = n.y - Game.DY[d];
@@ -28,7 +28,7 @@ public class ChapterFiveTest {
         Game g = new Game(); g.state = Game.PLAY; g.stage = 21;
         check(!g.chapter.allowWarp(ChapterFive.TRAIL), "Trail locked before message");
         enter(g, "Praia Azul", 10, 10);
-        Game.Npc door = g.maps.values().stream().flatMap(m -> m.npcs.stream()).filter(n -> n.id.equals("porta_farol")).findFirst().orElseThrow();
+        Npc door = g.maps.values().stream().flatMap(m -> m.npcs.stream()).filter(n -> n.id.equals("porta_farol")).findFirst().orElseThrow();
         FestivalTest.date(g, 2, 10); g.talk(door); close(g); check(g.stage == 21, "Message waits for night");
         FestivalTest.date(g, 2, 22); g.talk(door); close(g); check(g.stage == 22, "Night message starts chapter");
         g.talk(g.life.resident("prof")); close(g); check(g.stage == 23, "Professor unlocks trail");

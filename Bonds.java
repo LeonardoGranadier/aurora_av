@@ -41,19 +41,19 @@ final class Bonds {
     void addFriendship(int who, int points) { friendship[who] = Math.min(100, friendship[who] + points); }
 
     void buildWorld() {
-        Game.GameMap forest = game.maps.get("Floresta Verde");
+        GameMap forest = game.maps.get("Floresta Verde");
         add(forest, "bond_flower0", 13, 5, "Flor silvestre");
         add(forest, "bond_flower1", 16, 8, "Flor silvestre");
         add(forest, "bond_flower2", 23, 7, "Flor silvestre");
         add(forest, "bond_whistle", 26, 8, "Apito de Lucas");
         add(forest, "bond_tree", 13, 7, "Árvore marcada");
         add(game.maps.get("Praia Azul"), "bond_light", 20, 9, "Observação do farol");
-        for (Game.Npc n : forest.npcs) if (n.id.equals("bond_tree")) n.when = "dia";
-        for (Game.Npc n : game.maps.get("Praia Azul").npcs) if (n.id.equals("bond_light")) n.when = "noite";
+        for (Npc n : forest.npcs) if (n.id.equals("bond_tree")) n.when = "dia";
+        for (Npc n : game.maps.get("Praia Azul").npcs) if (n.id.equals("bond_light")) n.when = "noite";
     }
-    void add(Game.GameMap map, String id, int x, int y, String name) {
+    void add(GameMap map, String id, int x, int y, String name) {
         map.t[y][x] = map.name.equals("Praia Azul") ? 's' : '.';
-        map.addNpc(new Game.Npc(id, name, x, y, new Color(236, 149, 178)).obj(id).still());
+        map.addNpc(new Npc(id, name, x, y, new Color(236, 149, 178)).obj(id).still());
     }
     boolean visible(String id) {
         if (id.startsWith("bond_flower")) return quests[2] == 1;
@@ -71,7 +71,7 @@ final class Bonds {
     }
     int required(int who) { return who == 0 ? 2 : who == 3 ? 1 : 3; }
 
-    void afterTalk(Game.Npc npc) {
+    void afterTalk(Npc npc) {
         int who = residentIndex(npc.id);
         if (who < 0 || game.dlg == null) return;
         if (talked[who] != day()) { talked[who] = day(); addFriendship(who, 5); }
@@ -103,7 +103,7 @@ final class Bonds {
         game.dlg = lines.toArray(String[]::new);
     }
 
-    boolean collect(Game.Npc npc) {
+    boolean collect(Npc npc) {
         if (!npc.id.startsWith("bond_")) return false;
         if (!visible(npc.id)) return true;
         game.take(npc);
@@ -124,7 +124,7 @@ final class Bonds {
     void openJournal(int from) { returnState = from; giftTarget = -1; selection = 0; game.state = Game.BONDS; }
     void openGift() {
         int x = game.tx + Game.DX[game.dir], y = game.ty + Game.DY[game.dir];
-        for (Game.Npc n : game.map.npcs) {
+        for (Npc n : game.map.npcs) {
             int who = residentIndex(n.id);
             if (who < 0 || !game.vis(n) || n.x != x || n.y != y) continue;
             if (gifted[who] == day()) { game.say(n.name, "Seu presente de hoje já fez meu dia. Obrigado!"); return; }
@@ -134,10 +134,12 @@ final class Bonds {
     }
     boolean give(int who, int fish) {
         if (stock(fish) == 0 || gifted[who] == day()) return false;
+        int oldSpent = spent[fish], oldGifted = gifted[who], oldFriendship = friendship[who];
         spent[fish]++; gifted[who] = day(); addFriendship(who, favorite(who, fish) ? 15 : 8);
+        if (!game.save(false)) { spent[fish] = oldSpent; gifted[who] = oldGifted; friendship[who] = oldFriendship; return false; }
         game.state = Game.PLAY;
         game.say(NAMES[who], favorite(who, fish) ? "Você lembrou do meu favorito! Que presente especial. Obrigado!" : "Que gentileza! Vou guardar com carinho esse momento.");
-        game.audio.sfx("pickup"); game.save(false); return true;
+        game.audio.sfx("pickup"); return true;
     }
     void key(int key) {
         if (key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_J) { game.state = returnState; game.down.clear(); return; }
@@ -145,7 +147,10 @@ final class Bonds {
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) selection = (selection + count - 1) % count;
         if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) selection = (selection + 1) % count;
         if (giftTarget >= 0 && (key == KeyEvent.VK_Z || key == KeyEvent.VK_ENTER)) {
-            if (!give(giftTarget, selection)) game.toast("Você não tem esse peixe disponível.");
+            int who = giftTarget, fish = selection;
+            game.access.ask("Entregar 1 " + VillageLife.FISH[fish].name() + " para " + NAMES[who] + "?", () -> {
+                if (!give(who, fish)) game.toast("Presente indisponível. Confira estoque e limite diário.");
+            });
         }
     }
 
@@ -171,7 +176,7 @@ final class Bonds {
         for (int i = 0; i < spent.length; i++) spent[i] = Math.min(spent[i], game.life.catches[i]);
     }
 
-    boolean drawObject(Graphics2D g, Game.Npc npc, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc npc, int x, int y) {
         if (!npc.id.startsWith("bond_")) return false;
         g.setColor(new Color(255, 245, 177)); g.drawOval(x + 2, y + 3, 28, 28);
         if (npc.id.startsWith("bond_flower")) {

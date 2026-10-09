@@ -9,7 +9,8 @@ public class VillageOrdersTest {
     static void run() throws Exception {
         Game g = new Game(); g.state = Game.PLAY; VillageOrders o = g.orders;
         g.map = g.maps.get("Vila Aurora"); g.tx = 6; g.ty = 7;
-        check(VillageLifeTest.reachable(g, 6, 7).contains(new Point(12, 14)), "Board accessible");
+        check(VillageLifeTest.reachable(g, 6, 7).contains(new Point(11, 15)), "Board accessible");
+        for (int[] stop : Festival.PLAZA) check(stop[0] != 11 || stop[1] != 14, "Board leaves festival stops free");
         check(o.refresh() && o.orders.isEmpty(), "No inaccessible requests without tools");
         g.life.rod = true; check(o.refresh() && o.orders.isEmpty(), "Today's selection stays fixed");
         FestivalTest.date(g, 2, 10); check(o.refresh() && o.orders.size() == 3, "Three early-game fish requests");
@@ -54,7 +55,7 @@ public class VillageOrdersTest {
         g.map = g.maps.get("Casa"); g.tx = 5; g.ty = 5;
         check(g.home.place(16, 7, 4, 0), "Decoration placeable");
         check(g.loadGame() && g.home.placed(16) && o.total == 10, "Decoration survives reload ordering");
-        g.state = Game.PLAY; g.map = g.maps.get("Vila Aurora"); g.tx = 12; g.ty = 14; g.dir = 1;
+        g.state = Game.PLAY; g.map = g.maps.get("Vila Aurora"); g.tx = 11; g.ty = 15; g.dir = 1;
         g.interact(); check(g.state == Game.ORDERS, "Board opens through Z interaction");
         double time = g.time; g.update(); check(time == g.time, "Board pauses time");
         g.toastT = 0; VillageLifeTest.screenshot(g, "orders-board");

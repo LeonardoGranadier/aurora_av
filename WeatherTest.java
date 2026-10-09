@@ -17,7 +17,7 @@ public class WeatherTest {
             g.life.updateResidents(0.05);
             Set<Point> occupied = new HashSet<>();
             for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-                Game.Npc n = g.life.resident(r.id()); if (n.sleeping) continue;
+                Npc n = g.life.resident(r.id()); if (n.sleeping) continue;
                 check(occupied.add(new Point(n.x, n.y)), "No resident overlap");
                 if (n.walking) check(occupied.add(new Point(n.toX, n.toY)), "No destination overlap");
             }
@@ -38,19 +38,19 @@ public class WeatherTest {
         check(g.life.resident("beto").sleeping && g.life.resident("rosa").sleeping && g.life.resident("lucas").sleeping, "Rain preserves night rest");
         FestivalTest.date(g, rain, 8); settle(g);
         for (int i = 0; i < Bonds.IDS.length; i++) {
-            Game.Npc n = g.life.resident(Bonds.IDS[i]);
+            Npc n = g.life.resident(Bonds.IDS[i]);
             check(!n.sleeping && n.x == Weather.SHELTER[i][0] && n.y == Weather.SHELTER[i][1], "Everyone can leave home and reach shelter");
         }
         Set<Point> reachable = VillageLifeTest.reachable(g, 6, 7);
         check(reachable.contains(new Point(18, 7)) && reachable.contains(new Point(19, 15)), "Door and lake stay accessible");
         for (String id : Bonds.IDS) {
-            Game.Npc n = g.life.resident(id); boolean accessible = false;
+            Npc n = g.life.resident(id); boolean accessible = false;
             for (int d = 0; d < 4; d++) accessible |= reachable.contains(new Point(n.x + Game.DX[d], n.y + Game.DY[d]));
             check(accessible, "Sheltered resident can be approached");
         }
         FestivalTest.date(g, sun, 10); settle(g);
         for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-            Game.Npc n = g.life.resident(r.id()); check(n.x == r.stops()[0][0] && n.y == r.stops()[0][1], "Sunny routines resume");
+            Npc n = g.life.resident(r.id()); check(n.x == r.stops()[0][0] && n.y == r.stops()[0][1], "Sunny routines resume");
         }
         FestivalTest.date(g, 7, 10);
         for (int i = 0; i < Bonds.IDS.length; i++) check(Arrays.equals(w.destination(VillageLife.RESIDENTS[i], 0), Festival.PLAZA[i]), "Festival has priority");

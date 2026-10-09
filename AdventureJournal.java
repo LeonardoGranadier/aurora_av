@@ -26,7 +26,7 @@ final class AdventureJournal {
         for (int i = START.length - 1; i >= 0; i--) if (game.stage >= START[i]) return i;
         return 0;
     }
-    void record(Game.Npc npc, int previousStage) {
+    void record(Npc npc, int previousStage) {
         if (game.dlg == null || !Arrays.asList(CLUES).contains(npc.id)) return;
         if (npc.id.equals("capita") && previousStage != 5 || npc.id.equals("prof") && previousStage != 22) return;
         clues.putIfAbsent(npc.id, String.join(" ", game.dlg));
@@ -45,8 +45,8 @@ final class AdventureJournal {
         lines.add(complete ? "Concluído" : "Em andamento");
         if (complete) { lines.add(SUMMARIES[page]); lines.add(""); }
         for (int i = START[page]; i < END[page] && i <= game.stage; i++)
-            lines.add((i < game.stage ? "[x] " : "> ") + Game.OBJETIVOS[i]);
-        if (page == 3 && game.stage == 21) lines.add("> " + Game.OBJETIVOS[21]);
+            lines.add((i < game.stage ? "[x] " : "> ") + Story.OBJECTIVES[i]);
+        if (page == 3 && game.stage == 21) lines.add("> " + Story.OBJECTIVES[21]);
         if (page == 1 && game.stage >= 6) lines.add("Fragmentos do mapa: " + Integer.bitCount(game.frags) + "/3");
         if (page == 0 && game.stage >= 1) lines.add(game.stage >= 2 ? "Carta: entregue ao Seu Marinho." : "Carta: recebida de Mamãe.");
         if (page == 0 && game.stage >= 3) lines.add(game.stage >= 4 ? "Concha Brilhante: entregue ao Seu Marinho." : "Concha Brilhante: encontrada.");
@@ -66,13 +66,13 @@ final class AdventureJournal {
     }
     List<String> wrapped() {
         List<String> result = new ArrayList<>();
-        FontMetrics fm = game.getFontMetrics(new Font("Dialog", Font.PLAIN, 14));
+        FontMetrics fm = game.getFontMetrics(new Font("Dialog", Font.PLAIN, game.access.textSize()));
         for (String line : entries()) {
             if (line.isEmpty()) result.add(""); else result.addAll(game.wrap(line, fm, 554));
         }
         return result;
     }
-    int maxScroll() { return Math.max(0, wrapped().size() - 15); }
+    int maxScroll() { return Math.max(0, wrapped().size() - game.access.journalRows()); }
     void save(Properties p) { clues.forEach((id, value) -> p.setProperty("diario." + id, value)); }
     void load(Properties p) {
         clues.clear();
@@ -86,12 +86,12 @@ final class AdventureJournal {
         g.setColor(new Color(34, 62, 64)); g.setFont(new Font("Dialog", Font.BOLD, 22));
         g.drawString("Diário de Aventuras", 24, 34);
         g.setFont(new Font("Dialog", Font.BOLD, 16)); g.drawString((page + 1) + ". " + TITLES[page], 42, 76);
-        g.setFont(new Font("Dialog", Font.PLAIN, 14));
+        g.setFont(new Font("Dialog", Font.PLAIN, game.access.textSize()));
         List<String> lines = wrapped(); scroll = Math.min(scroll, maxScroll());
-        for (int i = 0; i < 15 && scroll + i < lines.size(); i++) {
+        for (int i = 0; i < game.access.journalRows() && scroll + i < lines.size(); i++) {
             String line = lines.get(scroll + i);
             g.setColor(line.startsWith(">") ? new Color(154, 82, 32) : new Color(34, 62, 64));
-            g.drawString(line, 42, 108 + i * 22);
+            g.drawString(line, 42, 108 + i * (game.access.large ? 29 : 22));
         }
         g.setColor(new Color(90, 139, 130));
         if (scroll > 0) g.fillPolygon(new int[]{606, 612, 618}, new int[]{109, 101, 109}, 3);

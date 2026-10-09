@@ -1,5 +1,29 @@
 # Testes de Aventura em Aurora
 
+## Rodar tudo
+
+```sh
+sh testar.sh                      # compila e roda todos os testes
+sh testar.sh WorldMapTest BondsTest
+```
+
+Cada teste roda numa pasta temporaria nova com o atalho `assets`. Em caso de falha,
+o script mostra o fim da saida e mantem a pasta (com saves e imagens) para inspecao.
+As secoes abaixo descrevem a cobertura e o procedimento manual equivalente.
+
+## Arquivos e janela
+
+`GameFilesTest` verifica que o desenvolvimento usa a pasta atual, a pasta de dados
+configuravel da versao distribuida, a localizacao dos assets e a escala da janela
+(2x identica a cena original, faixas pretas centralizadas e reducao abaixo de 1x).
+
+## Acessibilidade
+
+Execute `AccessibilityTest` em pasta temporaria sem save nem accessibility.properties.
+Verifica remapeamento, teclas reservadas/conflitos, acao mantida e solta, preferencias,
+texto ampliado paginado, diario com rolagem, relogio preservado, captura cancelavel,
+confirmacoes de presentes/encomendas e protecao da partida existente. Renderiza as telas.
+
 ## Encomendas da Vila
 
 Execute `VillageOrdersTest` em pasta temporaria vazia com assets. Verifica acesso,

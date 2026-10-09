@@ -28,16 +28,16 @@ final class Festival {
         return today + 7 - Math.floorMod(today, 7);
     }
     void buildWorld() {
-        game.maps.get("Vila Aurora").addNpc(new Game.Npc("festival_board", "Mural da Praça", 12, 8,
+        game.maps.get("Vila Aurora").addNpc(new Npc("festival_board", "Mural da Praça", 12, 8,
             new Color(90, 151, 133)).obj("festival_board").still());
-        game.maps.get("Casa").addNpc(new Game.Npc("festival_souvenir", "Estrela de Aurora", 7, 4,
+        game.maps.get("Casa").addNpc(new Npc("festival_souvenir", "Estrela de Aurora", 7, 4,
             new Color(247, 201, 85)).obj("festival_souvenir").still());
     }
     int[] destination(VillageLife.Resident resident, int slot) {
         int who = game.bonds.residentIndex(resident.id());
         return active() && who >= 0 ? PLAZA[who] : resident.stops()[slot];
     }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         if (npc.id.equals("festival_board")) { open(); return true; }
         if (npc.id.equals("festival_souvenir")) {
             game.say("", "A Estrela de Aurora ilumina a prateleira. Uma lembrança dos dias de festa com a vila.",
@@ -46,7 +46,7 @@ final class Festival {
         }
         return false;
     }
-    void afterTalk(Game.Npc npc) {
+    void afterTalk(Npc npc) {
         int who = game.bonds.residentIndex(npc.id);
         if (!active() || who < 0 || game.dlg == null) return;
         boolean friend = game.bonds.friendship[who] >= 40;
@@ -198,7 +198,7 @@ final class Festival {
             }
         }
     }
-    boolean drawObject(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc n, int x, int y) {
         if (n.id.equals("festival_board")) {
             g.setColor(new Color(139, 105, 69)); g.fillRect(x + 3, y + 3, 27, 25); g.fillRect(x + 7, y + 25, 4, 9); g.fillRect(x + 23, y + 25, 4, 9);
             g.setColor(new Color(43, 101, 85)); g.fillRect(x + 6, y + 6, 21, 18);

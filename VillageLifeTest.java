@@ -31,7 +31,7 @@ public class VillageLifeTest {
                 g.life.updateResidents(0.05);
                 Set<Point> occupied = new HashSet<>();
                 for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-                    Game.Npc n = g.life.resident(r.id());
+                    Npc n = g.life.resident(r.id());
                     if (n.sleeping) continue;
                     check(!g.maps.get("Vila Aurora").solid(n.x, n.y), "Resident walkable tile");
                     check(occupied.add(new Point(n.x, n.y)), "No resident overlap");
@@ -39,13 +39,13 @@ public class VillageLifeTest {
                 }
             }
             for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-                Game.Npc n = g.life.resident(r.id()); int[] dest = r.stops()[g.life.routineSlot()];
+                Npc n = g.life.resident(r.id()); int[] dest = r.stops()[g.life.routineSlot()];
                 check(n.x == dest[0] && n.y == dest[1], r.id() + " destination at " + hour);
                 check(n.sleeping == (hour == 22 && r.goesHome()), r.id() + " home schedule");
             }
         }
         g.map = g.maps.get("Vila Aurora"); g.tx = 10; g.ty = 9;
-        Game.Npc n = g.life.resident("prof");
+        Npc n = g.life.resident("prof");
         check(!g.life.walkable(g.map, n, 10, 9), "NPC avoids player");
         g.moving = true; g.nx = 11; g.ny = 9;
         check(!g.life.walkable(g.map, n, 11, 9), "NPC avoids player destination"); g.moving = false;
@@ -79,7 +79,7 @@ public class VillageLifeTest {
             g.down.clear(); check(g.life.catches[i] == 1, "Catchable: " + f.name());
             tap(g, KeyEvent.VK_Z); check(g.state == Game.PLAY, "Exit result");
         }
-        check(g.life.completeAlbum() && g.itemState("trofeu") == 1, "Album trophy");
+        check(g.life.completeAlbum() && g.inventory.state("trofeu") == 1, "Album trophy");
         g.map = g.maps.get("Vila Aurora"); g.life.cast(); tap(g, KeyEvent.VK_Z);
         check(g.life.fishPhase == VillageLife.RESULT, "Early hook fails");
         g.life.cast(); g.life.fishTimer = 0; g.life.updateGame(0.02); g.life.updateGame(1.2);
@@ -101,7 +101,7 @@ public class VillageLifeTest {
             for (int note : new ArrayList<>(g.life.sequence)) g.life.answerBell(note);
             check(g.life.bellBest == round, "Record advances");
         }
-        check(g.life.bellFinished && g.itemState("sinos") == 1, "Bell medal");
+        check(g.life.bellFinished && g.inventory.state("sinos") == 1, "Bell medal");
         g.life.startBells(); while (g.life.showing) g.life.updateBells(0.1);
         g.life.answerBell((g.life.sequence.get(0) + 1) % 4);
         check(g.life.bellFinished && g.life.bellBest == 5, "Mistake keeps record");
@@ -172,7 +172,7 @@ public class VillageLifeTest {
         g.map = g.maps.get("Vila Aurora"); g.stage = 6; g.time = 1320;
         Set<Point> reached = reachable(g, 6, 7);
         for (String id : new String[]{"prof", "frag1", "beto", "rosa", "lucas", "sino"}) {
-            Game.Npc n = g.map.npcs.stream().filter(npc -> npc.id.equals(id)).findFirst().orElseThrow();
+            Npc n = g.map.npcs.stream().filter(npc -> npc.id.equals(id)).findFirst().orElseThrow();
             boolean adjacent = false;
             for (int d = 0; d < 4; d++) adjacent |= reached.contains(new Point(n.x + Game.DX[d], n.y + Game.DY[d]));
             check(adjacent, "Village interaction accessible: " + id);
@@ -188,7 +188,7 @@ public class VillageLifeTest {
         g.life.fishPhase = VillageLife.REEL; screenshot(g, "fishing-reel");
         g.life.startBells(); g.life.ring(2); screenshot(g, "bells");
         g.life.bellFinished = true; g.life.result = "Cinco melodias! Medalha dos Sinos conquistada!"; screenshot(g, "bells-result");
-        g.state = Game.INV; g.life.rod = true; Arrays.fill(g.life.catches, 1); g.life.bellBest = 5; g.invSel = 10;
+        g.state = Game.INV; g.life.rod = true; Arrays.fill(g.life.catches, 1); g.life.bellBest = 5; g.inventory.sel = 10;
         screenshot(g, "inventory-trophy");
         System.out.println("PASS: " + checks + " checks");
     }

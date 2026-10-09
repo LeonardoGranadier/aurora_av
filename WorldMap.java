@@ -4,9 +4,12 @@ import java.util.*;
 
 /** Regional overview. Discovery is recorded on arrival, not when rendering. */
 final class WorldMap {
-    record Region(String name, int x, int y) {}
+    /** labelRight puts the name beside the node, keeping its vertical edges and diagonals visible. */
+    record Region(String name, int x, int y, boolean labelRight) {
+        Region(String name, int x, int y) { this(name, x, y, false); }
+    }
     static final Region[] REGIONS = {
-        new Region("Casa", 75, 240), new Region("Vila Aurora", 225, 240),
+        new Region("Casa", 75, 240), new Region("Vila Aurora", 225, 240, true),
         new Region("Floresta Verde", 390, 240), new Region("Praia Azul", 225, 345),
         new Region("Gruta do Eco", 390, 135), new Region("Ilha das Estrelas", 390, 345),
         new Region("Templo Estrelado", 550, 345), new Region("Trilha da Montanha", 225, 135),
@@ -85,7 +88,6 @@ final class WorldMap {
         g.setStroke(new BasicStroke(2)); Set<String> goals = destinations();
         for (Region r : REGIONS) {
             boolean known = visited.contains(r.name), here = game.map.name.equals(r.name);
-            g.setColor(new Color(235, 244, 239)); g.fillRect(r.x - 69, r.y + 15, 138, 35);
             if (goals.contains(r.name)) {
                 g.setColor(new Color(192, 117, 38)); g.drawOval(r.x - 15, r.y - 15, 30, 30);
             }
@@ -94,15 +96,21 @@ final class WorldMap {
             g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 12));
             if (!known) g.drawString("?", r.x - 4, r.y + 4);
             if (here) { g.fillOval(r.x - 3, r.y - 3, 6, 6); }
-            g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));
+            g.setFont(new Font("Dialog", Font.PLAIN, 12)); FontMetrics fm = g.getFontMetrics();
             String label = known ? r.name : "Desconhecido";
-            java.util.List<String> lines = game.wrap(label, g.getFontMetrics(), 133);
-            int y = r.y + 29;
-            for (String line : lines) { g.drawString(line, r.x - g.getFontMetrics().stringWidth(line) / 2, y); y += 14; }
+            java.util.List<String> lines = game.wrap(label, fm, r.labelRight ? 90 : 133);
+            int width = 0; for (String line : lines) width = Math.max(width, fm.stringWidth(line));
+            int left = r.labelRight ? r.x + 18 : r.x - width / 2, top = r.labelRight ? r.y + 8 : r.y + 15;
+            g.setColor(new Color(235, 244, 239)); g.fillRect(left - 3, top, width + 6, lines.size() * 14 + 7);
+            g.setColor(new Color(36, 66, 65));
+            int y = top + 14;
+            for (String line : lines) {
+                g.drawString(line, r.labelRight ? left : r.x - fm.stringWidth(line) / 2, y); y += 14;
+            }
         }
         g.setColor(new Color(217, 233, 225)); g.fillRect(0, 398, Game.W, 82);
         game.life.text(g, "Você: " + game.map.name, 20, 418, 600, 14);
-        game.life.text(g, Game.OBJETIVOS[game.stage], 20, 442, 600, 13);
+        game.life.text(g, Story.OBJECTIVES[game.stage], 20, 442, 600, 13);
         g.setColor(new Color(192, 117, 38)); g.drawOval(364, 17, 12, 12);
         g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));
         g.drawString("Destino da história", 383, 28);

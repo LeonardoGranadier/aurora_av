@@ -1,4 +1,4 @@
-AVENTURA EM AURORA (demo)  -  precisa de JDK 17+
+AVENTURA EM AURORA  -  precisa de JDK 17+
 
 Rodar (dentro desta pasta):
   sh jogar.sh
@@ -8,10 +8,26 @@ Ou manualmente (dentro desta pasta):
   javac *.java
   java Game
 
+Testes:      sh testar.sh              (todos; ou sh testar.sh WorldMapTest ... — veja TESTES.md)
+Distribuir:  sh empacotar.sh           (dist/AventuraEmAurora/ e .zip: jar + assets + jogar.sh/jogar.bat)
+             sh empacotar.sh --instalador   (tambem instalador nativo com Java embutido, via jpackage)
+
+JANELA
+  A janela abre ampliada (2x, 3x...) conforme a tela e pode ser redimensionada; a cena mantem a proporcao.
+  F11 alterna tela cheia.
+
 (Opcional) Regerar os sprites provisorios:   java MakeAssets
 (Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
 
 CONTROLES
+  ESC > Acessibilidade e controles lista os atalhos e permite remapear cada acao.
+  Setas navegam, Enter escolhe; pressione a nova tecla. Esc cancela. Teclas em uso sao recusadas.
+  Esc, Enter/Espaco, setas, notas 1-4 e Backspace continuam disponiveis como teclas fixas.
+  O texto grande se aplica a dialogos e diario: dialogos paginam e o diario mantem a rolagem.
+  Reduzir movimento congela efeitos decorativos e elimina transicoes de tela, sem mudar as regras
+  nem o tempo da pesca/sinos. Preferencias ficam em accessibility.properties, separadas da partida.
+  Presentes de peixes/flores e encomendas pedem confirmacao; Cancelar e a escolha inicial.
+  Novo jogo com partida existente exige confirmacao e nao prossegue se o save nao puder ser removido.
   Encomendas: Z no mural azul ao sul do sino da praca; cima/baixo escolhe, Z entrega, ESC volta.
   V abre a cesta de flores. Diante de um morador, oferece flores; diante da banca da Rosa, vende.
   Setas/WASD mover | Z, Enter, Espaco falar/escolher | I caixa de itens | ESC menu de pausa | M liga/desliga musica
@@ -153,7 +169,7 @@ HISTORIA (5 capitulos)
 CAMPO DE GELO (cap. 4)
   Ao pisar no gelo voce desliza ate bater numa pedra, arvore ou personagem. Use as pedras para parar no lugar certo.
   O layout foi validado por busca: tem solucao (11 movimentos), tem volta e nao deixa o jogador preso.
-  Para mudar: Game.java > buildMaps() > array "pedras" (rode uma busca antes: o gelo precisa continuar resolvivel).
+  Para mudar: World.java > build() > array "pedras" (rode uma busca antes: o gelo precisa continuar resolvivel).
   A Cintila (estrelinha) te segue na parte final: e uma amiga da historia, nao uma criatura capturada.
   A Lanterna (a partir do cap. 4) aumenta o raio de luz nas areas escuras (gruta e templo).
 
@@ -186,6 +202,10 @@ AUDIO
 SAVE
   - savegame.properties (texto puro; apague para zerar). Automatico ao mudar a historia, trocar de mapa e fechar;
     manual em ESC > Salvar jogo. Saves de versoes anteriores continuam funcionando.
+  - Onde fica: "java Game" e jogar.sh usam a pasta do jogo (desenvolvimento). A versao de dist/ (Aurora.java)
+    usa a pasta de dados do usuario: Linux ~/.local/share/aventura-aurora, Windows %APPDATA%\Aventura em Aurora,
+    macOS ~/Library/Application Support/Aventura em Aurora. Para levar uma partida, copie os .properties.
+    Outra pasta: java -Daurora.dados=PASTA -jar AventuraEmAurora.jar
 
 TROCAR SPRITES: substitua qualquer PNG de assets/ mantendo o nome (qualquer resolucao).
 Se um PNG nao existir, o jogo desenha aquele item por codigo.
@@ -199,11 +219,22 @@ Se um PNG nao existir, o jogo desenha aquele item por codigo.
   Personagens (folha 3x4; colunas: parado|passo1|passo2; linhas: baixo|cima|esquerda|direita):
          player, mae, prof, marinho, lenhador, capita, eremita, montanhista            (* = fundo transparente)
 
-COMO ADICIONAR CONTEUDO (em Game.java)
+ORGANIZACAO DO CODIGO
+  Game.java        janela, laco principal, movimento, menus, save/load e desenho do mundo
+  World.java       mapas da campanha (capitulos 1-4); Npc.java, GameMap.java e Warp.java descrevem o mundo
+  Story.java       objetivos, faixas de capitulo e dialogos dos capitulos 1-4
+  Inventory.java   caixa de itens (tecla I)
+  GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida
+  Demais classes   um sistema cada (ChapterFive, VillageLife, Bonds, Festival, HomeDecor, Weather, Gardening,
+                   VillageOrders, WorldMap, AdventureJournal, Soundscape, Accessibility, Audio), com seu proprio
+                   buildWorld/reset/save/load/talk/key/draw, chamados por Game.
+
+COMO ADICIONAR CONTEUDO
   - NPC/objeto: map.addNpc(new Npc(id, nome, x, y, cor).obj("sprite").still().when("noite").stages(min, max))
-  - Dialogo/progresso: case em talk(), com say(...) e setStage(n); acao ao fim do dialogo: afterDlg = () -> ...
+  - Dialogo/progresso: case em Story.talk(), com game.say(...) e game.setStage(n);
+    acao ao fim do dialogo: game.afterDlg = () -> ...  Texto do objetivo: Story.OBJECTIVES. Faixa: Story.banner().
   - Mapa com neve: GameMap.snowy = true e clear = 'n'. Gelo: tile 'i'. Neve: tile 'n'.
-  - Novo item na caixa: ITEM_KEYS / ITEM_NAMES / ITEM_COLORS, itemState() e itemDesc() (+ sprite item_<chave>.png)
-  - Viajar por codigo: travel("Mapa", x, y).  Coletavel: take(n).  Novo mapa: buildMaps() + Warp nas duas pontas.
-  - Musica do novo mapa: musicFor().  Novo dado no save: save() e loadGame().
+  - Novo item na caixa: Inventory.KEYS / NAMES / COLORS, state() e desc() (+ sprite item_<chave>.png)
+  - Viajar por codigo: travel("Mapa", x, y).  Coletavel: take(n).  Novo mapa: World.build() + Warp nas duas pontas.
+  - Musica do novo mapa: Game.musicFor().  Novo dado no save: Game.save() e Game.loadGame().
   - Cuidado ao fechar passagens: use arvores/paredes de lado a lado (neve e andavel; um NPC sozinho no corredor pode ser contornado).

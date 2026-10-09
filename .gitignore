@@ -1,0 +1,19 @@
+# Saida de compilacao (jogar.sh compila em .build/; "javac *.java" gera .class na raiz)
+*.class
+.build/
+dist/
+
+# Dados locais do jogador: partida e preferencias
+savegame.properties
+config.properties
+accessibility.properties
+
+# WAVs gerados por "java Audio" (o jogo sintetiza o audio; WAVs proprios devem ser adicionados com git add -f)
+assets/audio/
+
+# Editores e sistema
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*~

@@ -42,11 +42,11 @@ final class HomeDecor {
         positioning = false; selected = 0; amount = 1; status = "";
     }
     void buildWorld() {
-        Game.GameMap village = game.maps.get("Vila Aurora");
-        village.addNpc(new Game.Npc("rosa_shop", "Loja da Dona Rosa", 8, 8, new Color(211, 106, 148)).obj("rosa_shop").still());
-        village.addNpc(new Game.Npc("beto_market", "Banca do Tio Beto", 19, 12, new Color(62, 149, 128)).obj("beto_market").still());
+        GameMap village = game.maps.get("Vila Aurora");
+        village.addNpc(new Npc("rosa_shop", "Loja da Dona Rosa", 8, 8, new Color(211, 106, 148)).obj("rosa_shop").still());
+        village.addNpc(new Npc("beto_market", "Banca do Tio Beto", 19, 12, new Color(62, 149, 128)).obj("beto_market").still());
     }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         if (!npc.id.equals("rosa_shop") && !npc.id.equals("beto_market")) return false;
         if (game.hour() < 6 || game.hour() >= 21) {
             game.say(npc.name, "Voltamos às 6h. Nosso horário é das 6h às 21h."); return true;
@@ -97,7 +97,7 @@ final class HomeDecor {
     }
 
     boolean fixedNpc(int x, int y) {
-        for (Game.Npc n : game.maps.get("Casa").npcs)
+        for (Npc n : game.maps.get("Casa").npcs)
             if (!n.id.equals("festival_souvenir") && n.x == x && n.y == y) return true;
         return false;
     }
@@ -105,7 +105,7 @@ final class HomeDecor {
         return !game.maps.get("Casa").solid(x, y) && !fixedNpc(x, y) && !blocks(x, y, -1);
     }
     boolean layoutAccessible() {
-        Game.GameMap house = game.maps.get("Casa");
+        GameMap house = game.maps.get("Casa");
         if (!emptyFloor(5, 6) || !emptyFloor(5, 5) || !emptyFloor(5, 7)) return false;
         Set<Point> visited = new HashSet<>(); ArrayDeque<Point> queue = new ArrayDeque<>();
         queue.add(new Point(5, 6)); visited.add(new Point(5, 6));
@@ -119,7 +119,7 @@ final class HomeDecor {
         // Nenhum trecho de piso pode virar uma ilha inacessivel.
         for (int y = 0; y < house.h; y++) for (int x = 0; x < house.w; x++)
             if (emptyFloor(x, y) && !visited.contains(new Point(x, y))) return false;
-        for (Game.Npc n : house.npcs) {
+        for (Npc n : house.npcs) {
             if (n.id.equals("festival_souvenir")) continue;
             boolean reachable = false;
             for (int d = 0; d < 4; d++) reachable |= visited.contains(new Point(n.x + Game.DX[d], n.y + Game.DY[d]));
@@ -129,7 +129,7 @@ final class HomeDecor {
     }
     boolean canPlace(int id, int x, int y, int r) {
         if (id < 0 || id >= ITEMS.length || !unlocked(id) || r < 0 || r > 3) return false;
-        Game.GameMap house = game.maps.get("Casa");
+        GameMap house = game.maps.get("Casa");
         int w = width(id, r), h = height(id, r);
         if (x < 0 || y < 0 || x > house.w - w || y > house.h - h) return false;
         for (int yy = y; yy < y + h; yy++) for (int xx = x; xx < x + w; xx++) {
@@ -158,7 +158,7 @@ final class HomeDecor {
         return commit(() -> { xs[id] = oldX; ys[id] = oldY; });
     }
     void syncStar() {
-        for (Game.Npc n : game.maps.get("Casa").npcs)
+        for (Npc n : game.maps.get("Casa").npcs)
             if (n.id.equals("festival_souvenir") && placed(STAR)) { n.x = xs[STAR]; n.y = ys[STAR]; }
     }
     void placeFestivalStar() {
@@ -245,7 +245,7 @@ final class HomeDecor {
         syncStar();
     }
 
-    boolean drawStall(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawStall(Graphics2D g, Npc n, int x, int y) {
         if (!n.id.equals("rosa_shop") && !n.id.equals("beto_market")) return false;
         boolean rosa = n.id.equals("rosa_shop");
         g.setColor(new Color(139, 108, 77)); g.fillRect(x + 2, y + 15, 28, 16);
@@ -350,11 +350,11 @@ final class HomeDecor {
         g.setColor(VillageLife.PAPER); g.fillRect(0, 0, Game.W, Game.H);
         game.life.text(g, "Meu cantinho em Aurora", 20, 35, 530, 23);
         game.life.text(g, "Moedas: " + coins, 20, 62, 280, 14);
-        Game.GameMap house = game.maps.get("Casa"); int bx = 16, by = 118;
+        GameMap house = game.maps.get("Casa"); int bx = 16, by = 118;
         for (int y = 0; y < house.h; y++) for (int x = 0; x < house.w; x++) game.tile(g, house, x, y, bx + x * 32, by + y * 32);
         for (int pass = 0; pass < 2; pass++) for (int i = 0; i < ITEMS.length; i++)
             if (placed(i) && ITEMS[i].solid() == (pass == 1)) drawItem(g, i, bx + xs[i] * 32, by + ys[i] * 32, 32, rotations[i]);
-        for (Game.Npc n : house.npcs) if (!n.id.equals("festival_souvenir")) game.drawNpc(g, n, -bx, -by);
+        for (Npc n : house.npcs) if (!n.id.equals("festival_souvenir")) game.drawNpc(g, n, -bx, -by);
         game.person(g, "player", bx + game.tx * 32, by + game.ty * 32 - 4, new Color(220, 50, 50), game.dir, false, 0, true);
         g.setColor(new Color(255, 255, 255, 50));
         for (int x = 0; x <= house.w; x++) g.drawLine(bx + x * 32, by, bx + x * 32, by + 256);

@@ -18,7 +18,7 @@ final class Weather {
     Weather(Game game) { this.game = game; }
     void reset() { seed = new Random().nextLong(); }
     void buildWorld() {
-        Game.GameMap village = game.maps.get("Vila Aurora");
+        GameMap village = game.maps.get("Vila Aurora");
         for (int y = 7; y <= 8; y++) for (int x = 16; x <= 20; x++)
             if (village.t[y][x] == '#') village.t[y][x] = '.';
     }
@@ -48,7 +48,7 @@ final class Weather {
         for (int fish : pool) { roll -= fishWeight(fish); if (roll < 0) return fish; }
         throw new IllegalStateException("Probabilidades de pesca invalidas");
     }
-    void afterTalk(Game.Npc npc) {
+    void afterTalk(Npc npc) {
         int who = game.bonds.residentIndex(npc.id);
         if (who < 0 || game.dlg == null || !game.map.outdoor) return;
         String line = switch (current()) {

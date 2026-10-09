@@ -18,15 +18,15 @@ final class Gardening {
     Gardening(Game game) { this.game = game; reset(); }
     void reset() { Arrays.fill(crops, -1); Arrays.fill(growth, 0); Arrays.fill(watered, -1); Arrays.fill(lastDay, 1); Arrays.fill(stock, 0); can = false; }
     void buildWorld() {
-        Game.GameMap village = game.maps.get("Vila Aurora");
+        GameMap village = game.maps.get("Vila Aurora");
         village.rect(9, 6, 1, 5, '=');
-        village.addNpc(new Game.Npc("yard_gate", "Quintal de Casa", 9, 6, COLORS[2]).obj("portao").still());
-        Game.GameMap yard = new Game.GameMap(MAP, 16, 14, '.', true);
+        village.addNpc(new Npc("yard_gate", "Quintal de Casa", 9, 6, COLORS[2]).obj("portao").still());
+        GameMap yard = new GameMap(MAP, 16, 14, '.', true);
         yard.border('#'); yard.rect(6, 9, 2, 5, '=');
-        yard.warps.add(new Game.Warp(6, 13, "Vila Aurora", 9, 7));
-        yard.warps.add(new Game.Warp(7, 13, "Vila Aurora", 9, 7));
-        yard.addNpc(new Game.Npc("yard_tools", "Bancada de jardinagem", 3, 10, COLORS[1]).obj("yard_tools").still());
-        for (int i = 0; i < PLOTS.length; i++) yard.addNpc(new Game.Npc("yard_plot" + i, "Canteiro", PLOTS[i][0], PLOTS[i][1], COLORS[0]).obj("yard_plot").still());
+        yard.warps.add(new Warp(6, 13, "Vila Aurora", 9, 7));
+        yard.warps.add(new Warp(7, 13, "Vila Aurora", 9, 7));
+        yard.addNpc(new Npc("yard_tools", "Bancada de jardinagem", 3, 10, COLORS[1]).obj("yard_tools").still());
+        for (int i = 0; i < PLOTS.length; i++) yard.addNpc(new Npc("yard_plot" + i, "Canteiro", PLOTS[i][0], PLOTS[i][1], COLORS[0]).obj("yard_plot").still());
         yard.rect(12, 9, 2, 2, '~');
         game.maps.put(MAP, yard);
     }
@@ -42,7 +42,7 @@ final class Gardening {
         }
     }
     boolean ready(int i) { return crops[i] >= 0 && growth[i] >= DAYS[crops[i]]; }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         if (npc.id.equals("yard_gate")) { game.travel(MAP, 6, 12); return true; }
         if (npc.id.equals("yard_tools")) {
             can = true;
@@ -65,7 +65,7 @@ final class Gardening {
     void open() { sync(); plot = -1; target = -1; selling = false; selected = 0; status = ""; game.down.clear(); game.state = Game.GARDENING; }
     void openBasket() {
         open(); int x = game.tx + Game.DX[game.dir], y = game.ty + Game.DY[game.dir];
-        for (Game.Npc n : game.map.npcs) if (game.vis(n) && n.x == x && n.y == y) {
+        for (Npc n : game.map.npcs) if (game.vis(n) && n.x == x && n.y == y) {
             target = game.bonds.residentIndex(n.id);
             selling = n.id.equals("rosa_shop");
             if (selling && (game.hour() < 6 || game.hour() >= 21)) { selling = false; status = "A loja abre das 6h às 21h."; }
@@ -110,7 +110,11 @@ final class Gardening {
             if (plant(plot, selected)) { game.state = Game.PLAY; game.toast("Sementes plantadas."); }
             else status = "Sementes indisponíveis ou falha ao salvar.";
         } else if (selling) status = sell(selected) ? "Uma flor vendida." : "Venda indisponível ou falha ao salvar.";
-        else if (target >= 0) status = give(target, selected) ? "Presente entregue!" : "Sem flores, presente diário já entregue ou falha ao salvar.";
+        else if (target >= 0) {
+            int who = target, type = selected;
+            game.access.ask("Entregar 1 " + NAMES[type] + " para " + Bonds.NAMES[who] + "?", () ->
+                status = give(who, type) ? "Presente entregue!" : "Sem flores, presente diário já entregue ou falha ao salvar.");
+        }
     }
     void save(Properties p) {
         p.setProperty("horta.regador", Boolean.toString(can));
@@ -132,7 +136,7 @@ final class Gardening {
         for (int i = 0; i < 4; i++) stock[i] = read(p, 4, i, 0, 0, 999999);
     }
     String signature() { return can + Arrays.toString(crops) + Arrays.toString(growth) + Arrays.toString(watered) + Arrays.toString(stock); }
-    boolean drawObject(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc n, int x, int y) {
         if (n.id.equals("yard_tools")) {
             g.setColor(new Color(144, 103, 73)); g.fillRect(x, y + 14, 32, 17);
             g.setColor(new Color(69, 155, 172)); g.fillRect(x + 5, y + 5, 15, 12); g.drawOval(x + 16, y + 2, 11, 11); return true;

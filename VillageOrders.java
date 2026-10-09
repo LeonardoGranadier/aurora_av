@@ -16,8 +16,8 @@ final class VillageOrders {
     VillageOrders(Game game) { this.game = game; }
     void reset() { orders.clear(); day = -1; done = total = selected = 0; status = ""; }
     void buildWorld() {
-        Game.GameMap village = game.maps.get("Vila Aurora"); village.t[13][12] = '.';
-        village.addNpc(new Game.Npc("orders_board", "Encomendas da Vila", 12, 13,
+        GameMap village = game.maps.get("Vila Aurora"); village.t[14][11] = '.';
+        village.addNpc(new Npc("orders_board", "Encomendas da Vila", 11, 14,
             new Color(102, 147, 163)).obj("orders_board").still());
     }
     int stock(int item) { return item < 8 ? game.bonds.stock(item) : game.gardening.stock[item - 8]; }
@@ -42,7 +42,7 @@ final class VillageOrders {
         if (game.save(false)) return true;
         load(before); status = "Não foi possível salvar os pedidos. Tente novamente."; return false;
     }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         if (!npc.id.equals("orders_board")) return false;
         status = ""; refresh(); selected = 0; game.down.clear(); game.state = Game.ORDERS; return true;
     }
@@ -71,7 +71,11 @@ final class VillageOrders {
         if (orders.isEmpty()) return;
         if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) selected = (selected + orders.size() - 1) % orders.size();
         if (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_S) selected = (selected + 1) % orders.size();
-        if (key == KeyEvent.VK_Z || key == KeyEvent.VK_ENTER) deliver(selected);
+        if (key == KeyEvent.VK_Z || key == KeyEvent.VK_ENTER) {
+            int index = selected; Order order = orders.get(index);
+            if ((done & (1 << index)) != 0) return;
+            game.access.ask("Entregar " + order.count + " × " + order.name() + " para " + Bonds.NAMES[order.who] + "?", () -> deliver(index));
+        }
     }
     void save(Properties p) {
         p.setProperty("pedidos.dia", "" + day); p.setProperty("pedidos.feitos", "" + done); p.setProperty("pedidos.total", "" + total);
@@ -100,7 +104,7 @@ final class VillageOrders {
         try { return Math.max(min, Math.min(max, Integer.parseInt(p.getProperty(key, "" + fallback)))); }
         catch (NumberFormatException e) { return fallback; }
     }
-    boolean drawObject(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc n, int x, int y) {
         if (!n.id.equals("orders_board")) return false;
         g.setColor(new Color(115, 97, 76)); g.fillRect(x + 4, y + 5, 3, 27); g.fillRect(x + 25, y + 5, 3, 27);
         g.setColor(new Color(79, 137, 151)); g.fillRect(x, y, 32, 24);
