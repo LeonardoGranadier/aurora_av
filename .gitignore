@@ -5,8 +5,13 @@ dist/
 
 # Dados locais do jogador: partida e preferencias
 savegame.properties
+savegame.properties.bak
+savegame.properties.tmp
 config.properties
 accessibility.properties
+video.properties
+erros.log
+fotos/
 
 # WAVs gerados por "java Audio" (o jogo sintetiza o audio; WAVs proprios devem ser adicionados com git add -f)
 assets/audio/
