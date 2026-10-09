@@ -26,7 +26,9 @@ final class HomeDecor {
         new Item("flor_constelacao", "Flor-Constelação", 0, 1, 1, true, new Color(234, 170, 211)),
         new Item("lembranca_vila", "Lembrança da Vila", 0, 1, 1, true, new Color(93, 167, 156)),
         new Item("colecao_conchas", "Coleção de Conchas", 0, 1, 1, true, new Color(240, 150, 175)),
-        new Item("luneta", "Luneta do Observatório", 0, 1, 1, true, new Color(190, 150, 80))
+        new Item("luneta", "Luneta do Observatório", 0, 1, 1, true, new Color(190, 150, 80)),
+        new Item("escama", "Escama da Maré", 0, 1, 1, true, new Color(90, 140, 200)),
+        new Item("lanterna_festa", "Lanterna do Festival", 0, 1, 1, true, new Color(255, 190, 110))
     };
     final Game game;
     int coins;
@@ -72,7 +74,9 @@ final class HomeDecor {
             case 15 -> game.stage >= 28;
             case 16 -> game.orders.total >= 10;
             case 17 -> game.shells.rewarded >= SecretShells.REWARDS.length;
-            default -> game.observatory.complete();
+            case 18 -> game.observatory.complete();
+            case 19 -> game.stage >= ChapterSix.DONE;
+            default -> game.stage >= Story.FINAL;
         };
     }
     boolean placed(int id) { return unlocked(id) && xs[id] >= 0 && ys[id] >= 0; }
@@ -339,6 +343,16 @@ final class HomeDecor {
                 a.setColor(new Color(90, 80, 70)); a.drawLine(16, 18, 9, 31); a.drawLine(16, 18, 23, 31); a.drawLine(16, 18, 16, 31);
                 a.setColor(color); a.fillRoundRect(4, 8, 22, 8, 4, 4);
                 a.setColor(color.darker()); a.fillRect(22, 6, 6, 12);
+            }
+            case 19 -> {
+                a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
+                a.setColor(color); a.fillPolygon(new int[]{16, 27, 16, 5}, new int[]{3, 14, 25, 14}, 4);
+                a.setColor(new Color(200, 230, 255)); a.drawLine(16, 7, 16, 21); a.drawLine(10, 14, 22, 14);
+            }
+            case 20 -> {
+                a.setColor(new Color(110, 90, 70)); a.drawLine(16, 2, 16, 8);
+                a.setColor(color); a.fillRoundRect(9, 8, 14, 18, 6, 6);
+                a.setColor(new Color(255, 240, 180)); a.fillOval(12, 12, 8, 10);
             }
             default -> { }
         }

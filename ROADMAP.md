@@ -46,7 +46,10 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Culinária**: fogão em casa, 8 receitas ensinadas pelos moradores, lancheira (K), efeitos do dia e pratos favoritos.
 - ✅ **Aniversários** dos moradores, com aviso e presentes em dobro.
 - ✅ **Bolinha, o gato da vila**, com carinho diário e conquista. Conquistas agora são 20.
-- ⏳ **Capítulo 6** fechando o arco da Cintila e da Capitã, com nova região.
+- ✅ **Capítulo 6, A Canção da Maré**: conchas cantoras, Recife de Coral (região nova), canção e a baleia guardiã.
+- ✅ **Capítulo 7, O Festival do Céu**: convites, banquete com a culinária e festa no Pico; novo final com créditos.
+- ✅ Partidas antigas: a Mamãe pergunta nome e tratamento uma vez.
+- ⏳ Capítulo 8 (ideia): a irmã do Lucas volta à vila; uma melodia por dia da semana leva a um lugar novo.
 - ⏳ **Puzzles opcionais** com os itens da história (Lanterna revelando símbolos, blocos empurráveis na gruta).
 
 ## 4. Encantos (P2)

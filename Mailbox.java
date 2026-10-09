@@ -79,6 +79,13 @@ final class Mailbox implements Feature {
                 + "Depois dele, enxergava o mar até nas noites sem lua. O professor adora."),
         new Letter("receita_banquete", "Cintila", "Tin! Uma receita do céu", 0, g -> g.stage >= 28,
             g -> "Tin! No céu contam de um Banquete Estelar: Peixe Estelar e Flor Estelar. Dá todos os ânimos de uma vez!"),
+        new Letter("capita_canto", "Capitã Estrela", "O mar está cantando", 0, g -> g.stage >= 28 && g.stage < ChapterSix.TELL,
+            g -> "Marujo, há noites que escuto um canto vindo do fundo da baía. Não é vento, não é onda. "
+                + "Venha me ver no cais depois que escurecer. Acho que alguém lá embaixo precisa de ajuda."),
+        new Letter("todos_festa", "Todos de Aurora", "Depois da festa", 50, g -> g.stage >= Story.FINAL,
+            g -> "Ainda estamos com estrelas nos olhos! Obrigado por nos levar até o Pico. Juntamos 50 moedas para "
+                + "você comprar algo bonito para a casa. Assinado: Mamãe, Seu Marinho, Capitã, Professor, Beto, Rosa e Lucas. "
+                + "(Bolinha também assinaria, se soubesse escrever.)"),
         new Letter("vila_obrigado", "Moradores de Aurora", "Obrigado!", 100, g -> g.observatory.complete(),
             g -> "O observatório está aberto e a vila nunca esteve tão bonita: lanternas, flores, uma luneta na praia... "
                 + "Juntamos 100 moedas como agradecimento. Volte à noite e olhe as estrelas com a gente! "

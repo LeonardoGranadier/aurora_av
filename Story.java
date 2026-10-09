@@ -29,8 +29,18 @@ final class Story {
         "Alinhe as pedras do jardim e visite a fonte à noite.",
         "Fale com Cintila junto à fonte do jardim.",
         "Leve a Flor-Constelação à Mamãe, em casa.",
-        "Capítulo 5 concluído! O jardim voltou a florescer."
+        "Capítulo 5 concluído! À noite, visite a Capitã no cais: o mar anda cantando.",
+        "Ouça as 3 conchas cantoras: Gruta do Eco, Ilha e Recife de Coral.",
+        "Na ponta do Recife de Coral, à noite, toque a canção da baleia.",
+        "Conte à Capitã Estrela, no cais, o que aconteceu no recife.",
+        "Capítulo 6 concluído! Numa noite clara, a porta do farol guarda um convite.",
+        "Convide os amigos para o Festival do Céu.",
+        "Leve um prato na lancheira (K) e suba ao Pico Estrelado à noite.",
+        "Celebre com os amigos e fale com Cintila no alto do Pico Estrelado.",
+        "Fim da jornada! Aurora continua esperando por você."
     };
+    /** Última etapa da campanha: ao chegar nela, os créditos rolam. */
+    static final int FINAL = 36;
 
     final Game game;
     Story(Game game) { this.game = game; }
@@ -60,13 +70,21 @@ final class Story {
         case 26 -> "O jardim despertou!";
         case 27 -> "Uma flor para levar para casa";
         case 28 -> "Capítulo 5 concluído: Laços entre céu e terra";
+        case 29 -> "Capítulo 6: A Canção da Maré";
+        case 30 -> "A canção está completa!";
+        case 31 -> "A baleia Maré voltou!";
+        case 32 -> "Capítulo 6 concluído: A Canção da Maré";
+        case 33 -> "Capítulo 7: O Festival do Céu";
+        case 34 -> "Todos os amigos foram convidados!";
+        case 35 -> "O Festival do Céu começou!";
+        case 36 -> "Capítulo 7 concluído: O Festival do Céu";
         default -> "Objetivo atualizado";
         };
     }
 
     /** Etapas que abrem ou fecham capítulos tocam a fanfarra. */
     static boolean fanfare(int st) {
-        return st == 4 || st == 5 || st == 7 || st == 8 || st == 13 || st == 14 || st == 15 || st == 16 || st == 20 || st == 21 || st >= 22;
+        return st == 4 || st == 5 || st == 7 || st == 8 || st == 13 || st == 14 || st == 15 || st == 16 || st == 20 || st == 21 || st >= 22 && st != 30 && st != 34;
     }
 
     void checkBye() { if (game.bye == 3) game.setStage(10); }

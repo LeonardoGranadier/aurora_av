@@ -31,6 +31,8 @@ final class Explorer implements Feature {
         new Achievement("conchas", "Ouvido de Concha", "Encontrou todas as conchas secretas.", g -> g.shells.found() == SecretShells.SPOTS.length),
         new Achievement("trocas", "Rei das Trocas", "Completou a corrente de trocas da vila.", g -> g.trades.complete()),
         new Achievement("observatorio", "Céu Restaurado", "Restaurou o observatório do professor.", g -> g.observatory.complete()),
+        new Achievement("mare", "Canção da Maré", "Trouxe a baleia guardiã de volta para a baía.", g -> g.stage >= ChapterSix.DONE),
+        new Achievement("festival_ceu", "Festival do Céu", "Reuniu Aurora inteira no alto do Pico Estrelado.", g -> g.stage >= Story.FINAL),
         new Achievement("ano", "Um Ano em Aurora", "Viveu as quatro estações da vila.", g -> g.day() + 1 > Seasons.LENGTH * 3),
         new Achievement("chef", "Chef de Aurora", "Cozinhou todas as receitas.", g -> g.cooking.cooked.size() == Cooking.RECIPES.length),
         new Achievement("aniversario", "Quem Ama Lembra", "Deu um presente de aniversário a um morador.", g -> !g.seasons.birthdayGifts.isEmpty()),
@@ -45,6 +47,7 @@ final class Explorer implements Feature {
     final Deque<Achievement> announce = new ArrayDeque<>();
     // tela de nome
     int step, formSel, cardSel, returnState = Game.PLAY;
+    boolean legacy, asked;   // legacy: partida antiga escolhendo nome agora; asked: a Mamãe já perguntou
 
     Explorer(Game game) { this.game = game; }
 
@@ -55,15 +58,17 @@ final class Explorer implements Feature {
     String nameOr(String fallback) { return name.isBlank() ? fallback : name; }
 
     // ---------- Ciclo do jogo ----------
-    @Override public void reset() { name = ""; form = UNSET; playSeconds = 0; unlocked.clear(); announce.clear(); cardSel = 0; }
+    @Override public void reset() { asked = false; legacy = false; name = ""; form = UNSET; playSeconds = 0; unlocked.clear(); announce.clear(); cardSel = 0; }
     @Override public void save(Properties p) {
         p.setProperty("explorador.nome", name);
         p.setProperty("explorador.forma", "" + form);
         p.setProperty("explorador.tempo", "" + (long) playSeconds);
         p.setProperty("explorador.conquistas", String.join(",", unlocked));
+        p.setProperty("explorador.perguntado", "" + asked);
     }
     @Override public void load(Properties p) {
         name = clean(p.getProperty("explorador.nome", ""));
+        asked = Boolean.parseBoolean(p.getProperty("explorador.perguntado", "false"));
         form = parseForm(p);
         try { playSeconds = Math.max(0, Long.parseLong(p.getProperty("explorador.tempo", "0"))); } catch (NumberFormatException e) { playSeconds = 0; }
         unlocked.clear();
@@ -98,7 +103,9 @@ final class Explorer implements Feature {
     }
 
     // ---------- Novo jogo: nome e tratamento ----------
-    void startNaming() { step = 0; formSel = 0; name = ""; form = UNSET; game.down.clear(); game.state = Game.NAMING; }
+    void startNaming() { legacy = false; step = 0; formSel = 0; name = ""; form = UNSET; game.down.clear(); game.state = Game.NAMING; }
+    /** Partida antiga sem nome: a Mamãe pergunta uma vez. Esc mantém o tratamento neutro. */
+    void askLegacy() { startNaming(); legacy = true; asked = true; }
 
     // ---------- Cartão ----------
     void openCard(int from) { returnState = from; game.down.clear(); game.state = Game.CARD; }
@@ -125,6 +132,7 @@ final class Explorer implements Feature {
         }
         if (step == 0) {
             if (key == KeyEvent.VK_BACK_SPACE && !name.isEmpty()) { name = name.substring(0, name.length() - 1); game.audio.sfx("back"); }
+            else if (key == KeyEvent.VK_ESCAPE && legacy) { name = ""; game.audio.sfx("back"); game.state = Game.PLAY; game.save(false); }
             else if (key == KeyEvent.VK_ESCAPE) { game.audio.sfx("back"); game.openTitle(); }
             else if (key == KeyEvent.VK_ENTER && !name.isBlank()) { name = clean(name); step = 1; game.audio.sfx("confirm"); }
             return;
@@ -157,13 +165,13 @@ final class Explorer implements Feature {
         g.setColor(new Color(40, 40, 60)); g.setStroke(new BasicStroke(4)); g.drawRoundRect(60, 150, Game.W - 120, 250, 18, 18); g.setStroke(new BasicStroke(1));
         g.setFont(new Font("SansSerif", Font.PLAIN, 17)); g.setColor(new Color(30, 30, 40));
         if (step == 0) {
-            game.center(g, "Mamãe: \"Bom dia, meu amor! Como é mesmo o seu nome?\"", 192);
+            game.center(g, legacy ? "Mamãe: \"Que cabeça a minha... me diga de novo o seu nome?\"" : "Mamãe: \"Bom dia, meu amor! Como é mesmo o seu nome?\"", 192);
             g.setColor(new Color(235, 240, 250)); g.fillRoundRect(170, 222, 300, 44, 10, 10);
             g.setColor(new Color(40, 40, 60)); g.setFont(new Font("SansSerif", Font.BOLD, 24));
             String cursor = (game.frame / 30) % 2 == 0 ? "_" : " ";
             game.center(g, name + (name.length() < MAX_NAME ? cursor : ""), 254);
             g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.setColor(new Color(90, 90, 110));
-            game.center(g, "Digite o nome (até " + MAX_NAME + " letras) · Backspace apaga · Enter confirma · Esc volta", 300);
+            game.center(g, "Digite o nome (até " + MAX_NAME + " letras) · Backspace apaga · Enter confirma · Esc " + (legacy ? "pula" : "volta"), 300);
             game.center(g, "Seu nome aparece nos diálogos e no Cartão do Explorador.", 322);
         } else {
             game.center(g, "Mamãe: \"" + name + "... que nome lindo!", 184);
@@ -220,7 +228,8 @@ final class Explorer implements Feature {
         game.life.text(g, got ? a.description() : "Ainda não conquistada. " + a.description(), 48, 434, 540, 13);
     }
 
-    int chapter() { int s = game.stage; return s < 4 ? 1 : s < 8 ? 2 : s <= 15 ? 3 : s <= 21 ? 4 : 5; }
+    int chapter() { return chapterOf(game.stage); }
+    static int chapterOf(int s) { return s < 4 ? 1 : s < 8 ? 2 : s <= 15 ? 3 : s <= 21 ? 4 : s < 28 ? 5 : s < 32 ? 6 : 7; }
 
     void medal(Graphics2D g, int x, int y, boolean got, int index) {
         Color[] colors = {new Color(241, 196, 65), new Color(120, 200, 230), new Color(230, 130, 110), new Color(150, 210, 140)};

@@ -26,7 +26,7 @@ public class AccessibilityTest {
         for (int i = 0; i < 30 && g.dlg != null; i++) tap(g, KeyEvent.VK_ENTER);
         check(g.dlg == null && a.dialogPage == 0, "Whole dialogue readable");
         long frame = g.frame = 123; VillageLifeTest.screenshot(g, "access-still"); check(g.frame == frame, "Reduced motion does not change simulation clock");
-        g.stage = 28; g.journal.open(Game.PLAY); check(g.journal.maxScroll() > 0, "Large journal scrolls");
+        g.stage = 28; g.journal.open(Game.PLAY); g.journal.page = 4; check(g.journal.maxScroll() > 0, "Large journal scrolls");
         VillageLifeTest.screenshot(g, "access-journal");
         g.openPause(); g.choose("Acessibilidade e controles"); check(g.state == Game.ACCESSIBILITY, "Panel opens");
         VillageLifeTest.screenshot(g, "access-settings");

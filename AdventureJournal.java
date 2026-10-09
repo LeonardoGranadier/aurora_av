@@ -5,14 +5,17 @@ import java.util.List;
 
 /** Campaign history derived from progress; optional clues require an actual conversation. */
 final class AdventureJournal {
-    static final String[] TITLES = {"A Luz do Farol", "O Chamado da Capitã", "A Ilha das Estrelas", "A Estrela Cadente", "O Jardim das Constelações"};
-    static final int[] START = {0, 4, 8, 15, 22}, END = {4, 8, 15, 21, 28};
+    static final String[] TITLES = {"A Luz do Farol", "O Chamado da Capitã", "A Ilha das Estrelas", "A Estrela Cadente", "O Jardim das Constelações",
+        "A Canção da Maré", "O Festival do Céu"};
+    static final int[] START = {0, 4, 8, 15, 22, 28, 32}, END = {4, 8, 15, 21, 28, 32, 36};
     static final String[] SUMMARIES = {
         "A carta levou você até Seu Marinho. A Concha Brilhante devolveu a luz ao farol.",
         "O bilhete da Capitã Estrela revelou um mapa partido. Os três fragmentos foram reunidos.",
         "A viagem à ilha revelou a Estrela do Mar. Sua luz passou a iluminar a baía junto do farol.",
         "Na montanha, você encontrou Cintila e a ajudou a voltar ao céu pelo farol.",
-        "O jardim voltou a florescer. Cintila ofereceu uma Flor-Constelação, agora compartilhada com Mamãe."
+        "O jardim voltou a florescer. Cintila ofereceu uma Flor-Constelação, agora compartilhada com Mamãe.",
+        "Três conchas cantoras ensinaram a canção da Maré. Tocada na ponta do recife, ela trouxe a baleia guardiã de volta.",
+        "Sete amigos subiram ao Pico Estrelado. Sob uma chuva de estrelas, Aurora inteira celebrou o Festival do Céu."
     };
     static final String[] CLUES = {"garrafa", "capita", "mural", "prof", "garden_sign", "garden_mural"};
     static final String[] CLUE_NAMES = {"Bilhete da Capitã", "Os fragmentos", "Inscrição do templo", "O caminho do jardim", "Marco da trilha", "Inscrição do jardim"};
@@ -55,6 +58,12 @@ final class AdventureJournal {
         if (page == 3 && game.stage >= 18) lines.add("Cristal de Calor: recebido.");
         if (page == 2 && game.stage >= 12) lines.add("Braseiros acesos: " + game.brasas + "/3");
         if (page == 4 && game.stage >= 23) lines.add("Sementes de luz: " + Integer.bitCount(game.chapter.seeds) + "/3");
+        if (page == 5 && game.stage >= 29) lines.add("Canção da Maré: " + game.chapterSix.songText() + " (conchas ouvidas: " + Integer.bitCount(game.chapterSix.heard) + "/3)");
+        if (page == 6 && game.stage >= 33) {
+            List<String> names = new ArrayList<>();
+            for (int i = 0; i < ChapterSeven.GUESTS.length; i++) if ((game.chapterSeven.invited & (1 << i)) != 0) names.add(ChapterSeven.GUEST_NAMES[i]);
+            lines.add("Convidados (" + names.size() + "/" + ChapterSeven.GUESTS.length + "): " + (names.isEmpty() ? "ninguém ainda" : String.join(", ", names)));
+        }
         if (page == 4 && game.stage >= 27) lines.add(game.stage >= 28 ? "Flor-Constelação: entregue à Mamãe." : "Flor-Constelação: recebida de Cintila.");
         lines.add(""); lines.add("Pistas registradas");
         boolean any = false;

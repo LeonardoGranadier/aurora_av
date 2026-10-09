@@ -210,7 +210,7 @@ VIDA NA VILA
   As notas tambem acendem: e possivel jogar sem som. Z tenta novamente; ESC sai.
   Vara, capturas, recorde e posicoes dos moradores ficam no save. Saves antigos sao aceitos.
 
-HISTORIA (5 capitulos)
+HISTORIA (7 capitulos)
   Cap. 1 - A Luz do Farol:      carta -> concha na floresta -> farol aceso.
   Cap. 2 - O Chamado da Capita: garrafa na praia (so de noite) -> Gruta do Eco ->
                                  3 pedacos do mapa: vila (noite), praia (dia), fundo da gruta.
@@ -227,6 +227,17 @@ HISTORIA (5 capitulos)
            A fonte desperta a noite; a fogueira permite esperar. Fale com Cintila e volte
            para Mamae. A Flor-Constelacao sera liberada no editor de decoracao da casa.
            Sementes e simbolos ficam salvos. Os dois mapas podem ser revisitados.
+
+  Cap. 6 - A Cancao da Mare: depois do cap. 5, fale com a Capita no cais a noite. Ouca as tres conchas
+           cantoras (fundo da Gruta do Eco, praia leste da Ilha e Recife de Coral; o bote fica na praia leste
+           da ilha). Na ponta do recife, a noite, toque a cancao (setas ou 1-4; as notas aparecem em cores e
+           no diario). A baleia Mare volta; conte a Capita. Recompensa: Escama da Mare (decoracao).
+  Cap. 7 - O Festival do Ceu: numa noite clara, a porta do farol guarda o convite de Cintila. Convide
+           Mamae, Seu Marinho, Capita, Prof., Tio Beto, Dona Rosa e Lucas. Leve um prato na lancheira (a Mamae
+           garante uma sopa) e suba ao Pico Estrelado a noite. Converse com todos e fale com Cintila: fim da
+           campanha, creditos e a Lanterna do Festival para a casa. O jogo continua depois do final.
+
+  Partidas antigas sem nome: ao Continuar, a Mamae pergunta o nome e o tratamento uma vez (Esc pula).
 
 CAMPO DE GELO (cap. 4)
   Ao pisar no gelo voce desliza ate bater numa pedra, arvore ou personagem. Use as pedras para parar no lugar certo.

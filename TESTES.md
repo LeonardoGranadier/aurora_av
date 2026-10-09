@@ -20,6 +20,14 @@ em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, li
 moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
 modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
 
+## Capitulos 6 e 7
+
+`NewChaptersTest` joga os dois capitulos interagindo como o jogador (ficando ao lado e
+apertando Z): capita a noite, bote para o recife, tres conchas cantoras, cancao com erro e
+acerto, baleia, persistencia, convites (sopa da Mamae, persistencia no meio), Cintila a noite,
+festa com os sete convidados, creditos finais, conquistas, decoracoes e destinos do mapa.
+Tambem cobre a pergunta do nome em partidas antigas (responder, nao repetir, pular com Esc).
+
 ## Estacoes e culinaria
 
 `SeasonsCookingTest` cobre a ordem das estacoes e o novo ano, peixes favorecidos sem

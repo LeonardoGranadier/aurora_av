@@ -39,7 +39,7 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26;
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27;
     static final String VERSION = "1.0.0";
     /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
     static final boolean DEV = Boolean.getBoolean("aurora.dev");
@@ -84,11 +84,13 @@ public class Game extends JPanel implements KeyListener {
     final Mailbox mail = new Mailbox(this);
     final Explorer explorer = new Explorer(this);
     final Credits credits = new Credits(this);
+    final ChapterSix chapterSix = new ChapterSix(this);
+    final ChapterSeven chapterSeven = new ChapterSeven(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
+    final List<Feature> features = List.of(chapterSix, chapterSeven, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -291,7 +293,7 @@ public class Game extends JPanel implements KeyListener {
         banner = Story.banner(st);
         bannerT = 4;
         if (Story.fanfare(st)) audio.sfx("fanfare");
-        if (st == 28 && !credits.seen) { credits.seen = true; credits.open(PLAY, true); }
+        if (st == Story.FINAL && !credits.seen) { credits.seen = true; credits.open(PLAY, true); }
         refreshObjects();
     }
 
@@ -386,6 +388,7 @@ public class Game extends JPanel implements KeyListener {
             case "Pico Estrelado" -> "pico";
             case "Templo Estrelado" -> "templo";
             case "Trilha dos Vagalumes" -> n ? "floresta_noite" : "floresta_dia";
+            case ChapterSix.REEF -> n ? "ilha_noite" : "ilha_dia";
             case "Jardim das Constelações" -> "jardim";
             default -> "vila_dia";
         };
@@ -494,7 +497,7 @@ public class Game extends JPanel implements KeyListener {
         try {
             int st = Integer.parseInt(p.getProperty("fase"));
             int dia = (int) (Double.parseDouble(p.getProperty("tempo")) / 1440) + 1;
-            return (st < 4 ? "Capítulo 1" : st < 8 ? "Capítulo 2" : st <= 15 ? "Capítulo 3" : st <= 21 ? "Capítulo 4" : "Capítulo 5") + "  •  Dia " + dia + "  •  " + p.getProperty("mapa");
+            return "Capítulo " + Explorer.chapterOf(st) + "  •  Dia " + dia + "  •  " + p.getProperty("mapa");
         } catch (Exception e) { return null; }
     }
 
@@ -583,7 +586,11 @@ public class Game extends JPanel implements KeyListener {
         if (o.startsWith("Música")) { audio.setMusic(!audio.musicOn); openPause(); return; }
         if (o.startsWith("Efeitos")) { audio.setSfx(!audio.sfxOn); openPause(); return; }
         switch (o) {
-            case "Continuar" -> { if (loadGame()) state = PLAY; else toast("Não foi possível carregar o save."); }
+            case "Continuar" -> {
+                if (!loadGame()) { toast("Não foi possível carregar o save."); return; }
+                state = PLAY;
+                if (explorer.name.isBlank() && !explorer.asked) explorer.askLegacy();   // partidas de antes da tela de nome
+            }
             case "Novo jogo" -> { if (saveInfo != null) openConfirm(); else { newGame(); explorer.startNaming(); } }
             case "Créditos" -> credits.open(TITLE, false);
             case "Cartão do Explorador" -> explorer.openCard(MENU);
@@ -981,7 +988,8 @@ public class Game extends JPanel implements KeyListener {
     void hud(Graphics2D g) {
         int hh = (int) hour(), mm = (int) ((hour() - hh) * 60);
         int dia = (int) (time / 1440) + 1;
-        String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)" : "");
+        String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
+            : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)" : "");
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
         int bw = Math.max(280, g.getFontMetrics().stringWidth(obj) + 32);

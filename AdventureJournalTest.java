@@ -40,7 +40,7 @@ public class AdventureJournalTest {
         check(!j.clues.containsKey("prof"), "Generic repeat dialogue is not a campaign clue"); g.dlg = null;
         g.stage = 22; g.talk(g.life.resident("prof"));
         check(j.clues.containsKey("prof"), "Story conversation recorded"); g.dlg = null;
-        g.stage = 28; j.open(Game.PLAY);
+        g.stage = 28; j.open(Game.PLAY); j.page = 4;
         j.clues.put("garden_mural", "Anotação longa. ".repeat(100));
         for (int i = 0; i < 200; i++) VillageLifeTest.tap(g, KeyEvent.VK_DOWN);
         check(j.scroll > 0 && j.scroll == j.maxScroll(), "Long notes really scroll to final line");

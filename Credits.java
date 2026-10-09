@@ -8,7 +8,7 @@ final class Credits implements Feature {
     /** Edite para assinar o jogo. */
     static final String AUTHOR = "Leonardo Granadier";
     static final String[] CAST = {"Mamãe", "Seu Marinho", "Capitã Estrela", "Prof. Carvalho", "Tio Beto", "Dona Rosa",
-        "Lucas", "Lenhador", "Eremita", "Montanhista", "Seu Bento, o mascate", "Cintila"};
+        "Lucas", "Lenhador", "Eremita", "Montanhista", "Seu Bento, o mascate", "Bolinha, o gato", "Maré, a baleia", "Cintila"};
 
     final Game game;
     double scroll;
@@ -26,7 +26,8 @@ final class Credits implements Feature {
         List<String> l = new ArrayList<>();
         if (ending) {
             l.addAll(List.of("#Obrigado por jogar!", "", game.explorer.nameOr("Você") + " devolveu a luz ao farol,",
-                "cruzou o mar, ajudou uma estrela a voltar para casa", "e fez um jardim florescer entre o céu e a terra.", "",
+                "cruzou o mar, ajudou uma estrela a voltar para casa,", "fez um jardim florescer, devolveu a canção da baleia Maré",
+                "e reuniu Aurora inteira no Festival do Céu.", "",
                 "Tempo de jogo: " + Explorer.clock(game.explorer.playSeconds) + "   ·   Dia " + (game.day() + 1),
                 "Conquistas: " + game.explorer.unlocked.size() + "/" + Explorer.ACHIEVEMENTS.size()
                     + "   ·   Conchas: " + game.shells.found() + "/" + SecretShells.SPOTS.length, ""));
@@ -76,6 +77,6 @@ final class Credits implements Feature {
     }
 
     @Override public void reset() { seen = false; }
-    @Override public void save(Properties p) { p.setProperty("creditos.vistos", "" + seen); }
-    @Override public void load(Properties p) { seen = Boolean.parseBoolean(p.getProperty("creditos.vistos", "false")) || game.stage >= 28; }
+    @Override public void save(Properties p) { p.setProperty("creditos.final", "" + seen); }
+    @Override public void load(Properties p) { seen = Boolean.parseBoolean(p.getProperty("creditos.final", "false")) || game.stage >= Story.FINAL; }
 }

@@ -167,10 +167,10 @@ public class ClassicFeaturesTest {
 
     static void presentation(Game g) throws Exception {
         g.newGame(); g.state = Game.PLAY;
-        g.setStage(28); check(g.state == Game.CREDITS && g.credits.ending, "Ending rolls credits");
+        g.setStage(Story.FINAL); check(g.state == Game.CREDITS && g.credits.ending, "Ending rolls credits");
         g.credits.scroll = 260; VillageLifeTest.screenshot(g, "credits-ending");
         tap(g, KeyEvent.VK_Z); check(g.state == Game.PLAY, "Credits return to play");
-        g.setStage(28); check(g.state == Game.PLAY, "Credits roll once");
+        g.setStage(Story.FINAL); check(g.state == Game.PLAY, "Credits roll once");
         g.openTitle(); g.choose("Créditos"); check(g.state == Game.CREDITS && !g.credits.ending, "Credits from title");
         tap(g, KeyEvent.VK_ESCAPE); check(g.state == Game.TITLE, "Credits back to title");
 

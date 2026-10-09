@@ -28,7 +28,7 @@ public class WorldMapTest {
         for (int stage = 0; stage < Story.OBJECTIVES.length; stage++) {
             g.stage = stage;
             for (String name : g.worldMap.destinations()) check(g.maps.containsKey(name), "Every story destination exists");
-            check(stage == 28 || !g.worldMap.destinations().isEmpty(), "Active story has destination");
+            check(stage == Story.FINAL || !g.worldMap.destinations().isEmpty(), "Active story has destination");
         }
         g.stage = 6; g.frags = 1;
         check(g.worldMap.destinations().equals(Set.of("Praia Azul", "Gruta do Eco")), "Collected fragments removed from destinations");
