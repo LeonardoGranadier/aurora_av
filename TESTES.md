@@ -11,6 +11,15 @@ Cada teste roda numa pasta temporaria nova com o atalho `assets`. Em caso de fal
 o script mostra o fim da saida e mantem a pasta (com saves e imagens) para inspecao.
 As secoes abaixo descrevem a cobertura e o procedimento manual equivalente.
 
+## Sistemas inspirados nos classicos
+
+`ClassicFeaturesTest` cobre conchas secretas (esconderijos solidos e alcancaveis, achado unico,
+recompensas acumuladas do Seu Marinho, contador no mapa), corrente de trocas (mascate aos
+domingos, prioridade da historia, persistencia), observatorio (conjuntos, confirmacao, rollback
+em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, limite diario,
+moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
+modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
+
 ## Arquivos e janela
 
 `GameFilesTest` verifica que o desenvolvimento usa a pasta atual, a pasta de dados

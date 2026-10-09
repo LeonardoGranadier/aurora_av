@@ -14,7 +14,40 @@ Distribuir:  sh empacotar.sh           (dist/AventuraEmAurora/ e .zip: jar + ass
 
 JANELA
   A janela abre ampliada (2x, 3x...) conforme a tela e pode ser redimensionada; a cena mantem a proporcao.
-  F11 alterna tela cheia.
+  F11 alterna tela cheia (lembrado em video.properties). F12 tira uma foto sem interface (pasta fotos/).
+  Erros inesperados ficam em erros.log, na mesma pasta dos saves.
+
+NOVO JOGO
+  A Mamae pergunta seu nome (ate 12 letras) e como prefere ser chamado(a): menino, menina ou
+  "prefiro nao dizer" (falas neutras). Partidas antigas usam as falas neutras.
+  Shift: correr. C: Cartao do Explorador (nome, tempo de jogo, progresso e 16 conquistas).
+  Dias da semana aparecem no HUD; o festival e sempre no sabado.
+  Texto dos dialogos aparece letra a letra (ESC > Acessibilidade > Velocidade do texto); Z mostra a pagina inteira.
+  A tecla T (+2h) so funciona no modo desenvolvedor (jogar.sh ja liga; ou java -Daurora.dev=true Game).
+  Os creditos rolam ao fim do capitulo 5 e tambem estao no titulo.
+
+CONCHAS SECRETAS
+  Doze conchas escondidas em arvores e pedras de varias regioes. Passe perto e repare num brilho fraco;
+  olhe para o esconderijo e aperte Z. A cada tres, o Seu Marinho entrega um premio (fale com ele):
+  3 = Concha que Escuta (brilho visivel de longe e contador por regiao no Mapa de Aurora),
+  6 = 40 moedas, 9 = 80 moedas, 12 = Colecao de Conchas para decorar a casa.
+
+CORRENTE DE TROCAS
+  Aos domingos, das 8h as 18h, Seu Bento, o mascate, visita a Praia Azul. Ele entrega uma bolinha de gude
+  que passa de mao em mao: Lenhador, Montanhista, Eremita (depois do portao de gelo), Capita (cais) e
+  Prof. Carvalho, que entrega a Chave do Observatorio. A troca atual e a dica ficam no Cartao (C).
+
+OBSERVATORIO
+  No nordeste da vila. Doe quatro conjuntos (com confirmacao): peixes da vila (Lambari, Carpa Dourada,
+  Bagre da Lua), flores do quintal (margarida, tulipa, girassol), tesouros do mar (6 conchas encontradas e
+  30 moedas) e luz das estrelas (Chave do Observatorio e 100 moedas). Cada conjunto muda a vila:
+  lanternas a noite, canteiros na praca, luneta na praia e, por fim, as constelacoes de Aurora a noite.
+  Peixes saem do estoque (o album nao perde capturas). A Luneta vira decoracao da casa.
+
+CARTAS
+  A caixa de correio azul fica ao lado da porta de casa, na vila. Quando algo acontece, alguem escreve:
+  as cartas chegam na manha seguinte, ate duas por dia. A bandeira vermelha indica carta nova.
+  Algumas trazem moedas, guardadas na primeira leitura.
 
 (Opcional) Regerar os sprites provisorios:   java MakeAssets
 (Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
@@ -224,6 +257,9 @@ ORGANIZACAO DO CODIGO
   World.java       mapas da campanha (capitulos 1-4); Npc.java, GameMap.java e Warp.java descrevem o mundo
   Story.java       objetivos, faixas de capitulo e dialogos dos capitulos 1-4
   Inventory.java   caixa de itens (tecla I)
+  Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
+  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits   sistemas inspirados nos classicos
+                   (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida
   Demais classes   um sistema cada (ChapterFive, VillageLife, Bonds, Festival, HomeDecor, Weather, Gardening,
                    VillageOrders, WorldMap, AdventureJournal, Soundscape, Accessibility, Audio), com seu proprio

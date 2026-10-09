@@ -30,7 +30,7 @@ public class AccessibilityTest {
         VillageLifeTest.screenshot(g, "access-journal");
         g.openPause(); g.choose("Acessibilidade e controles"); check(g.state == Game.ACCESSIBILITY, "Panel opens");
         VillageLifeTest.screenshot(g, "access-settings");
-        a.selected = 6; tap(g, KeyEvent.VK_ENTER); check(a.capturing, "Capture started");
+        a.selected = Accessibility.OPTIONS + 4; tap(g, KeyEvent.VK_ENTER); check(a.capturing, "Capture started");
         tap(g, KeyEvent.VK_ESCAPE); check(!a.capturing && g.state == Game.ACCESSIBILITY, "Escape cancels binding");
         tap(g, KeyEvent.VK_ESCAPE); check(g.state == Game.MENU, "Panel returns to pause");
         g.life.catches[0] = 2; g.bonds.openJournal(Game.PLAY); g.bonds.giftTarget = 0; g.bonds.selection = 0;

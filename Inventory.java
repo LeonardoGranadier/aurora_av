@@ -83,7 +83,10 @@ final class Inventory {
     void announceNew(Set<String> antes) {
         List<String> novos = new ArrayList<>();
         for (int i = 0; i < KEYS.length; i++)
-            if (state(KEYS[i]) > 0 && !antes.contains(KEYS[i])) novos.add(NAMES[i]);
+            if (state(KEYS[i]) > 0 && !antes.contains(KEYS[i])) {
+                if (novos.isEmpty()) game.itemGet(KEYS[i]);
+                novos.add(NAMES[i]);
+            }
         if (!novos.isEmpty()) game.pendingToast = "Novo item: " + String.join(", ", novos) + "  (I)";
     }
 

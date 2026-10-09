@@ -79,7 +79,7 @@ final class Story {
             case "mae" -> {
                 if (game.stage == 0) {
                     game.setStage(1);
-                    game.say(n.name, "Bom dia! Hoje é um dia especial na Vila Aurora.",
+                    game.say(n.name, "Bom dia, " + game.explorer.nameOr("meu bem") + "! Hoje é um dia especial na Vila Aurora.",
                         "Preciso que leve esta carta ao Seu Marinho, na Praia Azul.",
                         "Siga a trilha ao sul da vila. Boa viagem!");
                 } else if (game.stage == 1) game.say(n.name, noite ? "Já está escuro... leve cuidado!" : "Seu Marinho mora na praia, ao sul da vila. Vá com calma!");
@@ -90,12 +90,12 @@ final class Story {
                 else if (game.stage == 8) game.say(n.name, "Uma viagem de barco?! Que emoção! Mas fale primeiro com a Capitã, no cais da praia, de dia.");
                 else if (game.stage == 9 && (game.bye & 1) == 0) {
                     game.bye |= 1;
-                    game.say(n.name, "Então vai mesmo velejar? Meu coração aperta... mas sei que você é corajoso(a).",
-                        "Leve este lanche de pão com queijo e um agasalho. E volte inteiro(a)!");
+                    game.say(n.name, "Então vai mesmo velejar? Meu coração aperta... mas sei que você tem coragem de sobra.",
+                        "Leve este lanche de pão com queijo e um agasalho. E volte " + game.explorer.w("inteirinho", "inteirinha", "sem nenhum arranhão") + "!");
                     checkBye();
                 } else if (game.stage <= 13) game.say(n.name, "Boa viagem! Eu espero aqui, com o jantar quentinho.");
                 else if (game.stage == 14) game.say(n.name, "Voltou! Depois você me conta tudo. Mostre a Estrela ao Seu Marinho, à noite!");
-                else if (game.stage == 15) game.say(n.name, "Meu(minha) explorador(a) das estrelas! O farol nunca brilhou tanto!");
+                else if (game.stage == 15) game.say(n.name, game.explorer.w("Meu explorador", "Minha exploradora", "Minha estrela") + " das estrelas! O farol nunca brilhou tanto!");
                 else if (game.stage <= 19) game.say(n.name, "Vai subir a montanha? Leve um cachecol e cuidado com o gelo!");
                 else if (game.stage == 20) game.say(n.name, "Uma estrelinha que fala?! Que fofa! Leve-a ao farol, antes que ela fique com frio.");
                 else game.say(n.name, "O céu inteiro brilhou ontem à noite. Foi você, não foi?");
@@ -270,7 +270,7 @@ final class Story {
             case "porta_farol" -> {
                 if (game.stage == 20 && noite) {
                     game.say("", "Você encosta na porta do farol e a Cintila começa a brilhar, cada vez mais forte...",
-                        "Cintila: \"A luz do farol... é quentinha. Obrigada, amigo(a)!\"",
+                        "Cintila: \"A luz do farol... é quentinha. Obrigada, " + game.explorer.nameOr(game.explorer.w("amigo", "amiga", "minha luz")) + "!\"",
                         "Ela sobe voando até a lente do farol, e o feixe de luz se enche de estrelas!",
                         "Cintila: \"Agora posso voltar para casa, no céu. Procure por mim nas noites claras!\"",
                         "Capítulo 4 concluído: A Estrela Cadente.",

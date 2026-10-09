@@ -1,6 +1,13 @@
 import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Onde o jogo encontra seus arquivos.
@@ -58,5 +65,25 @@ final class GameFiles {
         if (os.contains("mac")) return Path.of(home, "Library", "Application Support", "Aventura em Aurora");
         String xdg = System.getenv("XDG_DATA_HOME");
         return (xdg != null && !xdg.isBlank() ? Path.of(xdg) : Path.of(home, ".local", "share")).resolve("aventura-aurora");
+    }
+
+    private static final Set<String> LOGGED = new HashSet<>();
+
+    /**
+     * Acrescenta o erro a erros.log na pasta de dados. Repetições do mesmo erro (um erro por quadro, por exemplo)
+     * e mais de 20 erros por sessão não são gravados. Retorna true quando o erro era novo.
+     */
+    static synchronized boolean logError(Throwable error) {
+        StringWriter trace = new StringWriter();
+        error.printStackTrace(new PrintWriter(trace));
+        if (LOGGED.size() >= 20 || !LOGGED.add(trace.toString())) return false;
+        System.err.print(trace);
+        String entry = LocalDateTime.now() + "  Aventura em Aurora " + Game.VERSION + "  Java " + System.getProperty("java.version")
+            + "  " + System.getProperty("os.name") + "\n" + trace + "\n";
+        try {
+            ensureDataDir();
+            Files.writeString(data("erros.log"), entry, StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        } catch (Exception ignored) {}
+        return true;
     }
 }

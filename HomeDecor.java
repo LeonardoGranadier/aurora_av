@@ -24,7 +24,9 @@ final class HomeDecor {
         new Item("apito", "Apito da amizade", 0, 1, 1, true, new Color(191, 156, 80)),
         new Item("estrela", "Estrela de Aurora", 0, 1, 1, true, new Color(246, 204, 76)),
         new Item("flor_constelacao", "Flor-Constelação", 0, 1, 1, true, new Color(234, 170, 211)),
-        new Item("lembranca_vila", "Lembrança da Vila", 0, 1, 1, true, new Color(93, 167, 156))
+        new Item("lembranca_vila", "Lembrança da Vila", 0, 1, 1, true, new Color(93, 167, 156)),
+        new Item("colecao_conchas", "Coleção de Conchas", 0, 1, 1, true, new Color(240, 150, 175)),
+        new Item("luneta", "Luneta do Observatório", 0, 1, 1, true, new Color(190, 150, 80))
     };
     final Game game;
     int coins;
@@ -65,7 +67,13 @@ final class HomeDecor {
         if (id == 8) return game.life.completeAlbum();
         if (id == 9) return game.life.bellBest >= VillageLife.BELL_ROUNDS;
         if (id < STAR) return game.bonds.quests[id - 10] == 2;
-        return id == STAR ? game.festival.prizes > 0 : id == 15 ? game.stage >= 28 : game.orders.total >= 10;
+        return switch (id) {
+            case STAR -> game.festival.prizes > 0;
+            case 15 -> game.stage >= 28;
+            case 16 -> game.orders.total >= 10;
+            case 17 -> game.shells.rewarded >= SecretShells.REWARDS.length;
+            default -> game.observatory.complete();
+        };
     }
     boolean placed(int id) { return unlocked(id) && xs[id] >= 0 && ys[id] >= 0; }
     int width(int id, int r) { return r % 2 == 0 ? ITEMS[id].w() : ITEMS[id].h(); }
@@ -320,6 +328,17 @@ final class HomeDecor {
                 a.setColor(color); a.fillRect(7, 12, 19, 14);
                 a.setColor(new Color(215, 135, 113)); a.fillPolygon(new int[]{4, 16, 29}, new int[]{13, 2, 13}, 3);
                 a.setColor(new Color(245, 225, 147)); a.fillRect(14, 18, 6, 8);
+            }
+            case 17 -> {
+                a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
+                a.setColor(new Color(210, 235, 245, 200)); a.fillRect(4, 6, 24, 20);
+                a.setColor(new Color(150, 175, 190)); a.drawRect(4, 6, 24, 20);
+                for (int i = 0; i < 3; i++) { a.setColor(i == 1 ? new Color(250, 225, 160) : color); a.fillArc(6 + i * 7, 13 + (i % 2) * 4, 8, 8, 0, 180); }
+            }
+            case 18 -> {
+                a.setColor(new Color(90, 80, 70)); a.drawLine(16, 18, 9, 31); a.drawLine(16, 18, 23, 31); a.drawLine(16, 18, 16, 31);
+                a.setColor(color); a.fillRoundRect(4, 8, 22, 8, 4, 4);
+                a.setColor(color.darker()); a.fillRect(22, 6, 6, 12);
             }
             default -> { }
         }

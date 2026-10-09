@@ -15,4 +15,4 @@ if [ "${1:-}" = "--compilar" ]; then
     printf '%s\n' 'Compilacao concluida.'
     exit 0
 fi
-exec java -cp .build Game
+exec java -Daurora.dev=true -cp .build Game

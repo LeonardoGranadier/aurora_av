@@ -107,9 +107,16 @@ final class WorldMap {
             for (String line : lines) {
                 g.drawString(line, r.labelRight ? left : r.x - fm.stringWidth(line) / 2, y); y += 14;
             }
+            int shells = game.shells.remaining(r.name);
+            if (known && game.shells.listening() && shells > 0) {                // Concha que Escuta: conchas restantes
+                g.setColor(new Color(240, 150, 175)); g.fillOval(r.x + 8, r.y - 20, 14, 14);
+                g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 10));
+                g.drawString("" + shells, r.x + 12, r.y - 9);
+            }
         }
         g.setColor(new Color(217, 233, 225)); g.fillRect(0, 398, Game.W, 82);
-        game.life.text(g, "Você: " + game.map.name, 20, 418, 600, 14);
+        String shellNote = game.shells.listening() ? "   ·   Conchas secretas aqui: " + game.shells.remaining(game.map.name) + " de " + game.shells.total(game.map.name) : "";
+        game.life.text(g, "Você: " + game.map.name + shellNote, 20, 418, 600, 14);
         game.life.text(g, Story.OBJECTIVES[game.stage], 20, 442, 600, 13);
         g.setColor(new Color(192, 117, 38)); g.drawOval(364, 17, 12, 12);
         g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));

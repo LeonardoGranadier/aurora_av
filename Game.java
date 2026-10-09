@@ -39,7 +39,11 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final String SAVE = GameFiles.data("savegame.properties").toString();
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24;
+    static final String VERSION = "1.0.0";
+    /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
+    static final boolean DEV = Boolean.getBoolean("aurora.dev");
+    static final String SAVE = GameFiles.data("savegame.properties").toString(), BACKUP = SAVE + ".bak";
 
     // ---------- Estado do jogo ----------
     final Map<String, GameMap> maps = new HashMap<>();
@@ -74,6 +78,17 @@ public class Game extends JPanel implements KeyListener {
     final Accessibility access = new Accessibility(this);
     final Inventory inventory = new Inventory(this);
     final Story story = new Story(this);
+    final SecretShells shells = new SecretShells(this);
+    final TradeQuest trades = new TradeQuest(this);
+    final Observatory observatory = new Observatory(this);
+    final Mailbox mail = new Mailbox(this);
+    final Explorer explorer = new Explorer(this);
+    final Credits credits = new Credits(this);
+    /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
+    final List<Feature> features = List.of(shells, trades, observatory, mail, explorer, credits);
+    double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
+    String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
+    boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
     final Map<Integer, Integer> pressedKeys = new HashMap<>();
 
     public Game() {
@@ -161,6 +176,11 @@ public class Game extends JPanel implements KeyListener {
         return 1 - (h - 5) / 2;
     }
     boolean isNight() { return night() > 0.6; }
+    /** Dia da partida contado a partir de 0; o HUD mostra day() + 1. */
+    int day() { return (int) Math.floor(time / 1440); }
+    /** Dia da semana do dia exibido (1 = domingo); o festival cai sempre no sábado. */
+    static final String[] WEEKDAYS = {"Sáb", "Dom", "Seg", "Ter", "Qua", "Qui", "Sex"};
+    static String weekday(int shownDay) { return WEEKDAYS[Math.floorMod(shownDay, 7)]; }
 
     // ---------- Lógica ----------
     void update() {
@@ -175,14 +195,17 @@ public class Game extends JPanel implements KeyListener {
         festival.update(dt);
         if (state == FISHING || state == BELLS) { life.updateGame(dt); return; }
         if (state != PLAY) return;     // título e menus pausam o jogo
+        if (dlg != null) dlgChars += dt * access.charsPerSecond();
+        if (itemGetT > 0) itemGetT -= dt;
         if (!festival.fishing) time += dt * 6; // O concurso usa seu próprio cronômetro.
         gardening.sync();
+        for (Feature f : features) f.update(dt);
         if (fade > 0) fade -= dt * 3;
         if (bannerT > 0) bannerT -= dt;
         if (dlg == null) life.updateResidents(dt);
 
         if (moving) {
-            prog += dt * (sliding ? 7.5 : 4.5);
+            prog += dt * (sliding || running() ? 7.5 : 4.5);
             if (prog >= 1) {
                 fx = tx; fy = ty;                                            // a Cintila ocupa a casa que o jogador deixou
                 tx = nx; ty = ny; moving = false; prog = 0;
@@ -208,6 +231,8 @@ public class Game extends JPanel implements KeyListener {
     }
 
     boolean held(int a, int b) { return down.contains(a) || down.contains(b); }
+    /** Segurar Shift corre (como os tênis de corrida dos Pokémon). */
+    boolean running() { return down.contains(KeyEvent.VK_SHIFT) && !sliding; }
 
     boolean free(int x, int y) {
         if (map.solid(x, y)) return false;
@@ -247,6 +272,7 @@ public class Game extends JPanel implements KeyListener {
         if (!chapter.visible(n.id)) return false;
         if (n.id.equals("festival_souvenir") && (festival.prizes == 0 || !home.placed(HomeDecor.STAR))) return false;
         if (!bonds.visible(n.id)) return false;
+        for (Feature f : features) if (!f.visible(n)) return false;
         if (n.sleeping) return false;
         if (n.id.equals("portao2") && brasas >= 3) return false;     // portão interno abre com os 3 braseiros
         if (stage < n.minStage || stage > n.maxStage) return false;
@@ -260,10 +286,23 @@ public class Game extends JPanel implements KeyListener {
         banner = Story.banner(st);
         bannerT = 4;
         if (Story.fanfare(st)) audio.sfx("fanfare");
+        if (st == 28 && !credits.seen) { credits.seen = true; credits.open(PLAY, true); }
         refreshObjects();
     }
 
-    void say(String who, String... lines) { access.dialogPage = 0; afterDlg = null; speaker = who; dlg = lines; dlgIdx = 0; }
+    void say(String who, String... lines) { access.dialogPage = 0; afterDlg = null; speaker = who; dlg = lines; dlgIdx = 0; restartReveal(); }
+    /** Nova página: com texto instantâneo, já aparece inteira. */
+    void restartReveal() { dlgChars = access.textSpeed == 0 ? Double.MAX_VALUE : 0; }
+
+    /** Letras da página atual do diálogo. */
+    int pageChars() {
+        List<String> lines = access.dialogLines(); int rows = access.large ? 5 : 3, n = 0;
+        for (int i = access.dialogPage * rows; i < Math.min(lines.size(), (access.dialogPage + 1) * rows); i++) n += lines.get(i).length();
+        return n;
+    }
+
+    /** Pose de "item obtido" (como nos Zelda): o jogador vira para a tela e ergue o item por alguns segundos. */
+    void itemGet(String key) { itemGetKey = key; itemGetT = 2.2; dir = 0; }
 
     // ---------- Ações do mundo ----------
 
@@ -301,17 +340,20 @@ public class Game extends JPanel implements KeyListener {
         if (home.talk(n)) return;
         if (festival.talk(n)) return;
         if (bonds.collect(n)) return;
+        for (Feature f : features) if (f.talk(n)) return;
         int previousStage = stage;
         story.talk(n);
         journal.record(n, previousStage);
         bonds.afterTalk(n);
         weather.afterTalk(n);
         festival.afterTalk(n);
+        for (Feature f : features) f.afterTalk(n);
     }
 
     void drawNpc(Graphics2D g, Npc n, int camX, int camY) {
         int x = (int) ((n.x + (n.walking ? (n.toX - n.x) * n.walkProgress : 0)) * T) - camX;
         int y = (int) ((n.y + (n.walking ? (n.toY - n.y) * n.walkProgress : 0)) * T) - camY - 4;
+        for (Feature f : features) if (f.drawObject(g, n, x, y)) return;
         if (orders.drawObject(g, n, x, y) || gardening.drawObject(g, n, x, y) || chapter.drawObject(g, n, x, y) || home.drawStall(g, n, x, y) || festival.drawObject(g, n, x, y) || bonds.drawObject(g, n, x, y) || life.drawObject(g, n, x, y)) return;
         if (!n.object) { person(g, n.sprite, x, y, n.color, n.dir, n.walking, n.walkProgress, true); return; }
         BufferedImage im = spr.get(n.sprite);
@@ -347,10 +389,12 @@ public class Game extends JPanel implements KeyListener {
     // ---------- Save / Load ----------
     void take(Npc n) { map.npcs.remove(n); taken.add(n.id); }
 
-    String sig() { return stage + "|" + frags + "|" + bye + "|" + brasas + "|" + new TreeSet<>(taken) + "|" + life.signature() + "|" + bonds.signature() + "|" + festival.signature() + "|" + home.signature() + "|" + weather.seed + "|" + chapter.signature() + "|" + journal.clues + "|" + gardening.signature(); }
+    String sig() { return stage + "|" + frags + "|" + bye + "|" + brasas + "|" + new TreeSet<>(taken) + "|" + life.signature() + "|" + bonds.signature() + "|" + festival.signature() + "|" + home.signature() + "|" + weather.seed + "|" + chapter.signature() + "|" + journal.clues + "|" + gardening.signature() + featureSignature(); }
+    String featureSignature() { StringBuilder b = new StringBuilder(); for (Feature f : features) b.append('|').append(f.signature()); return b.toString(); }
 
     void newGame() {
         orders.reset();
+        for (Feature f : features) f.reset();
         gardening.reset();
         journal.reset();
         worldMap.reset();
@@ -368,6 +412,7 @@ public class Game extends JPanel implements KeyListener {
         chapter.buildWorld();
         gardening.buildWorld();
         orders.buildWorld();
+        for (Feature f : features) f.buildWorld();
         map = maps.get("Casa"); tx = 5; ty = 5; dir = 0; fx = 5; fy = 5; sliding = false;
         worldMap.arrive();
         moving = false; prog = 0; stage = 0; frags = 0; time = 8 * 60;
@@ -400,8 +445,11 @@ public class Game extends JPanel implements KeyListener {
             journal.save(p);
             gardening.save(p);
             orders.save(p);
+            for (Feature f : features) f.save(p);
             Path tmp = Paths.get(SAVE + ".tmp");                       // grava num temporário e troca (evita save corrompido)
             try (OutputStream o = Files.newOutputStream(tmp)) { p.store(o, "Aventura em Aurora - save"); }
+            if (Files.isRegularFile(Paths.get(SAVE)))                          // a versão anterior vira o backup
+                Files.copy(Paths.get(SAVE), Paths.get(BACKUP), StandardCopyOption.REPLACE_EXISTING);
             Files.move(tmp, Paths.get(SAVE), StandardCopyOption.REPLACE_EXISTING);
             lastSig = sig();
             if (showToast) { toast("Jogo salvo!"); audio.sfx("save"); }
@@ -417,12 +465,20 @@ public class Game extends JPanel implements KeyListener {
         return true;
     }
 
+    /** Partida salva; se o arquivo principal estiver ilegível, tenta o backup da gravação anterior. */
     Properties readSave() {
-        File f = new File(SAVE);
-        if (!f.exists()) return null;
+        if (!new File(SAVE).exists()) return null;
+        Properties p = readSaveFile(SAVE);
+        return p != null ? p : readSaveFile(BACKUP);
+    }
+    static Properties readSaveFile(String path) {
+        File f = new File(path);
+        if (!f.isFile()) return null;
         try (InputStream in = new FileInputStream(f)) {
             Properties p = new Properties(); p.load(in);
-            return "1".equals(p.getProperty("versao")) ? p : null;
+            if (!"1".equals(p.getProperty("versao"))) return null;
+            Integer.parseInt(p.getProperty("fase")); Double.parseDouble(p.getProperty("tempo"));   // campos essenciais
+            return p.getProperty("mapa") != null ? p : null;
         } catch (Exception e) { return null; }
     }
 
@@ -468,6 +524,7 @@ public class Game extends JPanel implements KeyListener {
             worldMap.load(p);
             journal.load(p);
             gardening.load(p);
+            for (Feature f : features) f.load(p);
             gardening.sync();
             refreshObjects();
             lastSig = sig();
@@ -482,21 +539,21 @@ public class Game extends JPanel implements KeyListener {
         saveInfo = readInfo();
         opts.clear();
         if (saveInfo != null) opts.add("Continuar");
-        opts.add("Novo jogo"); opts.add("Sair");
+        opts.add("Novo jogo"); opts.add("Créditos"); opts.add("Sair");
         menuSel = 0; state = TITLE;
     }
     void openPause() {
         opts.clear();
-        opts.addAll(List.of("Voltar ao jogo", "Itens", "Álbum de pesca", "Laços de Aurora", "Salvar jogo",
+        opts.addAll(List.of("Voltar ao jogo", "Itens", "Cartão do Explorador", "Álbum de pesca", "Laços de Aurora", "Salvar jogo",
             "Música: " + (audio.musicOn ? "ligada" : "desligada"),
             "Efeitos: " + (audio.sfxOn ? "ligados" : "desligados"),
             "Salvar e ir ao título"));
-        if (map.name.equals("Casa")) opts.add(4, "Decorar casa");
-        opts.add(4, "Previsão do tempo");
-        opts.add(4, "Mapa de Aurora");
-        opts.add(4, "Diário de Aventuras");
-        opts.add(4, "Volumes de áudio");
-        opts.add(4, "Acessibilidade e controles");
+        if (map.name.equals("Casa")) opts.add(5, "Decorar casa");
+        opts.add(5, "Previsão do tempo");
+        opts.add(5, "Mapa de Aurora");
+        opts.add(5, "Diário de Aventuras");
+        opts.add(5, "Volumes de áudio");
+        opts.add(5, "Acessibilidade e controles");
         state = MENU;
     }
     void openConfirm() { opts.clear(); opts.addAll(List.of("Não, voltar", "Sim, apagar e começar")); menuSel = 0; state = CONFIRM; }
@@ -520,8 +577,10 @@ public class Game extends JPanel implements KeyListener {
         if (o.startsWith("Efeitos")) { audio.setSfx(!audio.sfxOn); openPause(); return; }
         switch (o) {
             case "Continuar" -> { if (loadGame()) state = PLAY; else toast("Não foi possível carregar o save."); }
-            case "Novo jogo" -> { if (saveInfo != null) openConfirm(); else { newGame(); state = PLAY; } }
-            case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(SAVE)); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); state = PLAY; }
+            case "Novo jogo" -> { if (saveInfo != null) openConfirm(); else { newGame(); explorer.startNaming(); } }
+            case "Créditos" -> credits.open(TITLE, false);
+            case "Cartão do Explorador" -> explorer.openCard(MENU);
+            case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(SAVE)); Files.deleteIfExists(Paths.get(BACKUP)); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); explorer.startNaming(); }
             case "Não, voltar" -> openTitle();
             case "Sair" -> System.exit(0);
             case "Voltar ao jogo" -> state = PLAY;
@@ -544,6 +603,7 @@ public class Game extends JPanel implements KeyListener {
     @Override public void keyPressed(KeyEvent e) {
         int raw = e.getKeyCode();
         if (raw == KeyEvent.VK_F11) { toggleFullscreen(); return; }
+        if (raw == KeyEvent.VK_F12) { takePhoto(); return; }
         if (pressedKeys.containsKey(raw)) return;
         int k = access.translate(raw);
         pressedKeys.put(raw, k);
@@ -563,6 +623,7 @@ public class Game extends JPanel implements KeyListener {
         if (state == BONDS) { bonds.key(k); return; }
         if (state == FISHING || state == ALBUM || state == BELLS) { life.key(k); return; }
         if (state == INV) { inventory.key(k); return; }
+        for (Feature f : features) if (f.owns(state)) { f.key(k); return; }
         if (state != PLAY) { menuKey(k); return; }
         if (k == KeyEvent.VK_ESCAPE && dlg == null && !moving) { menuSel = 0; audio.sfx("select"); openPause(); return; }
         if (k == KeyEvent.VK_I && dlg == null && !moving) { audio.sfx("select"); inventory.open(PLAY); return; }
@@ -574,10 +635,13 @@ public class Game extends JPanel implements KeyListener {
         if (k == KeyEvent.VK_TAB && dlg == null && !moving) { worldMap.open(PLAY); return; }
         if (k == KeyEvent.VK_L && dlg == null && !moving) { journal.open(PLAY); return; }
         if (k == KeyEvent.VK_V && dlg == null && !moving) { gardening.openBasket(); return; }
+        if (k == KeyEvent.VK_C && dlg == null && !moving) { audio.sfx("select"); explorer.openCard(PLAY); return; }
         if (k == KeyEvent.VK_M) { audio.setMusic(!audio.musicOn); toast(audio.musicOn ? "Música ligada" : "Música desligada"); return; }
         boolean action = k == KeyEvent.VK_Z || k == KeyEvent.VK_ENTER || k == KeyEvent.VK_SPACE;
         if (action) {
             if (dlg != null) {
+                if (dlgChars < pageChars()) { dlgChars = Double.MAX_VALUE; return; }   // primeiro toque mostra a página inteira
+                restartReveal();
                 if (access.moreDialog()) return;
                 audio.sfx("blip");
                 if (++dlgIdx >= dlg.length) {
@@ -589,13 +653,15 @@ public class Game extends JPanel implements KeyListener {
             }
             else if (!moving) interact();
         }
-        if (k == KeyEvent.VK_T && !festival.fishing) time += 120;
+        if (k == KeyEvent.VK_T && DEV && !festival.fishing) time += 120;
     }
     @Override public void keyReleased(KeyEvent e) {
         Integer logical = pressedKeys.remove(e.getKeyCode());
         if (logical != null && !pressedKeys.containsValue(logical)) down.remove(logical);
     }
-    @Override public void keyTyped(KeyEvent e) {}
+    @Override public void keyTyped(KeyEvent e) {
+        for (Feature f : features) if (f.owns(state)) { f.typed(e.getKeyChar()); return; }
+    }
 
     // ---------- Desenho ----------
     /** Desenha a cena de 640x480 ampliada para caber no painel, centralizada e com faixas pretas. */
@@ -627,8 +693,12 @@ public class Game extends JPanel implements KeyListener {
         Window window = SwingUtilities.getWindowAncestor(this);
         if (window == null) return;
         GraphicsDevice device = window.getGraphicsConfiguration().getDevice();
-        device.setFullScreenWindow(device.getFullScreenWindow() == window ? null : window);
+        boolean full = device.getFullScreenWindow() != window;
+        device.setFullScreenWindow(full ? window : null);
         requestFocusInWindow();
+        Properties video = new Properties(); video.setProperty("telaCheia", "" + full);
+        try (OutputStream o = Files.newOutputStream(GameFiles.data("video.properties"))) { video.store(o, "Aventura em Aurora - video"); }
+        catch (Exception ignored) {}
     }
     void paintScene(Graphics g0) {
         Graphics2D g = (Graphics2D) g0;
@@ -660,6 +730,7 @@ public class Game extends JPanel implements KeyListener {
         if (stage == 20) drawFollower(g, camX, camY, mv);
         for (Npc n : map.npcs) if (vis(n) && n.y > ty) drawNpc(g, n, camX, camY);
         home.drawFurniture(g, camX, camY, 2);
+        for (Feature f : features) f.drawWorld(g, camX, camY);
 
         // dia/noite
         if (map.snowy) drawSnow(g);
@@ -719,6 +790,9 @@ public class Game extends JPanel implements KeyListener {
             }
         }
         weather.drawWorld(g);
+        drawItemGet(g, (int) ppx - camX, (int) ppy - camY - 4);
+        if (!photo && state == PLAY && dlg == null && !moving) drawInteractionHint(g, camX, camY);
+        if (photo) return;
         hud(g);
         if (dlg != null) dialogBox(g);
         if (fade > 0 && !access.reduced) { g.setColor(new Color(0, 0, 0, (int) (Math.min(1, fade) * 255))); g.fillRect(0, 0, W, H); }
@@ -736,8 +810,64 @@ public class Game extends JPanel implements KeyListener {
         if (state == ORDERS) orders.draw(g);
         if (state == ACCESSIBILITY) access.draw(g);
         if (state == HANDOFF) access.drawConfirmation(g);
+        for (Feature f : features) if (f.owns(state)) f.draw(g);
         festival.drawTimer(g);
         drawToast(g);
+    }
+
+    /** Item erguido sobre a cabeça, com raios de brilho. */
+    void drawItemGet(Graphics2D g, int px, int py) {
+        if (itemGetT <= 0 || itemGetKey == null) return;
+        int cx = px + T / 2, cy = py - 18;
+        double a = Math.min(1, itemGetT / 0.4);
+        if (!access.reduced) {
+            g.setColor(new Color(255, 240, 160, (int) (110 * a)));
+            for (int i = 0; i < 8; i++) {
+                double ang = i * Math.PI / 4 + frame / 40.0;
+                g.setStroke(new BasicStroke(3));
+                g.drawLine(cx + (int) (Math.cos(ang) * 16), cy + (int) (Math.sin(ang) * 16), cx + (int) (Math.cos(ang) * 26), cy + (int) (Math.sin(ang) * 26));
+            }
+            g.setStroke(new BasicStroke(1));
+        }
+        int idx = Arrays.asList(Inventory.KEYS).indexOf(itemGetKey);
+        if (idx >= 0) inventory.drawIcon(g, idx, cx - 12, cy - 12, 24, false);
+        else if (itemGetKey.equals("concha_secreta")) {
+            g.setColor(new Color(240, 150, 175)); g.fillArc(cx - 11, cy - 9, 22, 22, 0, 180);
+            g.setColor(new Color(200, 100, 130)); for (int i = -8; i <= 8; i += 4) g.drawLine(cx, cy + 2, cx + i, cy - 7);
+            g.setColor(new Color(240, 150, 175)); g.fillRect(cx - 4, cy + 1, 8, 5);
+        } else {                                                                    // presente da corrente de trocas
+            g.setColor(new Color(90, 160, 210)); g.fillRect(cx - 10, cy - 8, 20, 16);
+            g.setColor(new Color(240, 200, 80)); g.fillRect(cx - 2, cy - 8, 4, 16); g.fillRect(cx - 10, cy - 2, 20, 4);
+        }
+    }
+
+    /** Balãozinho sobre o que está à frente e pode ser usado (sem entregar as conchas secretas). */
+    void drawInteractionHint(Graphics2D g, int camX, int camY) {
+        int ax = tx + DX[dir], ay = ty + DY[dir];
+        boolean target = false;
+        for (Npc n : map.npcs) if (vis(n) && n.x == ax && n.y == ay && !n.id.startsWith("concha_secreta")) target = true;
+        boolean water = map.at(ax, ay) == '~' && life.rod;
+        if (!target && !water) return;
+        int x = ax * T - camX + T / 2, y = ay * T - camY - 10 + (access.reduced ? 0 : (int) (Math.sin(frame / 12.0) * 2));
+        g.setColor(new Color(255, 255, 255, 230)); g.fillRoundRect(x - 9, y - 9, 18, 16, 8, 8);
+        g.fillPolygon(new int[]{x - 3, x + 3, x}, new int[]{y + 6, y + 6, y + 10}, 3);
+        g.setColor(new Color(40, 40, 60)); g.setFont(new Font("SansSerif", Font.BOLD, 11));
+        g.drawString(water ? "~" : "Z", x - 3, y + 4);
+    }
+
+    /** F12: salva a cena atual, sem interface, em fotos/ na pasta de dados (em 2x). */
+    void takePhoto() {
+        if (state == TITLE || state == CONFIRM || map == null) return;
+        BufferedImage image = new BufferedImage(W * 2, H * 2, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+        g.scale(2, 2); photo = true;
+        try { paintScene(g); } finally { photo = false; g.dispose(); }
+        try {
+            Path dir = GameFiles.data("fotos"); Files.createDirectories(dir);
+            String name = "aurora-" + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")) + ".png";
+            ImageIO.write(image, "png", dir.resolve(name).toFile());
+            audio.sfx("save"); toast("Foto salva: fotos/" + name);
+        } catch (Exception e) { toast("Não foi possível salvar a foto."); }
     }
 
     void center(Graphics2D g, String s, int y) { g.drawString(s, (W - g.getFontMetrics().stringWidth(s)) / 2, y); }
@@ -779,6 +909,8 @@ public class Game extends JPanel implements KeyListener {
             g.setColor(sel ? new Color(255, 225, 120) : new Color(255, 255, 255, 215));
             center(g, (sel ? "▶  " : "") + opts.get(i), y0 + i * 38);
         }
+        g.setFont(new Font("SansSerif", Font.PLAIN, 11)); g.setColor(new Color(255, 255, 255, 120));
+        g.drawString("v" + VERSION + "  ·  F11: tela cheia", 10, H - 10);
         if (state == TITLE && saveInfo != null && opts.get(menuSel).equals("Continuar")) {
             g.setFont(new Font("SansSerif", Font.PLAIN, 14)); g.setColor(new Color(255, 240, 170));
             center(g, saveInfo, y0 + opts.size() * 38 + 6);
@@ -841,7 +973,7 @@ public class Game extends JPanel implements KeyListener {
         int dia = (int) (time / 1440) + 1;
         String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)" : "");
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        String heading = String.format("%s  •  Dia %d  %02d:%02d  •  %s", map.name, dia, hh, mm, weather.label());
+        String heading = String.format("%s  •  Dia %d (%s)  %02d:%02d  •  %s", map.name, dia, weekday(dia), hh, mm, weather.label());
         int bw = Math.max(280, g.getFontMetrics().stringWidth(obj) + 32);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
         bw = Math.max(bw, g.getFontMetrics().stringWidth(heading) + 56);
@@ -858,7 +990,7 @@ public class Game extends JPanel implements KeyListener {
         g.drawString(obj, 16, 46);
         if (dlg == null && state == PLAY) {
             g.setColor(new Color(255, 255, 255, 170));
-            g.drawString("Setas: mover | Z: falar | I: itens | ESC: menu | M: música", 12, H - 10);
+            g.drawString("Setas: mover | Shift: correr | Z: falar | I: itens | C: cartão | ESC: menu", 12, H - 10);
         }
         if (bannerT > 0) {
             g.setFont(new Font("SansSerif", Font.BOLD, 16));
@@ -890,10 +1022,13 @@ public class Game extends JPanel implements KeyListener {
         FontMetrics fm = g.getFontMetrics();
         int ly = by + 38;
         List<String> lines = access.dialogLines(); int rows = access.large ? 5 : 3;
+        long shown = (long) Math.min(Integer.MAX_VALUE, dlgChars);
         for (int i = access.dialogPage * rows; i < Math.min(lines.size(), (access.dialogPage + 1) * rows); i++) {
-            g.drawString(lines.get(i), bx + 24, ly); ly += access.large ? 30 : 24;
+            String line = lines.get(i);
+            g.drawString(line.substring(0, (int) Math.min(line.length(), Math.max(0, shown))), bx + 24, ly); ly += access.large ? 30 : 24;
+            shown -= line.length();
         }
-        if ((frame / 25) % 2 == 0) g.drawString("▼", bx + bw - 36, by + bh - 14);
+        if (dlgChars >= pageChars() && (frame / 25) % 2 == 0) g.drawString("▼", bx + bw - 36, by + bh - 14);
     }
 
     List<String> wrap(String s, FontMetrics fm, int maxW) {
@@ -1051,6 +1186,9 @@ public class Game extends JPanel implements KeyListener {
         SwingUtilities.invokeLater(() -> {
             JFrame f = new JFrame("Aventura em Aurora");
             Game game = new Game();
+            Thread.setDefaultUncaughtExceptionHandler((thread, error) -> {
+                if (GameFiles.logError(error)) game.toast("Algo deu errado. Detalhes em erros.log.");
+            });
             game.setPreferredSize(new Dimension(W * windowScale(), H * windowScale()));
             f.add(game);
             f.pack();
@@ -1066,6 +1204,9 @@ public class Game extends JPanel implements KeyListener {
             f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
             f.setVisible(true);
             game.requestFocusInWindow();
+            Properties video = new Properties();
+            try (InputStream in = Files.newInputStream(GameFiles.data("video.properties"))) { video.load(in); } catch (Exception ignored) {}
+            if (Boolean.parseBoolean(video.getProperty("telaCheia"))) game.toggleFullscreen();
         });
     }
 }
