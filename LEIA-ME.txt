@@ -15,6 +15,8 @@ Distribuir:  sh empacotar.sh           (dist/AventuraEmAurora/ e .zip: jar + ass
 JANELA
   A janela abre ampliada (2x, 3x...) conforme a tela e pode ser redimensionada; a cena mantem a proporcao.
   F11 alterna tela cheia (lembrado em video.properties). F12 tira uma foto sem interface (pasta fotos/).
+  F3 mostra quadros por segundo e o tempo de desenho de cada quadro (verde: abaixo de 16 ms).
+  A cena e desenhada em 640x480 e ampliada, entao o custo nao cresce com o tamanho da janela.
   Erros inesperados ficam em erros.log, na mesma pasta dos saves.
 
 NOVO JOGO

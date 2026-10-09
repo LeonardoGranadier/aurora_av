@@ -107,7 +107,7 @@ public class Game extends JPanel implements KeyListener {
         loadSprites();
         newGame();
         openTitle();
-        new javax.swing.Timer(16, e -> { update(); repaint(); }).start();
+        new javax.swing.Timer(16, e -> { tick(); repaint(); }).start();
     }
 
     // ---------- Sprites ----------
@@ -115,15 +115,45 @@ public class Game extends JPanel implements KeyListener {
         File[] files = GameFiles.assetsDir().listFiles((d, n) -> n.endsWith(".png"));
         if (files == null) { System.out.println("Pasta assets/ não encontrada: usando desenhos por código."); return; }
         for (File f : files) {
-            try { spr.put(f.getName().replace(".png", ""), ImageIO.read(f)); }
+            try { spr.put(f.getName().replace(".png", ""), fast(ImageIO.read(f), -1, -1)); }
             catch (Exception e) { System.err.println("Erro ao carregar " + f + ": " + e); }
         }
     }
 
+    /**
+     * Cópia no formato que o Java desenha mais rápido (ARGB pré-multiplicado), opcionalmente redimensionada.
+     * Desenhar PNGs no formato original e redimensionar a cada quadro deixava o jogo lento.
+     */
+    static BufferedImage fast(BufferedImage source, int w, int h) {
+        int width = w > 0 ? w : source.getWidth(), height = h > 0 ? h : source.getHeight();
+        BufferedImage copy = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB_PRE);
+        Graphics2D g = copy.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        g.drawImage(source, 0, 0, width, height, null); g.dispose();
+        return copy;
+    }
+    private final Map<String, BufferedImage> tileCache = new HashMap<>();
+    /** Sprite já no tamanho de um tile (T x T). */
+    BufferedImage tileSprite(String key) {
+        BufferedImage source = spr.get(key);
+        if (source == null) return null;
+        if (source.getWidth() == T && source.getHeight() == T) return source;
+        return tileCache.computeIfAbsent(key, k -> fast(source, T, T));
+    }
+    /** Quadro de uma folha de personagem 3x4 (colunas: parado, passo 1, passo 2; linhas: direções), em T x T. */
+    BufferedImage frameSprite(String key, int col, int row) {
+        BufferedImage sheet = spr.get(key);
+        if (sheet == null) return null;
+        return tileCache.computeIfAbsent(key + "#" + col + "," + row, k -> {
+            int fw = sheet.getWidth() / 3, fh = sheet.getHeight() / 4;
+            return fast(sheet.getSubimage(col * fw, row * fh, fw, fh), T, T);
+        });
+    }
+
     boolean img(Graphics2D g, String key, int x, int y) {
-        BufferedImage i = spr.get(key);
+        BufferedImage i = tileSprite(key);
         if (i == null) return false;
-        g.drawImage(i, x, y, T, T, null);
+        g.drawImage(i, x, y, null);
         return true;
     }
 
@@ -188,10 +218,27 @@ public class Game extends JPanel implements KeyListener {
     static String weekday(int shownDay) { return WEEKDAYS[Math.floorMod(shownDay, 7)]; }
 
     // ---------- Lógica ----------
+    /** Um passo de simulação com o tempo real desde o anterior (no máximo 50 ms). Usado pelos testes. */
     void update() {
         long now = System.nanoTime();
         double dt = Math.min(0.05, (now - last) / 1e9);
         last = now;
+        step(dt);
+    }
+
+    /**
+     * Chamado pelo relógio da janela: avança o tempo real decorrido em passos de até 50 ms. Assim, se um quadro
+     * demorar a ser desenhado, o jogo não fica em câmera lenta (até 250 ms de atraso são recuperados).
+     */
+    void tick() {
+        long now = System.nanoTime();
+        double elapsed = Math.min(0.25, (now - last) / 1e9);
+        last = now;
+        while (elapsed > 0.05) { step(0.05); elapsed -= 0.05; }
+        step(elapsed);
+    }
+
+    void step(double dt) {
         frame++;
         if (toastT > 0) toastT -= dt;
         String want = musicFor();
@@ -363,9 +410,9 @@ public class Game extends JPanel implements KeyListener {
         for (Feature f : features) if (f.drawObject(g, n, x, y)) return;
         if (orders.drawObject(g, n, x, y) || gardening.drawObject(g, n, x, y) || chapter.drawObject(g, n, x, y) || home.drawStall(g, n, x, y) || festival.drawObject(g, n, x, y) || bonds.drawObject(g, n, x, y) || life.drawObject(g, n, x, y)) return;
         if (!n.object) { person(g, n.sprite, x, y, n.color, n.dir, n.walking, n.walkProgress, true); return; }
-        BufferedImage im = spr.get(n.sprite);
+        BufferedImage im = tileSprite(n.sprite);
         int bob = n.still ? 0 : (int) (Math.sin(frame / 15.0) * 2);
-        if (im != null) { g.drawImage(im, x, y + 4 + bob, T, T, null); return; }
+        if (im != null) { g.drawImage(im, x, y + 4 + bob, null); return; }
         g.setColor(new Color(n.color.getRed(), n.color.getGreen(), n.color.getBlue(), 90));    // sem PNG: bolinha colorida
         g.fillOval(x + 2, y + 6 + bob, 28, 28);
         g.setColor(n.color);
@@ -620,6 +667,7 @@ public class Game extends JPanel implements KeyListener {
         int raw = e.getKeyCode();
         if (raw == KeyEvent.VK_F11) { toggleFullscreen(); return; }
         if (raw == KeyEvent.VK_F12) { takePhoto(); return; }
+        if (raw == KeyEvent.VK_F3) { showFps = !showFps; return; }
         if (pressedKeys.containsKey(raw)) return;
         int k = access.translate(raw);
         pressedKeys.put(raw, k);
@@ -681,22 +729,40 @@ public class Game extends JPanel implements KeyListener {
     }
 
     // ---------- Desenho ----------
-    /** Desenha a cena de 640x480 ampliada para caber no painel, centralizada e com faixas pretas. */
+    private BufferedImage frameBuffer;
+    boolean showFps;                 // F3: quadros por segundo e custo do desenho
+    double fps, paintMs; long lastPaint;
+    /**
+     * Desenha a cena sempre em 640x480 numa imagem e só então a amplia para o painel, centralizada e com faixas
+     * pretas. O custo do quadro não cresce com o tamanho da janela (desenhar direto em 2x ou 3x deixava o jogo lento).
+     */
     @Override protected void paintComponent(Graphics g0) {
         super.paintComponent(g0);
+        if (frameBuffer == null) frameBuffer = new BufferedImage(W, H, BufferedImage.TYPE_INT_RGB);
+        Graphics2D b = frameBuffer.createGraphics();
+        long actualFrame = frame, start = System.nanoTime();
+        try {
+            if (access.reduced) frame = 0;
+            paintScene(b);
+            if (showFps) {
+                b.setColor(new Color(0, 0, 0, 170)); b.fillRect(W - 128, 4, 124, 20);
+                b.setColor(paintMs > 16 ? new Color(255, 140, 120) : new Color(160, 255, 170)); b.setFont(new Font("Monospaced", Font.BOLD, 12));
+                b.drawString(String.format("%3.0f fps %5.1f ms", fps, paintMs), W - 122, 18);
+            }
+        } finally { frame = actualFrame; b.dispose(); }
+        paintMs = paintMs * 0.9 + (System.nanoTime() - start) / 1e6 * 0.1;
+        if (lastPaint > 0) fps = fps * 0.9 + 1e9 / Math.max(1, start - lastPaint) * 0.1;
+        lastPaint = start;
         Graphics2D g = (Graphics2D) g0.create();
-        long actualFrame = frame;
         try {
             g.setColor(Color.BLACK); g.fillRect(0, 0, getWidth(), getHeight());
             double s = Math.min(getWidth() / (double) W, getHeight() / (double) H);
             if (s >= 1) s = Math.floor(s);                               // escala inteira mantém a pixel art nítida
             if (s <= 0) return;
-            g.translate((getWidth() - W * s) / 2, (getHeight() - H * s) / 2);
-            g.scale(s, s);
-            g.clipRect(0, 0, W, H);
-            if (access.reduced) frame = 0;
-            paintScene(g);
-        } finally { frame = actualFrame; g.dispose(); }
+            int w = (int) Math.round(W * s), h = (int) Math.round(H * s);
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, s >= 1 ? RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR : RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g.drawImage(frameBuffer, (getWidth() - w) / 2, (getHeight() - h) / 2, w, h, null);
+        } finally { g.dispose(); }
     }
 
     /** Maior escala inteira que cabe com folga na tela (mínimo 1). */
@@ -753,25 +819,19 @@ public class Game extends JPanel implements KeyListener {
         if (map.snowy) drawSnow(g);
         if (map.dark) {
             int sx = (int) ppx - camX + T / 2, sy = (int) ppy - camY + T / 2;
-            g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), (stage >= 16 ? 210f : 150f) + (cooking.nightVision() ? 70f : 0f), new float[]{0f, 1f},
-                new Color[]{new Color(5, 5, 20, 10), new Color(5, 5, 20, 238)}));
-            g.fillRect(0, 0, W, H);
+            glow(g, sx, sy, (stage >= 16 ? 210f : 150f) + (cooking.nightVision() ? 70f : 0f), new Color(5, 5, 20, 10), new Color(5, 5, 20, 238), 1);
             for (Npc n : map.npcs) {                                       // chamas e altar iluminam o ambiente
                 boolean fogo = "brasa_on".equals(n.sprite);
                 if (!vis(n) || !(fogo || "altar".equals(n.sprite))) continue;
                 Color luz = fogo ? new Color(255, 170, 70) : new Color(130, 235, 255);
                 float bx = n.x * T + T / 2f - camX, by = n.y * T + T / 2f - camY;
-                g.setPaint(new RadialGradientPaint(new Point2D.Float(bx, by), 120, new float[]{0f, 1f},
-                    new Color[]{new Color(luz.getRed(), luz.getGreen(), luz.getBlue(), 150), new Color(luz.getRed(), luz.getGreen(), luz.getBlue(), 0)}));
-                g.fillRect(0, 0, W, H);
+                glow(g, bx, by, 120, new Color(luz.getRed(), luz.getGreen(), luz.getBlue(), 150), new Color(luz.getRed(), luz.getGreen(), luz.getBlue(), 0), 1);
             }
         } else if (map.outdoor) {
             double n = night();
             int sx = (int) ppx - camX + T / 2, sy = (int) ppy - camY + T / 2;
             if (n > 0) {
-                g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), 190, new float[]{0f, 1f},
-                    new Color[]{new Color(10, 20, 70, (int) (n * 50)), new Color(10, 20, 70, (int) (n * (cooking.nightVision() ? 100 : 175)))}));
-                g.fillRect(0, 0, W, H);
+                glow(g, sx, sy, 190, new Color(10, 20, 70, 50), new Color(10, 20, 70, cooking.nightVision() ? 100 : 175), (float) n);
             }
             if (n > 0 && n < 1) { // entardecer / amanhecer
                 g.setColor(new Color(255, 120, 40, (int) (Math.sin(Math.PI * n) * 60)));
@@ -779,9 +839,7 @@ public class Game extends JPanel implements KeyListener {
             }
             if (n > 0 && stage >= 4 && map.name.equals("Praia Azul")) { // farol aceso
                 float lx = 22 * T + T / 2f - camX, ly = 3 * T + T / 2f - camY;
-                g.setPaint(new RadialGradientPaint(new Point2D.Float(lx, ly), stage >= 15 ? 260f : 150f, new float[]{0f, 1f},
-                    new Color[]{new Color(255, 230, 120, (int) (n * 190)), new Color(255, 230, 120, 0)}));
-                g.fillRect(0, 0, W, H);
+                glow(g, lx, ly, stage >= 15 ? 260f : 150f, new Color(255, 230, 120, 190), new Color(255, 230, 120, 0), (float) n);
             }
         }
 
@@ -790,9 +848,7 @@ public class Game extends JPanel implements KeyListener {
             double nn = night();
             int sx = (int) (22.5 * T) - camX + 100, sy = Math.max(78, (int) (1.1 * T) - camY);   // sempre à vista, ao lado da torre
             double pulse = 0.75 + 0.25 * Math.sin(frame / 14.0);
-            g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), 70, new float[]{0f, 1f},
-                new Color[]{new Color(255, 240, 150, (int) (200 * nn * pulse)), new Color(255, 240, 150, 0)}));
-            g.fillRect(sx - 70, sy - 70, 140, 140);
+            glow(g, sx, sy, 70, new Color(255, 240, 150, 200), new Color(255, 240, 150, 0), (float) (nn * pulse));
             g.setColor(new Color(255, 250, 210, (int) (255 * nn)));
             g.fillRect(sx - 1, sy - 9, 3, 19); g.fillRect(sx - 9, sy - 1, 19, 3); g.fillRect(sx - 3, sy - 3, 7, 7);
         }
@@ -830,6 +886,37 @@ public class Game extends JPanel implements KeyListener {
         for (Feature f : features) if (f.owns(state)) f.draw(g);
         festival.drawTimer(g);
         drawToast(g);
+    }
+
+    private final Map<String, BufferedImage> glowCache = new HashMap<>();
+    /**
+     * Brilho ou sombra radial. O degradê é calculado uma vez e guardado como imagem: calcular degradês de tela cheia
+     * a cada quadro era o maior custo do jogo. Quando a cor de fora não é transparente (escuridão), ela cobre o
+     * resto da tela. alpha escala a intensidade inteira (por exemplo, o quanto já anoiteceu).
+     */
+    void glow(Graphics2D g, float cx, float cy, float radius, Color inner, Color outer, float alpha) {
+        if (alpha <= 0.004f) return;
+        int r = Math.max(1, Math.round(radius));
+        String key = r + ":" + inner.getRGB() + ":" + outer.getRGB();
+        BufferedImage image = glowCache.computeIfAbsent(key, k -> {
+            BufferedImage b = new BufferedImage(r * 2, r * 2, BufferedImage.TYPE_INT_ARGB_PRE);
+            Graphics2D bg = b.createGraphics();
+            bg.setPaint(new RadialGradientPaint(new Point2D.Float(r, r), r, new float[]{0f, 1f}, new Color[]{inner, outer}));
+            bg.fillRect(0, 0, r * 2, r * 2); bg.dispose();
+            return b;
+        });
+        Composite old = g.getComposite();
+        if (alpha < 1) g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+        int x = Math.round(cx) - r, y = Math.round(cy) - r;
+        g.drawImage(image, x, y, null);
+        if (outer.getAlpha() > 0) {                                           // o tom de fora continua até as bordas
+            g.setColor(outer);
+            g.fillRect(0, 0, W, Math.max(0, y));
+            g.fillRect(0, y + 2 * r, W, Math.max(0, H - y - 2 * r));
+            g.fillRect(0, Math.max(0, y), Math.max(0, x), 2 * r);
+            g.fillRect(x + 2 * r, Math.max(0, y), Math.max(0, W - x - 2 * r), 2 * r);
+        }
+        g.setComposite(old);
     }
 
     /** Item erguido sobre a cabeça, com raios de brilho. */
@@ -905,9 +992,7 @@ public class Game extends JPanel implements KeyListener {
         g.setColor(new Color(205, 60, 55)); g.fillRect(556, 338, 22, 10); g.fillRect(556, 360, 22, 10);
         g.setColor(new Color(60, 60, 75)); g.fillRect(552, 310, 30, 8);
         g.setColor(new Color(255, 235, 130)); g.fillRect(560, 300, 14, 10);
-        g.setPaint(new RadialGradientPaint(new Point2D.Float(567, 305), 90, new float[]{0f, 1f},
-            new Color[]{new Color(255, 235, 130, 150), new Color(255, 235, 130, 0)}));
-        g.fillRect(450, 215, 230, 180);
+        glow(g, 567, 305, 90, new Color(255, 235, 130, 150), new Color(255, 235, 130, 0), 1);
 
         g.setFont(new Font("Serif", Font.BOLD, 46));
         g.translate(3, 3); g.setColor(new Color(0, 0, 0, 130)); center(g, "Aventura em Aurora", 120); g.translate(-3, -3);
@@ -972,17 +1057,15 @@ public class Game extends JPanel implements KeyListener {
     void drawFollower(Graphics2D g, int camX, int camY, double mv) {
         double px = (fx + (tx - fx) * mv) * T, py = (fy + (ty - fy) * mv) * T;
         int bob = (int) (Math.sin(frame / 12.0) * 3), x = (int) px - camX, y = (int) py - camY - 10 + bob;
-        BufferedImage im = spr.get("cintila");
-        if (im != null) g.drawImage(im, x, y, T, T, null);
+        BufferedImage im = tileSprite("cintila");
+        if (im != null) g.drawImage(im, x, y, null);
         else { g.setColor(new Color(255, 230, 110)); g.fillOval(x + 6, y + 6, 20, 20); }
     }
 
     void followerGlow(Graphics2D g, int camX, int camY, double mv) {
         double px = (fx + (tx - fx) * mv) * T, py = (fy + (ty - fy) * mv) * T;
         float cx = (float) px + T / 2f - camX, cy = (float) py + T / 2f - camY - 10;
-        g.setPaint(new RadialGradientPaint(new Point2D.Float(cx, cy), 80, new float[]{0f, 1f},
-            new Color[]{new Color(255, 240, 150, 120), new Color(255, 240, 150, 0)}));
-        g.fillRect((int) cx - 80, (int) cy - 80, 160, 160);
+        glow(g, cx, cy, 80, new Color(255, 240, 150, 120), new Color(255, 240, 150, 0), 1);
     }
 
     void hud(Graphics2D g) {
@@ -1064,12 +1147,11 @@ public class Game extends JPanel implements KeyListener {
     void person(Graphics2D g, String id, int x, int y, Color body, int d, boolean walking, double p, boolean human) {
         BufferedImage sheet = spr.get(id);
         if (sheet != null) {
-            if (!human) { g.drawImage(sheet, x, y + 4 + (int) (Math.sin(frame / 15.0) * 2), T, T, null); return; }   // objeto (concha): imagem única
+            if (!human) { g.drawImage(tileSprite(id), x, y + 4 + (int) (Math.sin(frame / 15.0) * 2), null); return; }   // objeto (concha): imagem única
             g.setColor(new Color(0, 0, 0, 60));
             g.fillOval(x + 6, y + 28, 20, 7);
-            int fw = sheet.getWidth() / 3, fh = sheet.getHeight() / 4;           // 3 colunas x 4 linhas
-            int col = walking ? (p < 0.5 ? 1 : 2) : 0;
-            g.drawImage(sheet.getSubimage(col * fw, d * fh, fw, fh), x, y + 2, T, T, null);
+            int col = walking ? (p < 0.5 ? 1 : 2) : 0;                           // folha 3 colunas x 4 linhas
+            g.drawImage(frameSprite(id, col, d), x, y + 2, null);
             return;
         }
         if (!human) { // objeto brilhante (concha)

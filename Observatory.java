@@ -137,9 +137,7 @@ final class Observatory implements Feature {
             for (int[] l : LANTERNS) {
                 int x = l[0] * T - camX, y = l[1] * T - camY;
                 if (night > 0) {
-                    g.setPaint(new RadialGradientPaint(new Point2D.Float(x + 16, y + 20), 46, new float[]{0f, 1f},
-                        new Color[]{new Color(255, 214, 120, (int) (120 * night)), new Color(255, 214, 120, 0)}));
-                    g.fillRect(x - 32, y - 28, 96, 96);
+                    game.glow(g, x + 16, y + 20, 46, new Color(255, 214, 120, 120), new Color(255, 214, 120, 0), (float) night);
                 }
                 g.setColor(new Color(70, 60, 55)); g.fillRect(x + 14, y + 16, 4, 12);
                 g.setColor(night > 0.3 ? new Color(255, 225, 140) : new Color(210, 205, 190)); g.fillRoundRect(x + 11, y + 10, 10, 9, 3, 3);
