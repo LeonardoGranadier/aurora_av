@@ -1,0 +1,209 @@
+AVENTURA EM AURORA (demo)  -  precisa de JDK 17+
+
+Rodar (dentro desta pasta):
+  sh jogar.sh
+  (recompila automaticamente; sh jogar.sh --compilar apenas compila)
+
+Ou manualmente (dentro desta pasta):
+  javac *.java
+  java Game
+
+(Opcional) Regerar os sprites provisorios:   java MakeAssets
+(Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
+
+CONTROLES
+  Encomendas: Z no mural azul ao sul do sino da praca; cima/baixo escolhe, Z entrega, ESC volta.
+  V abre a cesta de flores. Diante de um morador, oferece flores; diante da banca da Rosa, vende.
+  Setas/WASD mover | Z, Enter, Espaco falar/escolher | I caixa de itens | ESC menu de pausa | M liga/desliga musica
+  T avanca 2h (atalho de teste). Para passar o tempo de verdade: cama (casa) ou fogueira (ilha).
+  P abre o Album de pesca (tambem em ESC > Album de pesca).
+  J abre Lacos de Aurora. G oferece um peixe ao morador na casa imediatamente a sua frente.
+  H abre a decoracao dentro de casa (tambem em ESC > Decorar casa).
+  F abre a previsao do tempo (tambem em ESC > Previsao do tempo).
+  Tab abre o Mapa de Aurora (tambem em ESC > Mapa de Aurora). Tab ou ESC volta.
+  L abre o Diario de Aventuras (tambem no menu ESC). L ou ESC volta.
+  No diario, esquerda/direita muda o capitulo e cima/baixo rola as anotacoes.
+  Capitulos futuros ficam ocultos. Etapas e colecionaveis acompanham a historia.
+  Bilhetes, conversas da Capita/professor e inscricoes ficam registrados ao interagir.
+  Partidas antigas recuperam o progresso, mas precisam reler as pistas para registra-las.
+
+MAPA DE AURORA
+  Mostra as ligacoes entre regioes, incluindo a travessia de barco, sem viagem rapida.
+  O ponto azul marca sua regiao; os circulos dourados indicam destinos da historia.
+  Regioes nao visitadas ficam sem nome. Visitas sao salvas ao entrar em cada lugar.
+  Partidas antigas descobrem inicialmente apenas a regiao onde foram salvas.
+  O mapa pausa o jogo e nao pode abrir durante movimento, dialogos ou minijogos.
+
+O TEMPO EM AURORA
+  Sol, chuva e neblina variam entre os dias. O primeiro dia sempre tem sol.
+  A previsao mostra hoje, amanha e depois de amanha. O clima muda na virada do dia,
+  inclusive ao descansar ou viajar. Salvar e carregar nao sorteia o tempo novamente.
+  Na chuva, os quatro moradores procuram a cobertura junto a casa ao norte da vila,
+  mantendo a porta livre. A noite seguem suas rotinas normais. O festival tem prioridade.
+  Carpa Dourada, Bagre da Lua, Truta Verde, Peixe-Lanterna e Peixe-Coral recebem peso maior
+  no sorteio de pesca durante a chuva. Todos os peixes continuam possiveis em qualquer clima,
+  respeitando o lugar, o horario e o progresso da historia. A neblina nao muda as chances.
+  Chuva e neblina aparecem apenas ao ar livre; a montanha conserva sua neve.
+  Partidas antigas recebem um calendario estavel ao serem carregadas.
+
+ENCOMENDAS DA VILA
+  Ate tres pedidos sao definidos na primeira consulta do dia e nao mudam ao recarregar.
+  Sem vara nem flores colhidas, pode nao haver pedidos. Novos recursos entram no dia seguinte.
+  Peixes respeitam a vara, o progresso e o periodo da consulta (ou estoque ja disponivel).
+  Flores sao pedidas apenas se ja houver exemplares na cesta. Os pedidos usam especies distintas.
+  Entregue no proprio mural: o estoque e compartilhado com vendas/presentes; o album nao perde capturas.
+  Cada entrega rende o valor de venda dos itens mais 8 moedas e 5 pontos de amizade com o solicitante.
+  Encomendas nao consomem o presente diario. Expiram na virada do dia sem penalidade.
+  Dez entregas liberam a Lembranca da Vila no editor de decoracao da casa.
+  Pedidos, entregas e recompensa ficam salvos. Falhas de gravacao desfazem a entrega.
+
+JARDINAGEM NO QUINTAL
+  O portao ao lado direito da casa na vila leva ao quintal. Pegue o regador na bancada com Z.
+  Ha seis canteiros e sementes renovaveis: margarida (2 dias regados), tulipa (3), girassol (4).
+  Concluir o capitulo 5 libera a Flor Estelar (5 dias regados), diferente da lembranca de decoracao.
+  Z no canteiro vazio abre a escolha de sementes; cima/baixo escolhe e Z planta, ESC cancela.
+  Z no canteiro plantado rega ou colhe. Cada dia regado completo acrescenta um dia de crescimento.
+  A chuva rega automaticamente, mesmo longe do quintal. Sem agua, o crescimento pausa, sem morte.
+  A colheita deixa o canteiro livre. Sementes e regador nao custam moedas nem precisam de recarga.
+  V abre a cesta: cima/baixo escolhe, Z vende/presenteia uma unidade quando diante do destino.
+  A banca de Rosa compra das 6h as 21h por 5, 9, 14 ou 22 moedas, conforme a especie.
+  Flores rendem 8 pontos de amizade (15 para Rosa). O limite diario e compartilhado com peixes.
+  Canteiros, regas e estoque ficam salvos. Partidas antigas comecam com quintal vazio.
+
+MEU CANTINHO EM AURORA
+  Loja da Dona Rosa: banca rosa perto da entrada da praca. Banca do Beto: junto ao lago.
+  Ambas atendem das 06h as 21h; interaja com Z. Conversas e presentes dos moradores continuam iguais.
+  Beto compra peixes: escolha a especie com cima/baixo, ajuste a quantidade com esquerda/direita,
+  confirme a venda com Z. Peixes vendidos ou presenteados saem do mesmo estoque; o album conserva
+  todas as capturas. As moedas compram os oito moveis da Rosa, uma unidade de cada.
+  Moveis: vaso, cadeira, mesa, sofa, estante, tapete, luminaria e banco.
+  Em casa, H abre o editor. Cima/baixo selecionam uma peca; Z inicia colocacao ou mudanca de lugar.
+  Na colocacao, setas movem a previa, R gira e Z confirma. ESC cancela a previa; outro ESC sai.
+  DEL ou Backspace guarda uma peca colocada, sem perder a propriedade. Nao ha custo para reorganizar.
+  A previa verde indica lugar valido; vermelha indica conflito. Porta, pontos de entrada,
+  jogador, acesso a cama e a Mamae sao protegidos. Nenhum trecho de piso pode ficar isolado.
+  Tapete nao bloqueia o movimento e pode ficar sob outros moveis.
+  Trofeu de pesca, medalha dos sinos, quatro lembrancas de amizade e Estrela de Aurora tambem
+  aparecem no editor ao serem conquistados. Nao precisam ser comprados.
+  Moedas, vendas, compras e posicoes ficam salvas. Falhas de gravacao desfazem a transacao.
+  Saves anteriores mantem as conquistas e comecam com zero moedas e nenhum movel comprado.
+
+FESTIVAL DE AURORA
+  Dias 7, 14, 21... das 08h as 20h. O mural verde da praca anuncia a proxima edicao.
+  Fale com o mural usando Z para se inscrever. Participar e opcional.
+  Os quatro moradores caminham ate a praca e conversam conforme a amizade.
+  Pesca: tenha a vara de Beto; pesque pelo menos tres peixes no lago da vila em 90 segundos.
+  O tempo comeca depois das regras. Menus e dialogos pausam o cronometro; a tela de resultado
+  de cada peixe continua contando. Saia dela com Z para pescar de novo.
+  O relogio do mundo fica parado durante a tentativa. Sair da vila encerra o concurso.
+  Volte ao mural para encerrar antecipadamente; tres capturas ja garantem a vitoria.
+  Sinos em festa: sete rodadas, com reproducao mais rapida que o desafio comum.
+  Venca as duas provas na mesma edicao para ganhar a Estrela de Aurora, exibida em casa.
+  A lembranca e concedida uma unica vez por edicao. Novas edicoes aumentam o registro de vitorias.
+  Tentativas podem ser repetidas enquanto a festa estiver aberta.
+  Concurso de pesca salvo retoma com o tempo restante e a pontuacao; uma melodia em andamento
+  precisa ser reiniciada. Vitorias, recordes e lembrancas sao permanentes no save.
+
+LACOS DE AURORA
+  Converse com Prof. Carvalho, Tio Beto, Dona Rosa e Lucas para conhecer seus pedidos.
+  Professor: observe a arvore marcada na floresta de dia e o farol na praia a noite.
+  Beto: pesque tres lambaris depois de receber o pedido. A boia de recompensa aumenta a faixa verde.
+  Rosa: recolha as tres flores marcadas ao longo da trilha da floresta.
+  Lucas: procure o apito perto da clareira a leste da floresta.
+  Volte ao morador para concluir. As lembrancas ficam registradas no diario (J ou ESC).
+  Cada morador tem cinco coracoes: conversar rende 5 pontos uma vez por dia; concluir o pedido, 25.
+  Presentes rendem 8 pontos (15 para favoritos), uma vez por dia por morador.
+  Em G, escolha o peixe com as setas e confirme com Z; ESC cancela. O album nao perde registros.
+  Historias pessoais aparecem nas conversas ao atingir 40 e 80 pontos de amizade.
+  Todos os dados ficam salvos; partidas de versoes anteriores comecam com as novas amizades em zero.
+
+VIDA NA VILA
+  Rotinas: Prof. Carvalho, Tio Beto, Dona Rosa e Lucas caminham entre pontos da vila.
+  Mudam de destino as 06h, 12h, 18h e 21h. Beto, Rosa e Lucas entram em casa a noite;
+  o professor permanece disponivel. Dialogos e minijogos pausam as rotinas.
+  Pesca: fale com Beto para ganhar a vara. Encoste na margem, olhe para a agua e aperte Z.
+  Espere a boia afundar, aperte Z para fisgar; segure Z para levar o peixe a direita e
+  solte para leva-lo a esquerda. Mantenha-o na faixa verde ate completar a captura.
+  ESC cancela. Z fecha o resultado. O album mostra habitats, horarios e pistas.
+  Sao 8 especies; registrar todas concede o Trofeu de Pesca automaticamente.
+  Apos obter a Estrela do Mar, o barco da praia permite revisitar a ilha.
+  Sinos: interaja com o sino dourado da praca. Repita as notas com cima/direita/baixo/esquerda
+  (ou 1/2/3/4, ou W/D/S/A). Cinco rodadas concedem a Medalha dos Sinos.
+  As notas tambem acendem: e possivel jogar sem som. Z tenta novamente; ESC sai.
+  Vara, capturas, recorde e posicoes dos moradores ficam no save. Saves antigos sao aceitos.
+
+HISTORIA (5 capitulos)
+  Cap. 1 - A Luz do Farol:      carta -> concha na floresta -> farol aceso.
+  Cap. 2 - O Chamado da Capita: garrafa na praia (so de noite) -> Gruta do Eco ->
+                                 3 pedacos do mapa: vila (noite), praia (dia), fundo da gruta.
+  Cap. 3 - A Ilha das Estrelas: cais (dia) -> despedidas -> zarpar -> portao do templo some a noite ->
+                                 braseiros (Sol, Lua, Estrela) -> altar -> Estrela do Mar -> farol.
+  Cap. 4 - A Estrela Cadente:   Prof. Carvalho (Lanterna) -> Trilha da Montanha: CAMPO DE GELO ->
+                                 Cabana do Eremita: acender o fogao (Cristal de Calor) -> derreter o portao de gelo ->
+                                 Pico Estrelado: Cintila -> trenó para a vila -> farol, a noite: ela volta ao ceu.
+
+  Cap. 5 - O Jardim das Constelacoes: volte a porta do farol a noite apos o capitulo 4.
+           Leve a mensagem ao professor e siga a passagem leste da Floresta Verde.
+           Reuna tres sementes na Trilha dos Vagalumes para abrir o portao ao norte.
+           A inscricao do jardim explica o enigma das pedras. Use Z para girar os simbolos.
+           A fonte desperta a noite; a fogueira permite esperar. Fale com Cintila e volte
+           para Mamae. A Flor-Constelacao sera liberada no editor de decoracao da casa.
+           Sementes e simbolos ficam salvos. Os dois mapas podem ser revisitados.
+
+CAMPO DE GELO (cap. 4)
+  Ao pisar no gelo voce desliza ate bater numa pedra, arvore ou personagem. Use as pedras para parar no lugar certo.
+  O layout foi validado por busca: tem solucao (11 movimentos), tem volta e nao deixa o jogador preso.
+  Para mudar: Game.java > buildMaps() > array "pedras" (rode uma busca antes: o gelo precisa continuar resolvivel).
+  A Cintila (estrelinha) te segue na parte final: e uma amiga da historia, nao uma criatura capturada.
+  A Lanterna (a partir do cap. 4) aumenta o raio de luz nas areas escuras (gruta e templo).
+
+CAIXA DE ITENS (tecla I, ou ESC > Itens)
+  12 itens: Carta, Concha Brilhante, Bilhete da Capita, Mapa Estrelado (mostra os pedacos), Lanche da Mamae,
+  Bussola do Seu Marinho, Estrela do Mar, Lanterna do Professor, Cristal de Calor, Vara, Trofeu e Medalha.
+  "?" = ainda nao encontrado | check verde = ja usado/entregue. Aviso "Novo item" ao ganhar um.
+  O inventario usa o progresso da historia e os dados salvos das atividades da vila.
+
+AUDIO
+  - ESC > Volumes de audio: cima/baixo escolhe musica, efeitos ou ambiente;
+    esquerda/direita ajusta em passos de 5%. Zero silencia o canal. ESC volta.
+    Os volumes ficam em config.properties e preservam os controles liga/desliga existentes.
+  - Ambiente independente: ondas na praia/ilha, vento na montanha, fonte no jardim
+    e paisagem sonora na vila/floresta. Dia e noite tem variacoes; chuva soma uma camada.
+    Interiores e titulo silenciam o ambiente externo. A montanha conserva o vento sem chuva.
+    As ondas nao fazem mais parte das musicas sintetizadas. WAVs personalizados antigos
+    podem conter sons ambientes proprios, que continuam sujeitos ao volume de musica.
+  - Tudo e SINTETIZADO por codigo: 18 trilhas (com versoes de dia e de noite) e 19 efeitos.
+    A trilha troca sozinha quando voce muda de mapa ou anoitece.
+  - ESC > Musica / Efeitos liga e desliga cada um (ou tecla M para a musica). Fica gravado em config.properties.
+  - Sem placa de som, o jogo roda normalmente, so que mudo.
+  - Usar sua propria musica: coloque WAVs em assets/audio/ com os mesmos nomes
+        titulo casa vila_dia vila_noite floresta_dia floresta_noite praia_dia praia_noite ilha_dia ilha_noite
+        gruta templo final montanha_dia montanha_noite cabana pico jardim (e efeitos: sfx_blip, sfx_pickup, sfx_slide ...)
+    O WAV tem prioridade sobre o sintetizado. "java Audio" grava todos os sintetizados em assets/audio/
+    para voce ouvir fora do jogo e editar. Para voltar ao som original, apague o arquivo.
+  - Trilhas novas: Audio.java > theme(...) (raiz, escala, bpm, progressao de acordes, instrumento, semente).
+
+SAVE
+  - savegame.properties (texto puro; apague para zerar). Automatico ao mudar a historia, trocar de mapa e fechar;
+    manual em ESC > Salvar jogo. Saves de versoes anteriores continuam funcionando.
+
+TROCAR SPRITES: substitua qualquer PNG de assets/ mantendo o nome (qualquer resolucao).
+Se um PNG nao existir, o jogo desenha aquele item por codigo.
+  Tiles: grass, flower*, tree*, water1, water2, sand, path, floor, wall, roof, house_wall, window*, window_night*,
+         door*, lh_red, lh_white (+ _l/_r), lh_top_l/_r, lh_lamp, rock, cave_floor, cave_mouth*, pier, temple_floor,
+         snow, ice, pine*
+  Objetos: concha, garrafa, frag, cama, barco, portao, estatua, mural, brasa_off, brasa_on, altar, pedestal, fogueira,
+         gelo, fogao_off, fogao_on, treno, cintila, placa, porta_farol
+  Icones da caixa de itens: item_carta, item_bilhete, item_mapa, item_lanche, item_bussola, item_estrela,
+         item_lanterna, item_cristal  (concha usa "concha")
+  Personagens (folha 3x4; colunas: parado|passo1|passo2; linhas: baixo|cima|esquerda|direita):
+         player, mae, prof, marinho, lenhador, capita, eremita, montanhista            (* = fundo transparente)
+
+COMO ADICIONAR CONTEUDO (em Game.java)
+  - NPC/objeto: map.addNpc(new Npc(id, nome, x, y, cor).obj("sprite").still().when("noite").stages(min, max))
+  - Dialogo/progresso: case em talk(), com say(...) e setStage(n); acao ao fim do dialogo: afterDlg = () -> ...
+  - Mapa com neve: GameMap.snowy = true e clear = 'n'. Gelo: tile 'i'. Neve: tile 'n'.
+  - Novo item na caixa: ITEM_KEYS / ITEM_NAMES / ITEM_COLORS, itemState() e itemDesc() (+ sprite item_<chave>.png)
+  - Viajar por codigo: travel("Mapa", x, y).  Coletavel: take(n).  Novo mapa: buildMaps() + Warp nas duas pontas.
+  - Musica do novo mapa: musicFor().  Novo dado no save: save() e loadGame().
+  - Cuidado ao fechar passagens: use arvores/paredes de lado a lado (neve e andavel; um NPC sozinho no corredor pode ser contornado).
