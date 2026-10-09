@@ -47,12 +47,12 @@ final class Story {
         case 12 -> "O Templo Estrelado";
         case 13 -> "O altar se revelou!";
         case 14 -> "A Estrela do Mar é sua!";
-        case 15 -> "Fim do Capítulo 3";
+        case 15 -> "Capítulo 3 concluído: A Ilha das Estrelas";
         case 16 -> "Capítulo 4: A Estrela Cadente";
         case 18 -> "Cristal de Calor obtido!";
         case 19 -> "O portão de gelo derreteu!";
         case 20 -> "A Cintila vai com você!";
-        case 21 -> "Fim do Capítulo 4 — continua...";
+        case 21 -> "Capítulo 4 concluído: A Estrela Cadente";
         case 22 -> "Capítulo 5: O Jardim das Constelações";
         case 23 -> "A Trilha dos Vagalumes está aberta";
         case 24 -> "Três sementes de luz reunidas";
@@ -136,7 +136,8 @@ final class Story {
                                 "Venha, vamos colocá-la no topo do farol, junto da Concha Brilhante.",
                                 "*clique* ...Olhe! A baía inteira se iluminou!",
                                 "Obrigado, marujo. Você devolveu a luz a Aurora.",
-                                "FIM DO CAPÍTULO 3. Obrigado por jogar! (Continua...)");
+                                "Capítulo 3 concluído: A Ilha das Estrelas.",
+                                "Seu Marinho: \"Descanse, marujo. Amanhã, passe na vila: o Prof. Carvalho anda olhando muito para o céu...\"");
                         } else game.say(n.name, "Uma estrela do mar de cristal?! Ela brilha melhor no escuro. Volte depois que anoitecer!");
                     }
                     case 15 -> game.say(n.name, "O farol e a Estrela juntos... a baía inteira brilha! Obrigado, marujo.");
@@ -272,7 +273,8 @@ final class Story {
                         "Cintila: \"A luz do farol... é quentinha. Obrigada, amigo(a)!\"",
                         "Ela sobe voando até a lente do farol, e o feixe de luz se enche de estrelas!",
                         "Cintila: \"Agora posso voltar para casa, no céu. Procure por mim nas noites claras!\"",
-                        "FIM DO CAPÍTULO 4. Obrigado por jogar! (Continua...)");
+                        "Capítulo 4 concluído: A Estrela Cadente.",
+                        "Numa noite clara, volte à porta do farol. Talvez a Cintila ainda tenha algo a dizer.");
                     game.afterDlg = () -> game.setStage(21);
                 } else if (game.stage == 20) game.say("Cintila", "Tin! Só consigo subir à noite, quando a luz do farol me chama. Vamos esperar escurecer?");
                 else if (game.stage >= 21) game.say("", "A porta do farol. Lá em cima, uma estrelinha cintila a noite toda.");

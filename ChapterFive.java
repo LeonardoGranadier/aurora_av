@@ -94,7 +94,8 @@ final class ChapterFive {
                 "Achava que era só uma história. Mas as histórias que dividimos também criam raízes, não é?",
                 "Vamos cuidar desta flor juntos. Sempre haverá uma luz aqui para você voltar.",
                 "Lá no alto, Cintila responde com um brilho. O jardim, a vila e o céu agora compartilham a mesma lembrança.",
-                "FIM DO CAPÍTULO 5. A Flor-Constelação está disponível na decoração da casa.");
+                "Capítulo 5 concluído: Laços entre céu e terra.",
+                "A Flor-Constelação já pode enfeitar a sua casa (tecla H).");
             game.afterDlg = () -> game.setStage(28);
             return true;
         }
