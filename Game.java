@@ -39,7 +39,7 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24;
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26;
     static final String VERSION = "1.0.0";
     /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
     static final boolean DEV = Boolean.getBoolean("aurora.dev");
@@ -84,8 +84,11 @@ public class Game extends JPanel implements KeyListener {
     final Mailbox mail = new Mailbox(this);
     final Explorer explorer = new Explorer(this);
     final Credits credits = new Credits(this);
+    final Seasons seasons = new Seasons(this);
+    final Cooking cooking = new Cooking(this);
+    final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(shells, trades, observatory, mail, explorer, credits);
+    final List<Feature> features = List.of(shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -124,12 +127,12 @@ public class Game extends JPanel implements KeyListener {
 
     /** Desenha o tile com PNGs. Retorna false se faltar sprite (aí o desenho por código assume). */
     boolean spriteTile(Graphics2D g, GameMap m, char c, int tx, int ty, int x, int y) {
-        boolean praia = m.name.equals("Praia Azul");
+        boolean praia = m.name.equals("Praia Azul"), snowy = m.snowy || seasons.snowCover(m);   // inverno cobre a paisagem
         switch (c) {
             case '.', 'F', '#' -> {
-                if (!img(g, praia ? "sand" : m.snowy ? "snow" : "grass", x, y)) return false;
-                if (c == 'F') img(g, "flower", x, y);
-                if (c == '#') img(g, m.snowy ? "pine" : "tree", x, y);
+                if (!img(g, praia ? "sand" : snowy ? "snow" : "grass", x, y)) return false;
+                if (c == 'F' && !snowy) img(g, "flower", x, y);
+                if (c == '#') img(g, snowy ? "pine" : "tree", x, y);
                 return true;
             }
             case '~' -> { return img(g, (frame / 30 + tx + ty) % 2 == 0 ? "water1" : "water2", x, y); }
@@ -205,7 +208,7 @@ public class Game extends JPanel implements KeyListener {
         if (dlg == null) life.updateResidents(dt);
 
         if (moving) {
-            prog += dt * (sliding || running() ? 7.5 : 4.5);
+            prog += dt * (sliding ? 7.5 : (running() ? 7.5 : 4.5) * cooking.speedFactor());
             if (prog >= 1) {
                 fx = tx; fy = ty;                                            // a Cintila ocupa a casa que o jogador deixou
                 tx = nx; ty = ny; moving = false; prog = 0;
@@ -233,6 +236,8 @@ public class Game extends JPanel implements KeyListener {
     boolean held(int a, int b) { return down.contains(a) || down.contains(b); }
     /** Segurar Shift corre (como os tênis de corrida dos Pokémon). */
     boolean running() { return down.contains(KeyEvent.VK_SHIFT) && !sliding; }
+    /** Pontos de amizade de um presente: dobram no aniversário e crescem com o prato "Coração quente". */
+    int giftPoints(int who, int base) { return cooking.giftPoints(seasons.giftPoints(who, base)); }
 
     boolean free(int x, int y) {
         if (map.solid(x, y)) return false;
@@ -550,6 +555,8 @@ public class Game extends JPanel implements KeyListener {
             "Salvar e ir ao título"));
         if (map.name.equals("Casa")) opts.add(5, "Decorar casa");
         opts.add(5, "Previsão do tempo");
+        opts.add(5, "Calendário");
+        opts.add(3, "Lancheira");
         opts.add(5, "Mapa de Aurora");
         opts.add(5, "Diário de Aventuras");
         opts.add(5, "Volumes de áudio");
@@ -580,6 +587,8 @@ public class Game extends JPanel implements KeyListener {
             case "Novo jogo" -> { if (saveInfo != null) openConfirm(); else { newGame(); explorer.startNaming(); } }
             case "Créditos" -> credits.open(TITLE, false);
             case "Cartão do Explorador" -> explorer.openCard(MENU);
+            case "Calendário" -> seasons.openCalendar(MENU);
+            case "Lancheira" -> { cooking.openLunchbox(); cooking.returnState = MENU; }
             case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(SAVE)); Files.deleteIfExists(Paths.get(BACKUP)); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); explorer.startNaming(); }
             case "Não, voltar" -> openTitle();
             case "Sair" -> System.exit(0);
@@ -636,6 +645,7 @@ public class Game extends JPanel implements KeyListener {
         if (k == KeyEvent.VK_L && dlg == null && !moving) { journal.open(PLAY); return; }
         if (k == KeyEvent.VK_V && dlg == null && !moving) { gardening.openBasket(); return; }
         if (k == KeyEvent.VK_C && dlg == null && !moving) { audio.sfx("select"); explorer.openCard(PLAY); return; }
+        if (k == KeyEvent.VK_K && dlg == null && !moving) { audio.sfx("select"); cooking.openLunchbox(); return; }
         if (k == KeyEvent.VK_M) { audio.setMusic(!audio.musicOn); toast(audio.musicOn ? "Música ligada" : "Música desligada"); return; }
         boolean action = k == KeyEvent.VK_Z || k == KeyEvent.VK_ENTER || k == KeyEvent.VK_SPACE;
         if (action) {
@@ -736,7 +746,7 @@ public class Game extends JPanel implements KeyListener {
         if (map.snowy) drawSnow(g);
         if (map.dark) {
             int sx = (int) ppx - camX + T / 2, sy = (int) ppy - camY + T / 2;
-            g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), stage >= 16 ? 210f : 150f, new float[]{0f, 1f},
+            g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), (stage >= 16 ? 210f : 150f) + (cooking.nightVision() ? 70f : 0f), new float[]{0f, 1f},
                 new Color[]{new Color(5, 5, 20, 10), new Color(5, 5, 20, 238)}));
             g.fillRect(0, 0, W, H);
             for (Npc n : map.npcs) {                                       // chamas e altar iluminam o ambiente
@@ -753,7 +763,7 @@ public class Game extends JPanel implements KeyListener {
             int sx = (int) ppx - camX + T / 2, sy = (int) ppy - camY + T / 2;
             if (n > 0) {
                 g.setPaint(new RadialGradientPaint(new Point2D.Float(sx, sy), 190, new float[]{0f, 1f},
-                    new Color[]{new Color(10, 20, 70, (int) (n * 50)), new Color(10, 20, 70, (int) (n * 175))}));
+                    new Color[]{new Color(10, 20, 70, (int) (n * 50)), new Color(10, 20, 70, (int) (n * (cooking.nightVision() ? 100 : 175)))}));
                 g.fillRect(0, 0, W, H);
             }
             if (n > 0 && n < 1) { // entardecer / amanhecer
@@ -973,7 +983,7 @@ public class Game extends JPanel implements KeyListener {
         int dia = (int) (time / 1440) + 1;
         String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)" : "");
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        String heading = String.format("%s  •  Dia %d (%s)  %02d:%02d  •  %s", map.name, dia, weekday(dia), hh, mm, weather.label());
+        String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
         int bw = Math.max(280, g.getFontMetrics().stringWidth(obj) + 32);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
         bw = Math.max(bw, g.getFontMetrics().stringWidth(heading) + 56);
@@ -990,7 +1000,7 @@ public class Game extends JPanel implements KeyListener {
         g.drawString(obj, 16, 46);
         if (dlg == null && state == PLAY) {
             g.setColor(new Color(255, 255, 255, 170));
-            g.drawString("Setas: mover | Shift: correr | Z: falar | I: itens | C: cartão | ESC: menu", 12, H - 10);
+            g.drawString("Setas: mover | Shift: correr | Z: falar | I: itens | K: lancheira | C: cartão | ESC: menu", 12, H - 10);
         }
         if (bannerT > 0) {
             g.setFont(new Font("SansSerif", Font.BOLD, 16));

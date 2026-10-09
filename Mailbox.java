@@ -54,6 +54,31 @@ final class Mailbox implements Feature {
         new Letter("mae_orgulho", "Mamãe", "Um recado na geladeira", 20, g -> g.explorer.unlocked.size() >= 8,
             g -> "Vi seu Cartão do Explorador cheio de medalhas! Estou tão orgulhosa. Deixei 20 moedas para um docinho "
                 + "na banca da Rosa. Com amor, Mamãe."),
+        new Letter("mae_cozinha", "Mamãe", "A cozinha é sua", 0, g -> g.day() >= 2,
+            g -> "Liberei o fogão da cozinha para você! Com peixes e flores dá para fazer pratos gostosos. Comece pela minha "
+                + "Sopa de Lambari. Os pratos ficam na lancheira (tecla K): comer dá um ânimo para o dia, e os moradores adoram ganhar um."),
+        new Letter("verao", "Prof. Carvalho", "Chegou o verão", 0, g -> Seasons.season(g.day() + 1) == Seasons.SUMMER,
+            g -> "Verão! Os girassóis estão no auge e a Carpa Dourada e o Peixe-Coral aparecem mais. As tulipas descansam até o outono. "
+                + "E não esqueça: o aniversário do Tio Beto é no dia 5!"),
+        new Letter("outono", "Prof. Carvalho", "Folhas douradas", 0, g -> Seasons.season(g.day() + 1) == Seasons.AUTUMN,
+            g -> "Outono em Aurora: o Bagre da Lua e o Peixe-Lanterna ficam mais comuns e o céu, mais limpo. "
+                + "Ah, e o dia 12 é meu aniversário. Não que eu esteja contando!"),
+        new Letter("inverno", "Lucas", "NEVE!!!", 0, g -> Seasons.season(g.day() + 1) == Seasons.WINTER,
+            g -> "Nevou na vila inteira! A chuva vira neve e só a Flor Estelar cresce. O Peixe Estelar adora água fria. "
+                + "Meu aniversário é dia 9, viu? Gosto de Truta com Ervas e de Banquete Estelar!"),
+        new Letter("receita_torta", "Tio Beto", "Receita: Torta de Carpa", 0, g -> g.bonds.friendship[1] >= 40,
+            g -> "Aprendiz, segredo de família: Carpa Dourada com Girassol, no fogão de casa. Dá uma sorte danada na pesca! "
+                + "E se quiser me agradar, sardinha na brasa nunca falha."),
+        new Letter("receita_doce", "Dona Rosa", "Receita: Doce de Girassol", 0, g -> g.bonds.friendship[2] >= 40,
+            g -> "Girassol e tulipa, um pouco de paciência e pronto: Doce de Girassol! Deixa qualquer conversa mais gostosa. "
+                + "Meu favorito, depois desse, é a Sopa de Lambari da sua mãe."),
+        new Letter("receita_truta", "Lucas", "Receita da minha irmã", 0, g -> g.bonds.friendship[3] >= 40,
+            g -> "Minha irmã fazia Truta com Ervas: Truta Verde e Margarida. Depois de comer, eu corria a vila inteira sem cansar!"),
+        new Letter("receita_ensopado", "Capitã Estrela", "Receita: Ensopado do Mar", 0, g -> g.stage >= 15,
+            g -> "Ensopado do Mar dos tempos de navio: Peixe-Lanterna, Sardinha Azul e uma Margarida. "
+                + "Depois dele, enxergava o mar até nas noites sem lua. O professor adora."),
+        new Letter("receita_banquete", "Cintila", "Tin! Uma receita do céu", 0, g -> g.stage >= 28,
+            g -> "Tin! No céu contam de um Banquete Estelar: Peixe Estelar e Flor Estelar. Dá todos os ânimos de uma vez!"),
         new Letter("vila_obrigado", "Moradores de Aurora", "Obrigado!", 100, g -> g.observatory.complete(),
             g -> "O observatório está aberto e a vila nunca esteve tão bonita: lanternas, flores, uma luneta na praia... "
                 + "Juntamos 100 moedas como agradecimento. Volte à noite e olhe as estrelas com a gente! "

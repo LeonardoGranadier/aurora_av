@@ -228,7 +228,8 @@ final class VillageLife {
     }
 
     int discovered() { int count = 0; for (int n : catches) if (n > 0) count++; return count; }
-    double halfZone() { return 0.20 - FISH[fishIndex].difficulty() * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0); }
+    double halfZone() { return halfZoneFor(fishIndex); }
+    double halfZoneFor(int fish) { return 0.20 - FISH[fish].difficulty() * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0) + game.cooking.fishingBonus(); }
     boolean completeAlbum() { return discovered() == FISH.length; }
     void openAlbum(int from) { albumReturn = from; albumSelection = 0; game.state = Game.ALBUM; }
 

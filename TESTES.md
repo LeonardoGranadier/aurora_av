@@ -20,6 +20,15 @@ em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, li
 moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
 modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
 
+## Estacoes e culinaria
+
+`SeasonsCookingTest` cobre a ordem das estacoes e o novo ano, peixes favorecidos sem
+eliminar especies, neve no inverno (fora da praia e da ilha), flores por estacao, anuncios,
+aniversarios (presente em dobro, persistencia), calendario, fogao na parede sem bloquear a
+casa, receitas, confirmacao, rollback de ingredientes, efeitos do dia, lancheira diante de
+morador, limite diario de presentes, gato (area, noite, carinho diario) e as 20 conquistas.
+Renderiza a vila nas quatro estacoes, calendario, cozinha, lancheira, cartao e o gato.
+
 ## Arquivos e janela
 
 `GameFilesTest` verifica que o desenvolvimento usa a pasta atual, a pasta de dados

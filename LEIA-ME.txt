@@ -20,11 +20,39 @@ JANELA
 NOVO JOGO
   A Mamae pergunta seu nome (ate 12 letras) e como prefere ser chamado(a): menino, menina ou
   "prefiro nao dizer" (falas neutras). Partidas antigas usam as falas neutras.
-  Shift: correr. C: Cartao do Explorador (nome, tempo de jogo, progresso e 16 conquistas).
+  Shift: correr. C: Cartao do Explorador (nome, tempo de jogo, progresso e 20 conquistas). K: lancheira.
   Dias da semana aparecem no HUD; o festival e sempre no sabado.
   Texto dos dialogos aparece letra a letra (ESC > Acessibilidade > Velocidade do texto); Z mostra a pagina inteira.
   A tecla T (+2h) so funciona no modo desenvolvedor (jogar.sh ja liga; ou java -Daurora.dev=true Game).
   Os creditos rolam ao fim do capitulo 5 e tambem estao no titulo.
+
+ESTACOES DO ANO
+  Cada estacao dura 28 dias: primavera, verao, outono e inverno (depois, um novo ano). O HUD mostra
+  estacao, dia e dia da semana. Primavera tem petalas, verao luz quente, outono copas douradas e inverno
+  neve na vila, floresta e trilhas (a praia e a ilha nao congelam; no inverno, a chuva cai como neve).
+  Peixes mais comuns (peso dobrado, nenhum desaparece): primavera Truta Verde e Sardinha Azul;
+  verao Peixe-Coral e Carpa Dourada; outono Bagre da Lua e Peixe-Lanterna; inverno Peixe Estelar e Lambari.
+  Flores: margarida (primavera a outono), tulipa (primavera e outono), girassol (primavera e verao),
+  Flor Estelar (todas). Fora de estacao, a semente nao pode ser plantada e a planta ja plantada espera, sem morrer.
+  O festival de sabado muda de nome: Flores, Sol, Colheita e Luzes.
+  Calendario: ESC > Calendario, ou -> na previsao do tempo (F). Mostra festivais, mascate e aniversarios.
+
+ANIVERSARIOS
+  Rosa (primavera 18), Beto (verao 5), Prof. Carvalho (outono 12) e Lucas (inverno 9). No dia, um aviso
+  aparece, a fala muda e qualquer presente (peixe, flor ou prato) vale o dobro de amizade.
+
+CULINARIA
+  O fogao fica na cozinha de casa (parede ao norte, a direita). Z abre as receitas; Z cozinha (com confirmacao).
+  Ingredientes saem do estoque de peixes e flores (o album nao perde capturas). Receitas iniciais da Mamae:
+  Sopa de Lambari, Sardinha na Brasa e Cha de Tulipa. Beto, Rosa e Lucas ensinam a sua com 2 coracoes;
+  a Capita ensina depois do capitulo 3 e Cintila depois do capitulo 5 (as cartas avisam).
+  K abre a lancheira: Z come o prato (efeito ate o fim do dia) ou, diante de um morador, oferece
+  (conta como o presente do dia; pratos favoritos valem mais). Efeitos: presentes +50%, passos mais rapidos,
+  faixa de pesca maior, peixes raros mais comuns, visao noturna, conversas com +3 de amizade.
+  Em casa, esquerda/direita alterna fogao e lancheira.
+
+BOLINHA, O GATO
+  Passeia de dia pelo campo a sudoeste da praca e dorme a noite. Um carinho por dia (Z).
 
 CONCHAS SECRETAS
   Doze conchas escondidas em arvores e pedras de varias regioes. Passe perto e repare num brilho fraco;
@@ -108,7 +136,8 @@ ENCOMENDAS DA VILA
 
 JARDINAGEM NO QUINTAL
   O portao ao lado direito da casa na vila leva ao quintal. Pegue o regador na bancada com Z.
-  Ha seis canteiros e sementes renovaveis: margarida (2 dias regados), tulipa (3), girassol (4).
+  Ha seis canteiros e sementes renovaveis: margarida (2 dias regados), tulipa (3), girassol (4),
+  cada uma na sua estacao (veja ESTACOES DO ANO).
   Concluir o capitulo 5 libera a Flor Estelar (5 dias regados), diferente da lembranca de decoracao.
   Z no canteiro vazio abre a escolha de sementes; cima/baixo escolhe e Z planta, ESC cancela.
   Z no canteiro plantado rega ou colhe. Cada dia regado completo acrescenta um dia de crescimento.
@@ -258,7 +287,8 @@ ORGANIZACAO DO CODIGO
   Story.java       objetivos, faixas de capitulo e dialogos dos capitulos 1-4
   Inventory.java   caixa de itens (tecla I)
   Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
-  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits   sistemas inspirados nos classicos
+  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat
+                   sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida
   Demais classes   um sistema cada (ChapterFive, VillageLife, Bonds, Festival, HomeDecor, Weather, Gardening,

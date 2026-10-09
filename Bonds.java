@@ -74,7 +74,7 @@ final class Bonds {
     void afterTalk(Npc npc) {
         int who = residentIndex(npc.id);
         if (who < 0 || game.dlg == null) return;
-        if (talked[who] != day()) { talked[who] = day(); addFriendship(who, 5); }
+        if (talked[who] != day()) { talked[who] = day(); addFriendship(who, 5 + game.cooking.talkBonus()); }
         List<String> extra = new ArrayList<>();
         if (quests[who] == 0) {
             quests[who] = 1;
@@ -135,7 +135,7 @@ final class Bonds {
     boolean give(int who, int fish) {
         if (stock(fish) == 0 || gifted[who] == day()) return false;
         int oldSpent = spent[fish], oldGifted = gifted[who], oldFriendship = friendship[who];
-        spent[fish]++; gifted[who] = day(); addFriendship(who, favorite(who, fish) ? 15 : 8);
+        spent[fish]++; gifted[who] = day(); addFriendship(who, game.giftPoints(who, favorite(who, fish) ? 15 : 8));
         if (!game.save(false)) { spent[fish] = oldSpent; gifted[who] = oldGifted; friendship[who] = oldFriendship; return false; }
         game.state = Game.PLAY;
         game.say(NAMES[who], favorite(who, fish) ? "Você lembrou do meu favorito! Que presente especial. Obrigado!" : "Que gentileza! Vou guardar com carinho esse momento.");

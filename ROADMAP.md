@@ -41,10 +41,11 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Observatório** com 4 conjuntos de doação que mudam a vila e a tela de constelações.
 - ✅ **Cartas** na caixa de correio (14 cartas ligadas a eventos, algumas com moedas).
 - ✅ **Cartão do Explorador** com tempo de jogo e **16 conquistas** (prontas para virar conquistas da Steam).
-- ⏳ **Estações do ano** a cada 28 dias: paleta, peixes, flores e festival diferentes (base em `Weather`).
-  Exige revisar os testes estatísticos de pesca e clima.
-- ⏳ **Culinária**: pratos com peixe e flores que dão amizade extra ou facilitam a pesca.
-- ⏳ **Aniversários** dos moradores, com presente favorito em dobro.
+- ✅ **Estações do ano** (28 dias): paisagem, peixes favorecidos, flores por estação, neve, nomes do festival,
+  falas e cartas de cada estação, calendário.
+- ✅ **Culinária**: fogão em casa, 8 receitas ensinadas pelos moradores, lancheira (K), efeitos do dia e pratos favoritos.
+- ✅ **Aniversários** dos moradores, com aviso e presentes em dobro.
+- ✅ **Bolinha, o gato da vila**, com carinho diário e conquista. Conquistas agora são 20.
 - ⏳ **Capítulo 6** fechando o arco da Cintila e da Capitã, com nova região.
 - ⏳ **Puzzles opcionais** com os itens da história (Lanterna revelando símbolos, blocos empurráveis na gruta).
 
@@ -52,7 +53,8 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 
 - ✅ Modo foto (F12), pose de "item obtido", créditos com resumo da jornada.
 - ✅ Lanternas e canteiros na vila, luneta na praia, constelações no observatório.
-- ⏳ Animais da vila (gato com rotina, gaivotas na praia).
+- ✅ Gato da vila. ⏳ Gaivotas na praia e outros animais.
+- ⏳ Música própria para cada estação (o sintetizador de `Audio` permite variações).
 - ⏳ Rádio com músicas e notícias da vila (estilo Pokégear).
 
 ## 5. Distribuição e divulgação 🧑

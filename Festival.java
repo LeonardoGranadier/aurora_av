@@ -114,7 +114,7 @@ final class Festival {
             }
         }
         if (game.state == Game.PLAY && game.dlg == null && canEnter() && announcedDay != day()) {
-            announcedDay = day(); game.toast("Festival de Aurora! Visite o mural da praça.");
+            announcedDay = day(); game.toast(game.seasons.festivalName() + "! Visite o mural da praça.");
         }
     }
     void key(int key) {
@@ -162,7 +162,7 @@ final class Festival {
     int read(Properties p, String key) { return game.life.number(p, "festival." + key, 0, Integer.MAX_VALUE); }
 
     void draw(Graphics2D g) {
-        game.life.panel(g, "Festival de Aurora", active() ? "Dia " + day() + " · A praça está em festa até as 20h"
+        game.life.panel(g, game.seasons.festivalName(), active() ? "Dia " + day() + " · A praça está em festa até as 20h"
             : "Próxima edição: dia " + nextDay() + " · 8h às 20h");
         game.life.text(g, "Pesca: " + (fishWinDay == day() ? "vitória nesta edição" : "3 peixes em 90 segundos")
             + "   ·   Recorde: " + fishBest, 46, 131, 548, 15);

@@ -8,13 +8,13 @@ final class Accessibility {
     static final Path FILE = GameFiles.data("accessibility.properties");
     static final int[] LOGICAL = {KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
         KeyEvent.VK_Z, KeyEvent.VK_I, KeyEvent.VK_P, KeyEvent.VK_J, KeyEvent.VK_G, KeyEvent.VK_H,
-        KeyEvent.VK_F, KeyEvent.VK_TAB, KeyEvent.VK_L, KeyEvent.VK_V, KeyEvent.VK_M, KeyEvent.VK_R, KeyEvent.VK_DELETE, KeyEvent.VK_T, KeyEvent.VK_C};
+        KeyEvent.VK_F, KeyEvent.VK_TAB, KeyEvent.VK_L, KeyEvent.VK_V, KeyEvent.VK_M, KeyEvent.VK_R, KeyEvent.VK_DELETE, KeyEvent.VK_T, KeyEvent.VK_C, KeyEvent.VK_K};
     static final int[] DEFAULTS = {KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D,
         KeyEvent.VK_Z, KeyEvent.VK_I, KeyEvent.VK_P, KeyEvent.VK_J, KeyEvent.VK_G, KeyEvent.VK_H,
-        KeyEvent.VK_F, KeyEvent.VK_TAB, KeyEvent.VK_L, KeyEvent.VK_V, KeyEvent.VK_M, KeyEvent.VK_R, KeyEvent.VK_DELETE, KeyEvent.VK_T, KeyEvent.VK_C};
+        KeyEvent.VK_F, KeyEvent.VK_TAB, KeyEvent.VK_L, KeyEvent.VK_V, KeyEvent.VK_M, KeyEvent.VK_R, KeyEvent.VK_DELETE, KeyEvent.VK_T, KeyEvent.VK_C, KeyEvent.VK_K};
     static final String[] LABELS = {"Cima / nota 1", "Baixo / nota 3", "Esquerda / nota 4", "Direita / nota 2",
         "Interagir / fisgar / segurar", "Itens", "Álbum de pesca", "Laços de Aurora", "Presentear peixe", "Decorar casa",
-        "Previsão", "Mapa", "Diário", "Cesta de flores", "Música ligada/desligada", "Girar móvel", "Guardar móvel", "Avançar 2h (modo desenvolvedor)", "Cartão do Explorador"};
+        "Previsão", "Mapa", "Diário", "Cesta de flores", "Música ligada/desligada", "Girar móvel", "Guardar móvel", "Avançar 2h (modo desenvolvedor)", "Cartão do Explorador", "Lancheira"};
     /** Linhas de opções antes da lista de teclas no painel. */
     static final int OPTIONS = 3;
     static final String[] SPEEDS = {"Instantânea", "Rápida", "Normal"};

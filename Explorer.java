@@ -30,7 +30,11 @@ final class Explorer implements Feature {
         new Achievement("regioes", "Pés na Estrada", "Visitou todas as regiões de Aurora.", g -> g.worldMap.visited.size() == WorldMap.REGIONS.length),
         new Achievement("conchas", "Ouvido de Concha", "Encontrou todas as conchas secretas.", g -> g.shells.found() == SecretShells.SPOTS.length),
         new Achievement("trocas", "Rei das Trocas", "Completou a corrente de trocas da vila.", g -> g.trades.complete()),
-        new Achievement("observatorio", "Céu Restaurado", "Restaurou o observatório do professor.", g -> g.observatory.complete())
+        new Achievement("observatorio", "Céu Restaurado", "Restaurou o observatório do professor.", g -> g.observatory.complete()),
+        new Achievement("ano", "Um Ano em Aurora", "Viveu as quatro estações da vila.", g -> g.day() + 1 > Seasons.LENGTH * 3),
+        new Achievement("chef", "Chef de Aurora", "Cozinhou todas as receitas.", g -> g.cooking.cooked.size() == Cooking.RECIPES.length),
+        new Achievement("aniversario", "Quem Ama Lembra", "Deu um presente de aniversário a um morador.", g -> !g.seasons.birthdayGifts.isEmpty()),
+        new Achievement("gato", "Amigo do Bolinha", "Fez carinho no Bolinha em sete dias diferentes.", g -> g.cat.petDays >= 7)
     );
 
     final Game game;
@@ -114,7 +118,7 @@ final class Explorer implements Feature {
             int n = ACHIEVEMENTS.size(), old = cardSel;
             if (key == KeyEvent.VK_LEFT) cardSel = (cardSel + n - 1) % n;
             else if (key == KeyEvent.VK_RIGHT) cardSel = (cardSel + 1) % n;
-            else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) cardSel = (cardSel + n / 2) % n;
+            else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) cardSel = (cardSel + (n + 1) / 2) % n;
             else if (act || key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_C) { game.audio.sfx("back"); game.state = returnState; game.down.clear(); return; }
             if (cardSel != old) game.audio.sfx("select");
             return;
@@ -193,7 +197,7 @@ final class Explorer implements Feature {
         int day = (int) (game.time / 1440) + 1;
         String[] rows = {
             "Nome: " + nameOr("Explorador(a)"),
-            "Tempo de jogo: " + clock(playSeconds) + "      Dia " + day + " (" + Game.weekday(day) + ")",
+            "Tempo de jogo: " + clock(playSeconds) + "      " + game.seasons.name() + " " + Seasons.dayOfSeason(day) + " (" + Game.weekday(day) + "), ano " + Seasons.year(day),
             "Capítulo " + chapter() + "      Moedas: " + game.home.coins,
             "Álbum: " + Arrays.stream(game.life.catches).filter(c -> c > 0).count() + "/8 espécies      Regiões: "
                 + game.worldMap.visited.size() + "/" + WorldMap.REGIONS.length,
@@ -203,9 +207,9 @@ final class Explorer implements Feature {
         for (int i = 0; i < rows.length - 1; i++) game.life.text(g, rows[i], 166, 142 + i * 22, 420, i == 0 ? 16 : 14);
         game.life.text(g, rows[rows.length - 1], 166, 142 + (rows.length - 1) * 22, 420, 11);
         // medalhas
-        int cols = ACHIEVEMENTS.size() / 2;
+        int cols = (ACHIEVEMENTS.size() + 1) / 2, step = Math.min(66, 548 / cols);
         for (int i = 0; i < ACHIEVEMENTS.size(); i++) {
-            int x = 58 + (i % cols) * 66, y = 282 + (i / cols) * 58;
+            int x = 50 + (i % cols) * step, y = 282 + (i / cols) * 58;
             boolean got = unlocked.contains(ACHIEVEMENTS.get(i).id());
             medal(g, x + 8, y, got, i);
             if (i == cardSel) { g.setColor(new Color(200, 60, 50)); g.setStroke(new BasicStroke(3)); g.drawOval(x + 3, y - 5, 50, 50); g.setStroke(new BasicStroke(1)); }

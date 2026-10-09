@@ -29,14 +29,20 @@ final class Weather {
         return roll < 50 ? SUN : roll < 80 ? RAIN : FOG;
     }
     int current() { return forDay(day()); }
-    String label() { return game.map.snowy ? "Neve" : NAMES[current()]; }
+    /** No inverno, a chuva cai como neve na paisagem coberta. */
+    boolean snowing() { return current() == RAIN && game.seasons.snowCover(game.map); }
+    String label() { return game.map.snowy || snowing() ? "Neve" : NAMES[current()]; }
     int[] destination(VillageLife.Resident resident, int slot) {
         if (game.festival.active()) return game.festival.destination(resident, slot);
         int who = game.bonds.residentIndex(resident.id());
         if (current() == RAIN && slot != 3 && who >= 0) return SHELTER[who];
         return resident.stops()[slot];
     }
+    /** Chuva, estação e o prato "Sorte grande" multiplicam o peso; nenhuma espécie chega a zero. */
     int fishWeight(int fish) {
+        return rainWeight(fish) * game.seasons.fishFactor(fish) * game.cooking.rareFactor(fish);
+    }
+    int rainWeight(int fish) {
         if (current() != RAIN || !game.map.outdoor || game.map.snowy) return 1;
         return fish == 1 || fish == 2 || fish == 3 || fish == 5 || fish == 6 ? 3 : 1;
     }
@@ -59,13 +65,14 @@ final class Weather {
                 default -> "Gosto do som das gotas na cobertura. Parece outra música para os sinos!";
             };
             case FOG -> "A neblina deixou Aurora quietinha hoje. Ainda dá para explorar, mas vou caminhar com calma.";
-            default -> "Um dia aberto assim dá vontade de passear pela vila.";
+            default -> game.seasons.sunnyLine(who);
         };
         String[] lines = Arrays.copyOf(game.dlg, game.dlg.length + 1);
         lines[lines.length - 1] = line; game.dlg = lines;
     }
     void open(int from) { returnState = from; game.state = Game.WEATHER; }
     void key(int key) {
+        if (key == KeyEvent.VK_RIGHT) { game.seasons.openCalendar(returnState); return; }
         if (key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_F || key == KeyEvent.VK_Z || key == KeyEvent.VK_ENTER) {
             game.state = returnState; game.down.clear();
         }
@@ -86,7 +93,10 @@ final class Weather {
     }
     void drawWorld(Graphics2D g) {
         if (!game.map.outdoor || game.map.snowy) return;
-        if (current() == RAIN) {
+        if (snowing()) {
+            g.setColor(new Color(220, 230, 245, 30)); g.fillRect(0, 0, Game.W, Game.H);
+            game.drawSnow(g);
+        } else if (current() == RAIN) {
             g.setColor(new Color(28, 61, 74, 24)); g.fillRect(0, 0, Game.W, Game.H);
             g.setColor(new Color(199, 227, 239, 115));
             for (int i = 0; i < 80; i++) {
@@ -121,7 +131,7 @@ final class Weather {
         }
     }
     void drawForecast(Graphics2D g) {
-        game.life.panel(g, "O tempo em Aurora", "Previsão da vila, floresta, praia e ilha");
+        game.life.panel(g, "O tempo em Aurora", game.seasons.name() + ", dia " + Seasons.dayOfSeason(day()) + " de " + Seasons.LENGTH + " · →: calendário");
         for (int i = 0; i < 3; i++) {
             int x = 49 + i * 185, kind = forDay(day() + i);
             icon(g, kind, x + 42, 139);
@@ -134,7 +144,10 @@ final class Weather {
             default -> "Céu aberto nas terras baixas. Um bom dia para visitar os moradores.";
         };
         game.life.text(g, detail, 48, 304, 535, 16);
-        game.life.text(g, "Na montanha, a neve permanece. A programação do festival continua em qualquer clima.", 48, 374, 535, 14);
+        int s = game.seasons.current();
+        game.life.text(g, "Na estação: " + VillageLife.FISH[Seasons.SEASON_FISH[s][0]].name() + " e " + VillageLife.FISH[Seasons.SEASON_FISH[s][1]].name()
+            + " aparecem mais. Flores que crescem: " + Seasons.cropsIn(s) + ". " + (s == Seasons.WINTER ? "No inverno, a chuva cai como neve." : ""), 48, 352, 535, 13);
+        game.life.text(g, "Na montanha, a neve permanece. A programação do festival continua em qualquer clima.", 48, 398, 535, 13);
         game.life.text(g, "ESC", 548, 437, 55, 13);
     }
 }

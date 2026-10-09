@@ -91,9 +91,11 @@ consequência**. A câmera mostra o efeito em outro lugar do mapa, o que despert
   **canteiros floridos**, uma **luneta pública** na praia e, por fim, a tela de **constelações**.
   Doações pedem confirmação e são desfeitas se o save falhar.
 - ✅ Cartas com moedas anexas e dicas (Capitã, Mamãe, moradores).
-- ⏳ **Estações do ano** (a cada 28 dias): paleta, peixes, flores e festivais diferentes.
-- ⏳ **Aniversários** dos moradores, com presente favorito em dobro.
-- ⏳ **Culinária**: pratos com peixe e flores que dão amizade ou facilitam a pesca.
+- ✅ **Estações do ano** (28 dias): paisagem, peixes favorecidos, flores por estação, neve no inverno,
+  festival com nome da estação e calendário com festivais, mascate e aniversários (como o de Stardew).
+- ✅ **Aniversários** dos moradores: aviso, fala especial e presentes em dobro.
+- ✅ **Culinária**: receitas ensinadas pelos moradores conforme a amizade, pratos com efeitos de um dia
+  (como os buffs de comida de Stardew) e pratos favoritos de cada morador.
 
 ## 5. Animal Crossing
 
