@@ -31,10 +31,10 @@ final class Soundscape {
         for (int i = 0; i < 3; i++) {
             int y = 150 + i * 90;
             g.setColor(new Color(34, 62, 64)); g.setFont(new Font("Dialog", Font.BOLD, 17));
-            g.drawString(names[i], 54, y);
+            g.drawString(Lang.t(names[i]), 54, y);
             String value = levels[i] + "%";
-            if (i == 0 && !game.audio.musicOn || i == 1 && !game.audio.sfxOn) value += " (desligado)";
-            g.setFont(new Font("Dialog", Font.PLAIN, 14)); g.drawString(value, 410, y);
+            if (i == 0 && !game.audio.musicOn || i == 1 && !game.audio.sfxOn) value += " " + Lang.t("(desligado)");
+            g.setFont(new Font("Dialog", Font.PLAIN, 14)); g.drawString(Lang.t(value), 410, y);
             g.setColor(new Color(192, 212, 204)); g.fillRect(54, y + 20, 520, 6);
             g.setColor(i == selected ? new Color(180, 103, 43) : new Color(69, 135, 130));
             g.fillRect(54, y + 20, levels[i] * 520 / 100, 6);

@@ -19,6 +19,17 @@ JANELA
   A cena e desenhada em 640x480 e ampliada, entao o custo nao cresce com o tamanho da janela.
   Erros inesperados ficam em erros.log, na mesma pasta dos saves.
 
+IDIOMA / LANGUAGE
+  Portugues e ingles. Troque em "Idioma" no titulo ou no menu de pausa (fica salvo em idioma.properties).
+  Na primeira vez, o jogo usa o idioma do sistema. Para escolher na linha de comando: -Daurora.idioma=en
+  As traducoes ficam em assets/lang/en.tsv (texto em portugues TAB traducao). Textos montados com numeros e
+  nomes usam moldes: {0}, {1}... para numeros e {a}, {b}... para nomes do glossario (veja Lang.java).
+  Texto novo no jogo? Rode sh testar.sh LangTest: ele percorre o jogo em ingles e lista o que falta traduzir.
+
+DICAS (Concha do Eco)
+  No diario (L), Z pede uma dica; tambem em ESC > Pedir uma dica. Cada pedido revela mais: primeiro uma pista
+  vaga, depois onde ir e por fim o que fazer. Recomeca quando a historia avanca.
+
 NOVO JOGO
   A Mamae pergunta seu nome (ate 12 letras) e como prefere ser chamado(a): menino, menina ou
   "prefiro nao dizer" (falas neutras). Partidas antigas usam as falas neutras.
@@ -318,7 +329,8 @@ ORGANIZACAO DO CODIGO
   Inventory.java   caixa de itens (tecla I)
   Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
   Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat,
-  ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots
+  ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
+  Lang.java        idiomas: todo texto desenhado passa por Lang.t (dicionario em assets/lang/)
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida

@@ -174,12 +174,12 @@ final class Mailbox implements Feature {
             g.setColor(new Color(0, 0, 0, 155)); g.fillRect(0, 0, Game.W, Game.H);
             g.setColor(new Color(252, 246, 230)); g.fillRoundRect(70, 40, 500, 400, 10, 10);
             g.setColor(new Color(200, 180, 140)); for (int y = 130; y < 410; y += 24) g.drawLine(90, y, 550, y);
-            g.setColor(new Color(80, 60, 40)); g.setFont(new Font("Serif", Font.BOLD, 22)); g.drawString(l.title(), 92, 84);
-            g.setFont(new Font("Serif", Font.ITALIC, 14)); g.drawString("De: " + l.from(), 92, 108);
+            g.setColor(new Color(80, 60, 40)); g.setFont(new Font("Serif", Font.BOLD, 22)); g.drawString(Lang.t(l.title()), 92, 84);
+            g.setFont(new Font("Serif", Font.ITALIC, 14)); g.drawString(Lang.t("De: " + l.from()), 92, 108);
             g.setFont(new Font("Serif", Font.PLAIN, game.access.large ? 19 : 16));
             int y = 146;
-            for (String line : game.wrap(l.body().apply(game), g.getFontMetrics(), 450)) { g.drawString(line, 92, y); y += game.access.large ? 26 : 24; }
-            if (l.coins() > 0) { g.setColor(new Color(170, 120, 30)); g.drawString("Anexo: " + l.coins() + " moedas (guardadas)", 92, 420); }
+            for (String line : game.wrap(l.body().apply(game), g.getFontMetrics(), 450)) { g.drawString(Lang.t(line), 92, y); y += game.access.large ? 26 : 24; }
+            if (l.coins() > 0) { g.setColor(new Color(170, 120, 30)); g.drawString(Lang.t("Anexo: " + l.coins() + " moedas (guardadas)"), 92, 420); }
             return;
         }
         game.life.panel(g, "Cartas", "Setas: escolher · Z: ler · Esc: sair");

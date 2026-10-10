@@ -397,14 +397,14 @@ final class VillageLife {
     void panel(Graphics2D g, String title, String subtitle) {
         g.setColor(new Color(0, 0, 0, 155)); g.fillRect(0, 0, Game.W, Game.H);
         g.setColor(PAPER); g.fillRoundRect(24, 24, 592, 432, 12, 12);
-        g.setColor(INK); g.setFont(new Font("SansSerif", Font.BOLD, 23)); g.drawString(title, 44, 62);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.drawString(subtitle, 44, 85);
+        g.setColor(INK); g.setFont(new Font("SansSerif", Font.BOLD, 23)); g.drawString(Lang.t(title), 44, 62);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.drawString(Lang.t(subtitle), 44, 85);
         g.setColor(new Color(180, 202, 194)); g.drawLine(44, 100, 596, 100);
     }
 
     void text(Graphics2D g, String text, int x, int y, int width, int size) {
         g.setColor(INK); g.setFont(new Font("SansSerif", Font.PLAIN, size));
-        for (String line : game.wrap(text, g.getFontMetrics(), width)) { g.drawString(line, x, y); y += size + 6; }
+        for (String line : game.wrap(text, g.getFontMetrics(), width)) { g.drawString(Lang.t(line), x, y); y += size + 6; }
     }
 
     void drawFish(Graphics2D g, int x, int y, int size, Color color) {

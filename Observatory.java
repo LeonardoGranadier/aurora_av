@@ -108,8 +108,8 @@ final class Observatory implements Feature {
         else if (act) {
             int b = selected;
             if (has(b)) status = "Este conjunto já foi doado.";
-            else if (!ready(b)) status = "Ainda falta: " + BUNDLES[b].needs() + ".";
-            else game.access.ask("Doar " + BUNDLES[b].needs() + " ao observatório?", () -> {
+            else if (!ready(b)) status = Lang.done(Lang.t("Ainda falta:") + " " + Lang.t(BUNDLES[b].needs()) + ".");
+            else game.access.ask(Lang.done(Lang.t("Doar") + " " + Lang.t(BUNDLES[b].needs()) + " " + Lang.t("ao observatório?")), () -> {
                 if (donate(b)) {
                     game.audio.sfx("fanfare");
                     status = "Conjunto doado! " + BUNDLES[b].reward();
@@ -175,12 +175,13 @@ final class Observatory implements Feature {
             g.setColor(got ? new Color(92, 160, 110) : ready ? new Color(230, 180, 70) : new Color(180, 190, 196));
             g.fillOval(46, y + 6, 26, 26);
             g.setColor(Color.WHITE); g.setFont(new Font("SansSerif", Font.BOLD, 15));
-            g.drawString(got ? "✓" : ready ? "!" : "" + (i + 1), got ? 52 : 55, y + 25);
+            g.drawString(Lang.t(got ? "✓" : ready ? "!" : "" + (i + 1)), got ? 52 : 55, y + 25);
             game.life.text(g, BUNDLES[i].name() + (got ? "  (doado)" : ready ? "  (pronto para doar)" : ""), 84, y + 12, 500, 15);
-            game.life.text(g, got ? BUNDLES[i].reward() : "Precisa de: " + BUNDLES[i].needs(), 84, y + 34, 500, 13);
+            game.life.text(g, got ? BUNDLES[i].reward() : Lang.done(Lang.t("Precisa de:") + " " + Lang.t(BUNDLES[i].needs())), 84, y + 34, 500, 13);
         }
         game.life.text(g, status, 44, 392, 552, 14);
-        if (!game.trades.complete()) game.life.text(g, "O último conjunto pede a chave do observatório. " + game.trades.hint(), 44, 430, 552, 12);
+        if (!game.trades.complete())
+            game.life.text(g, Lang.done(Lang.t("O último conjunto pede a chave do observatório.") + " " + Lang.t(game.trades.hint())), 44, 430, 552, 12);
     }
 
     void drawSky(Graphics2D g) {
@@ -202,11 +203,11 @@ final class Observatory implements Feature {
         g.setStroke(new BasicStroke(1));
         g.setColor(new Color(0, 0, 0, 150)); g.fillRoundRect(20, 386, Game.W - 40, 80, 14, 14);
         Constellation k = SKY[selected];
-        g.setColor(new Color(255, 230, 150)); g.setFont(new Font("Serif", Font.BOLD, 20)); g.drawString(k.name(), 36, 414);
+        g.setColor(new Color(255, 230, 150)); g.setFont(new Font("Serif", Font.BOLD, 20)); g.drawString(Lang.t(k.name()), 36, 414);
         g.setColor(new Color(235, 238, 255)); g.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        int y = 436; for (String line : game.wrap(k.story(), g.getFontMetrics(), Game.W - 80)) { g.drawString(line, 36, y); y += 17; }
+        int y = 436; for (String line : game.wrap(k.story(), g.getFontMetrics(), Game.W - 80)) { g.drawString(Lang.t(line), 36, y); y += 17; }
         g.setColor(new Color(255, 255, 255, 150)); g.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        g.drawString("Setas: outra constelação · Z / Esc: sair", Game.W - 230, 30);
+        g.drawString(Lang.t("Setas: outra constelação · Z / Esc: sair"), Game.W - 230, 30);
     }
 
     @Override public void save(Properties p) { p.setProperty("observatorio.conjuntos", "" + done); }

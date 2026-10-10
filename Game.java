@@ -95,11 +95,12 @@ public class Game extends JPanel implements KeyListener {
     final ChapterEight chapterEight = new ChapterEight(this);
     final Puzzles puzzles = new Puzzles(this);
     final SaveSlots saveSlots = new SaveSlots(this);
+    final Hints hints = new Hints(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -114,6 +115,8 @@ public class Game extends JPanel implements KeyListener {
             @Override public void focusLost(FocusEvent e) { down.clear(); pressedKeys.clear(); }
         });
         loadSprites();
+        Lang.initOnce();
+        registerNames();
         newGame();
         openTitle();
         new javax.swing.Timer(16, e -> { tick(); repaint(); }).start();
@@ -208,6 +211,27 @@ public class Game extends JPanel implements KeyListener {
             case 'O' -> { if (!img(g, "rock", x, y)) return false; return img(g, "cave_mouth", x, y); }
             default -> { return false; }
         }
+    }
+
+    /** Nomes que aparecem dentro de textos montados, para os moldes de tradução (veja Lang). */
+    void registerNames() {
+        Lang.addNames(Bonds.NAMES); Lang.addNames(Bonds.REWARDS); Lang.addNames(Bonds.TITLES);
+        for (VillageLife.Fish f : VillageLife.FISH) Lang.addNames(f.name());
+        Lang.addNames(VillageLife.BELL_NAMES); Lang.addNames(Gardening.NAMES); Lang.addNames(Seasons.NAMES); Lang.addNames(Seasons.FESTIVALS);
+        Lang.addNames(WEEKDAYS); Lang.addNames(Weather.NAMES); Lang.addNames(ChapterEight.DAY_NAMES); Lang.addNames(ChapterSeven.GUEST_NAMES);
+        for (Cooking.Recipe r : Cooking.RECIPES) Lang.addNames(r.name());
+        Lang.addNames(Cooking.EFFECT_NAMES);
+        for (HomeDecor.Item i : HomeDecor.ITEMS) Lang.addNames(i.name());
+        Lang.addNames(Inventory.NAMES); Lang.addNames(Puzzles.CHEST_ITEMS);
+        for (TradeQuest.Step s : TradeQuest.STEPS) Lang.addNames(s.item(), s.giverName());
+        for (Explorer.Achievement a : Explorer.ACHIEVEMENTS) Lang.addNames(a.name());
+        for (WorldMap.Region r : WorldMap.REGIONS) Lang.addNames(r.name());
+        Lang.addNames(Observatory.BUNDLES[0].name(), Observatory.BUNDLES[1].name(), Observatory.BUNDLES[2].name(), Observatory.BUNDLES[3].name());
+        Lang.addNames(Explorer.FORMS); Lang.addNames(Lang.LABELS); Lang.addNames(AdventureJournal.TITLES);
+        Lang.addNames("Neve", "Dia", "Noite", "Dia e noite", "Pendente", "Entregue"); Lang.addNames(ChapterFive.SYMBOLS);
+        if (explorer != null && !explorer.name.isBlank()) Lang.addNames(explorer.name);
+        Lang.addNames("Mamãe", "Seu Marinho", "Capitã Estrela", "Cintila", "Lia", "Eremita", "Lenhador", "Montanhista", "Seu Bento", "Bolinha",
+            "Maré", "Concha do Eco", "Desconhecido", "Placa", "Estátua", "Sinos da Praça");
     }
 
     // ---------- Tempo ----------
@@ -539,7 +563,7 @@ public class Game extends JPanel implements KeyListener {
             if (showToast) { toast("Jogo salvo!"); audio.sfx("save"); }
             return true;
         } catch (Exception e) {
-            toast("Erro ao salvar: " + e.getMessage());
+            toast(Lang.done(Lang.t("Erro ao salvar:") + " " + e.getMessage()));
             return false;
         }
     }
@@ -647,7 +671,7 @@ public class Game extends JPanel implements KeyListener {
         opts.clear();
         if (saveInfo != null) opts.add("Continuar");
         if (usedSlots() > 1) opts.add("Carregar jogo");
-        opts.add("Novo jogo"); opts.add("Créditos"); opts.add("Sair");
+        opts.add("Novo jogo"); opts.add("Créditos"); opts.add("Idioma: " + Lang.LABELS[Lang.index()]); opts.add("Sair");
         menuSel = 0; state = TITLE;
     }
     void openPause() {
@@ -655,10 +679,12 @@ public class Game extends JPanel implements KeyListener {
         opts.addAll(List.of("Voltar ao jogo", "Itens", "Cartão do Explorador", "Álbum de pesca", "Laços de Aurora", "Salvar jogo",
             "Música: " + (audio.musicOn ? "ligada" : "desligada"),
             "Efeitos: " + (audio.sfxOn ? "ligados" : "desligados"),
+            "Idioma: " + Lang.LABELS[Lang.index()],
             "Salvar e ir ao título"));
         if (map.name.equals("Casa")) opts.add(5, "Decorar casa");
         opts.add(5, "Previsão do tempo");
         opts.add(5, "Calendário");
+        opts.add(1, "Pedir uma dica");
         opts.add(3, "Lancheira");
         opts.add(5, "Mapa de Aurora");
         opts.add(5, "Diário de Aventuras");
@@ -691,6 +717,11 @@ public class Game extends JPanel implements KeyListener {
     void choose(String o) {
         if (!o.equals("Sair")) audio.sfx("confirm");
         if (o.startsWith("Música")) { audio.setMusic(!audio.musicOn); openPause(); return; }
+        if (o.startsWith("Idioma")) {
+            int keep = menuSel; Lang.cycle(); registerNames();
+            if (state == TITLE) openTitle(); else openPause();
+            menuSel = keep; return;
+        }
         if (o.startsWith("Efeitos")) { audio.setSfx(!audio.sfxOn); openPause(); return; }
         switch (o) {
             case "Continuar" -> { if (latestSlot() >= 0) continueSlot(latestSlot()); }
@@ -703,6 +734,7 @@ public class Game extends JPanel implements KeyListener {
             case "Créditos" -> credits.open(TITLE, false);
             case "Cartão do Explorador" -> explorer.openCard(MENU);
             case "Calendário" -> seasons.openCalendar(MENU);
+            case "Pedir uma dica" -> hints.ask();
             case "Lancheira" -> { cooking.openLunchbox(); cooking.returnState = MENU; }
             case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(savePath())); Files.deleteIfExists(Paths.get(backupPath())); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); explorer.startNaming(); }
             case "Não, voltar" -> openTitle();
@@ -808,7 +840,7 @@ public class Game extends JPanel implements KeyListener {
             if (showFps) {
                 b.setColor(new Color(0, 0, 0, 170)); b.fillRect(W - 128, 4, 124, 20);
                 b.setColor(paintMs > 16 ? new Color(255, 140, 120) : new Color(160, 255, 170)); b.setFont(new Font("Monospaced", Font.BOLD, 12));
-                b.drawString(String.format("%3.0f fps %5.1f ms", fps, paintMs), W - 122, 18);
+                b.drawString(Lang.t(String.format("%3.0f fps %5.1f ms", fps, paintMs)), W - 122, 18);
             }
         } finally { frame = actualFrame; b.dispose(); }
         paintMs = paintMs * 0.9 + (System.nanoTime() - start) / 1e6 * 0.1;
@@ -1018,7 +1050,7 @@ public class Game extends JPanel implements KeyListener {
         g.setColor(new Color(255, 255, 255, 230)); g.fillRoundRect(x - 9, y - 9, 18, 16, 8, 8);
         g.fillPolygon(new int[]{x - 3, x + 3, x}, new int[]{y + 6, y + 6, y + 10}, 3);
         g.setColor(new Color(40, 40, 60)); g.setFont(new Font("SansSerif", Font.BOLD, 11));
-        g.drawString(water ? "~" : "Z", x - 3, y + 4);
+        g.drawString(Lang.t(water ? "~" : "Z"), x - 3, y + 4);
     }
 
     /** F12: salva a cena atual, sem interface, em fotos/ na pasta de dados (em 2x). */
@@ -1036,7 +1068,7 @@ public class Game extends JPanel implements KeyListener {
         } catch (Exception e) { toast("Não foi possível salvar a foto."); }
     }
 
-    void center(Graphics2D g, String s, int y) { g.drawString(s, (W - g.getFontMetrics().stringWidth(s)) / 2, y); }
+    void center(Graphics2D g, String s, int y) { g.drawString(Lang.t(s), (W - g.getFontMetrics().stringWidth(Lang.t(s))) / 2, y); }
 
     void drawTitle(Graphics2D g) {
         g.setPaint(new GradientPaint(0, 0, new Color(12, 16, 52), 0, H, new Color(255, 150, 90)));
@@ -1075,7 +1107,7 @@ public class Game extends JPanel implements KeyListener {
             center(g, (sel ? "▶  " : "") + opts.get(i), y0 + i * 38);
         }
         g.setFont(new Font("SansSerif", Font.PLAIN, 11)); g.setColor(new Color(255, 255, 255, 120));
-        g.drawString("v" + VERSION + "  ·  F11: tela cheia", 10, H - 10);
+        g.drawString(Lang.t("v" + VERSION + "  ·  F11: tela cheia"), 10, H - 10);
         if (state == TITLE && saveInfo != null && opts.get(menuSel).equals("Continuar")) {
             g.setFont(new Font("SansSerif", Font.PLAIN, 14)); g.setColor(new Color(255, 240, 170));
             center(g, saveInfo, y0 + opts.size() * 38 + 6);
@@ -1095,16 +1127,16 @@ public class Game extends JPanel implements KeyListener {
         for (int i = 0; i < opts.size(); i++) {
             boolean sel = i == menuSel;
             g.setColor(sel ? new Color(200, 60, 50) : new Color(40, 40, 60));
-            g.drawString((sel ? "▶ " : "    ") + opts.get(i), bx + 36, by + 72 + i * step);
+            g.drawString(Lang.t((sel ? "▶ " : "    ") + opts.get(i)), bx + 36, by + 72 + i * step);
         }
     }
 
     void drawToast(Graphics2D g) {
         if (toastT <= 0) return;
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        int tw = g.getFontMetrics().stringWidth(toastTxt) + 28, a = (int) (Math.min(1, toastT) * 230);
+        int tw = g.getFontMetrics().stringWidth(Lang.t(toastTxt)) + 28, a = (int) (Math.min(1, toastT) * 230);
         g.setColor(new Color(20, 20, 40, a)); g.fillRoundRect(W - tw - 12, H - 44, tw, 28, 14, 14);
-        g.setColor(new Color(255, 255, 255, a)); g.drawString(toastTxt, W - tw + 2, H - 25);
+        g.setColor(new Color(255, 255, 255, a)); g.drawString(Lang.t(toastTxt), W - tw + 2, H - 25);
     }
 
     void drawSnow(Graphics2D g) {                                          // neve caindo (determinística, sem estado)
@@ -1134,14 +1166,15 @@ public class Game extends JPanel implements KeyListener {
     void hud(Graphics2D g) {
         int hh = (int) hour(), mm = (int) ((hour() - hh) * 60);
         int dia = (int) (time / 1440) + 1;
-        String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
+        String obj = Lang.t("Objetivo:") + " " + Lang.t(Story.OBJECTIVES[stage]) + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
             : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)"
             : stage == ChapterEight.BELLS ? " (" + chapterEight.count() + "/" + ChapterEight.DAYS_NEEDED + ")" : "");
+        Lang.markDone(List.of(obj));
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
-        int bw = Math.max(280, g.getFontMetrics().stringWidth(obj) + 32);
+        int bw = Math.max(280, g.getFontMetrics().stringWidth(Lang.t(obj)) + 32);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        bw = Math.max(bw, g.getFontMetrics().stringWidth(heading) + 56);
+        bw = Math.max(bw, g.getFontMetrics().stringWidth(Lang.t(heading)) + 56);
         g.setColor(new Color(0, 0, 0, 150));
         g.fillRoundRect(8, 8, bw, 46, 12, 12);
         g.setColor(isNight() ? new Color(200, 210, 255) : new Color(255, 220, 80)); // sol / lua
@@ -1149,21 +1182,21 @@ public class Game extends JPanel implements KeyListener {
         if (isNight()) { g.setColor(new Color(0, 0, 0, 200)); g.fillOval(21, 14, 14, 14); }
         g.setColor(Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString(heading, 40, 27);
+        g.drawString(Lang.t(heading), 40, 27);
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         g.setColor(new Color(255, 240, 170));
-        g.drawString(obj, 16, 46);
+        g.drawString(Lang.t(obj), 16, 46);
         if (dlg == null && state == PLAY) {
             g.setColor(new Color(255, 255, 255, 170));
-            g.drawString("Setas: mover | Shift: correr | Z: falar | I: itens | K: lancheira | C: cartão | ESC: menu", 12, H - 10);
+            g.drawString(Lang.t("Setas: mover | Shift: correr | Z: falar | I: itens | K: lancheira | C: cartão | ESC: menu"), 12, H - 10);
         }
         if (bannerT > 0) {
             g.setFont(new Font("SansSerif", Font.BOLD, 16));
-            int tw = g.getFontMetrics().stringWidth(banner) + 40, a = (int) (Math.min(1, bannerT) * 220);
+            int tw = g.getFontMetrics().stringWidth(Lang.t(banner)) + 40, a = (int) (Math.min(1, bannerT) * 220);
             g.setColor(new Color(20, 20, 40, a));
             g.fillRoundRect((W - tw) / 2, 66, tw, 34, 16, 16);
             g.setColor(new Color(255, 230, 140, Math.min(255, a + 35)));
-            g.drawString(banner, (W - tw) / 2 + 20, 88);
+            g.drawString(Lang.t(banner), (W - tw) / 2 + 20, 88);
         }
     }
 
@@ -1178,9 +1211,9 @@ public class Game extends JPanel implements KeyListener {
         if (!speaker.isEmpty()) {
             g.setFont(new Font("SansSerif", Font.BOLD, 14));
             g.setColor(new Color(40, 40, 60));
-            g.fillRoundRect(bx + 14, by - 14, g.getFontMetrics().stringWidth(speaker) + 24, 24, 10, 10);
+            g.fillRoundRect(bx + 14, by - 14, g.getFontMetrics().stringWidth(Lang.t(speaker)) + 24, 24, 10, 10);
             g.setColor(Color.WHITE);
-            g.drawString(speaker, bx + 26, by + 3);
+            g.drawString(Lang.t(speaker), bx + 26, by + 3);
         }
         g.setFont(new Font("SansSerif", Font.PLAIN, access.large ? 22 : 17));
         g.setColor(new Color(30, 30, 40));
@@ -1190,13 +1223,15 @@ public class Game extends JPanel implements KeyListener {
         long shown = (long) Math.min(Integer.MAX_VALUE, dlgChars);
         for (int i = access.dialogPage * rows; i < Math.min(lines.size(), (access.dialogPage + 1) * rows); i++) {
             String line = lines.get(i);
-            g.drawString(line.substring(0, (int) Math.min(line.length(), Math.max(0, shown))), bx + 24, ly); ly += access.large ? 30 : 24;
+            g.drawString(line.substring(0, (int) Math.min(line.length(), Math.max(0, shown))), bx + 24, ly); ly += access.large ? 30 : 24;   // já traduzida
             shown -= line.length();
         }
-        if (dlgChars >= pageChars() && (frame / 25) % 2 == 0) g.drawString("▼", bx + bw - 36, by + bh - 14);
+        if (dlgChars >= pageChars() && (frame / 25) % 2 == 0) g.drawString(Lang.t("▼"), bx + bw - 36, by + bh - 14);
     }
 
+    /** Traduz o texto e quebra em linhas de até maxW pixels; as linhas não são traduzidas de novo ao desenhar. */
     List<String> wrap(String s, FontMetrics fm, int maxW) {
+        s = Lang.t(s);
         List<String> out = new ArrayList<>();
         StringBuilder cur = new StringBuilder();
         for (String w : s.split(" ")) {
@@ -1205,6 +1240,7 @@ public class Game extends JPanel implements KeyListener {
             cur.append(w);
         }
         out.add(cur.toString());
+        Lang.markDone(out);
         return out;
     }
 

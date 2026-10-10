@@ -100,7 +100,7 @@ final class Inventory {
         else {                                                         // sem PNG: quadrado colorido com a inicial
             g.setColor(COLORS[idx]); g.fillRoundRect(x + 4, y + 4, size - 8, size - 8, 10, 10);
             g.setColor(new Color(40, 40, 60)); g.setFont(new Font("SansSerif", Font.BOLD, size / 2));
-            g.drawString(NAMES[idx].substring(0, 1), x + size / 2 - size / 8, y + size / 2 + size / 6);
+            g.drawString(Lang.t(NAMES[idx].substring(0, 1)), x + size / 2 - size / 8, y + size / 2 + size / 6);
         }
         g.setComposite(old);
     }
@@ -120,7 +120,7 @@ final class Inventory {
                 g.setStroke(new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10, new float[]{4, 4}, 0));
                 g.drawRect(bx, y, pw, h);
                 g.setStroke(new BasicStroke(1));
-                g.setFont(new Font("SansSerif", Font.BOLD, 16)); g.drawString("?", bx + pw / 2 - 5, y + h / 2 + 6);
+                g.setFont(new Font("SansSerif", Font.BOLD, 16)); g.drawString(Lang.t("?"), bx + pw / 2 - 5, y + h / 2 + 6);
             }
         }
         if (full) {
@@ -132,7 +132,7 @@ final class Inventory {
             for (int k = 0; k < 8; k++) g.fillOval(x + 10 + k * ((w - 80) / 8), y + h - 16 - (int) (Math.sin(k / 7.0 * Math.PI) * 18), 3, 3);
             g.setFont(new Font("SansSerif", Font.PLAIN, 10));
             String ilha = "Ilha das Estrelas";
-            g.drawString(ilha, x + w - 6 - g.getFontMetrics().stringWidth(ilha), y + 50);
+            g.drawString(Lang.t(ilha), x + w - 6 - g.getFontMetrics().stringWidth(Lang.t(ilha)), y + 50);
         }
     }
 
@@ -141,9 +141,9 @@ final class Inventory {
         int px = 40, py = 14, pw = Game.W - 80, ph = Game.H - 28;
         g.setColor(new Color(22, 26, 64, 240)); g.fillRoundRect(px, py, pw, ph, 20, 20);
         g.setColor(new Color(255, 215, 120)); g.setStroke(new BasicStroke(3)); g.drawRoundRect(px, py, pw, ph, 20, 20); g.setStroke(new BasicStroke(1));
-        g.setFont(new Font("SansSerif", Font.BOLD, 20)); g.setColor(new Color(255, 225, 140)); g.drawString("Itens", px + 24, py + 34);
+        g.setFont(new Font("SansSerif", Font.BOLD, 20)); g.setColor(new Color(255, 225, 140)); g.drawString(Lang.t("Itens"), px + 24, py + 34);
         g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.setColor(new Color(255, 255, 255, 180));
-        g.drawString(found().size() + " / " + KEYS.length + " encontrados", px + pw - 150, py + 32);
+        g.drawString(Lang.t(found().size() + " / " + KEYS.length + " encontrados"), px + pw - 150, py + 32);
 
         int cell = 64, gap = 10, gx = px + (pw - (4 * cell + 3 * gap)) / 2, gy = py + 50;
         for (int i = 0; i < 12; i++) {                                    // grade 4 x 3
@@ -152,10 +152,10 @@ final class Inventory {
             g.setColor(real ? new Color(40, 46, 104) : new Color(30, 34, 76)); g.fillRoundRect(x, y, cell, cell, 12, 12);
             if (real) {
                 int st = state(KEYS[i]);
-                if (st == 0) { g.setColor(new Color(90, 98, 150)); g.setFont(new Font("SansSerif", Font.BOLD, 28)); g.drawString("?", x + cell / 2 - 8, y + cell / 2 + 10); }
+                if (st == 0) { g.setColor(new Color(90, 98, 150)); g.setFont(new Font("SansSerif", Font.BOLD, 28)); g.drawString(Lang.t("?"), x + cell / 2 - 8, y + cell / 2 + 10); }
                 else {
                     drawIcon(g, i, x + 10, y + 10, 44, st == 2);
-                    if (st == 2) { g.setColor(new Color(110, 230, 140)); g.setFont(new Font("SansSerif", Font.BOLD, 14)); g.drawString("✓", x + cell - 19, y + cell - 7); }
+                    if (st == 2) { g.setColor(new Color(110, 230, 140)); g.setFont(new Font("SansSerif", Font.BOLD, 14)); g.drawString(Lang.t("✓"), x + cell - 19, y + cell - 7); }
                 }
             }
             g.setColor(selected ? new Color(255, 215, 120) : new Color(80, 90, 150)); g.setStroke(new BasicStroke(selected ? 3 : 1));
@@ -167,24 +167,24 @@ final class Inventory {
         if (sel < KEYS.length) {
             String k = KEYS[sel]; int st = state(k);
             if (st == 0) {
-                g.setFont(new Font("SansSerif", Font.BOLD, 18)); g.setColor(new Color(160, 170, 220)); g.drawString("???", px + 44, dy + 36);
+                g.setFont(new Font("SansSerif", Font.BOLD, 18)); g.setColor(new Color(160, 170, 220)); g.drawString(Lang.t("???"), px + 44, dy + 36);
                 g.setFont(new Font("SansSerif", Font.PLAIN, 14)); g.setColor(new Color(255, 255, 255, 200));
-                g.drawString("Você ainda não encontrou este item. Continue explorando!", px + 44, dy + 66);
+                g.drawString(Lang.t("Você ainda não encontrou este item. Continue explorando!"), px + 44, dy + 66);
             } else {
                 drawIcon(g, sel, px + 36, dy + 18, 64, st == 2);
-                g.setFont(new Font("SansSerif", Font.BOLD, 18)); g.setColor(new Color(255, 225, 140)); g.drawString(NAMES[sel], px + 120, dy + 34);
+                g.setFont(new Font("SansSerif", Font.BOLD, 18)); g.setColor(new Color(255, 225, 140)); g.drawString(Lang.t(NAMES[sel]), px + 120, dy + 34);
                 g.setFont(new Font("SansSerif", Font.PLAIN, 12));
                 g.setColor(st == 2 ? new Color(110, 230, 140) : new Color(150, 220, 255));
-                g.drawString(st == 2 ? "Usado / entregue" : k.equals("mapa") && game.stage < 7 ? "Em mãos (incompleto)" : "Em mãos", px + 120, dy + 52);
+                g.drawString(Lang.t(st == 2 ? "Usado / entregue" : k.equals("mapa") && game.stage < 7 ? "Em mãos (incompleto)" : "Em mãos"), px + 120, dy + 52);
                 boolean mapa = k.equals("mapa");
                 g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.setColor(new Color(255, 255, 255, 230));
                 FontMetrics fm = g.getFontMetrics();
                 int ty = dy + 76, width = mapa ? pw - 184 - 120 - 24 : pw - 36 - 120, linhas = 0;
-                for (String line : game.wrap(desc(k, st), fm, width)) { if (linhas++ >= 4) break; g.drawString(line, px + 120, ty); ty += 18; }
+                for (String line : game.wrap(desc(k, st), fm, width)) { if (linhas++ >= 4) break; g.drawString(Lang.t(line), px + 120, ty); ty += 18; }
                 if (mapa) drawMapPieces(g, px + pw - 184, dy + 22, 150, 80);
             }
         }
         g.setFont(new Font("SansSerif", Font.PLAIN, 11)); g.setColor(new Color(255, 255, 255, 140));
-        g.drawString("Setas: escolher   |   Z / ESC / I: fechar", px + 24, py + ph - 4);
+        g.drawString(Lang.t("Setas: escolher   |   Z / ESC / I: fechar"), px + 24, py + ph - 4);
     }
 }

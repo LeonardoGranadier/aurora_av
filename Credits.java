@@ -65,7 +65,7 @@ final class Credits implements Feature {
         }
         if (!game.access.reduced && scroll > total + Game.H) scroll = 0;
         g.setColor(new Color(255, 255, 255, 150)); g.setFont(new Font("SansSerif", Font.PLAIN, 11));
-        g.drawString(game.access.reduced ? "Setas: rolar · Z / Esc: sair" : "Z / Esc: sair", Game.W - 170, Game.H - 12);
+        g.drawString(Lang.t(game.access.reduced ? "Setas: rolar · Z / Esc: sair" : "Z / Esc: sair"), Game.W - 170, Game.H - 12);
     }
     @Override public void key(int key) {
         if (game.access.reduced && (key == KeyEvent.VK_DOWN || key == KeyEvent.VK_UP)) {   // sem rolagem automática

@@ -71,6 +71,7 @@ final class Explorer implements Feature {
     @Override public void load(Properties p) {
         name = clean(p.getProperty("explorador.nome", ""));
         asked = Boolean.parseBoolean(p.getProperty("explorador.perguntado", "false"));
+        if (!name.isBlank()) Lang.addNames(name);
         form = parseForm(p);
         try { playSeconds = Math.max(0, Long.parseLong(p.getProperty("explorador.tempo", "0"))); } catch (NumberFormatException e) { playSeconds = 0; }
         unlocked.clear();
@@ -136,7 +137,7 @@ final class Explorer implements Feature {
             if (key == KeyEvent.VK_BACK_SPACE && !name.isEmpty()) { name = name.substring(0, name.length() - 1); game.audio.sfx("back"); }
             else if (key == KeyEvent.VK_ESCAPE && legacy) { name = ""; game.audio.sfx("back"); game.state = Game.PLAY; game.save(false); }
             else if (key == KeyEvent.VK_ESCAPE) { game.audio.sfx("back"); game.openTitle(); }
-            else if (key == KeyEvent.VK_ENTER && !name.isBlank()) { name = clean(name); step = 1; game.audio.sfx("confirm"); }
+            else if (key == KeyEvent.VK_ENTER && !name.isBlank()) { name = clean(name); Lang.addNames(name); step = 1; game.audio.sfx("confirm"); }
             return;
         }
         if (key == KeyEvent.VK_UP) { formSel = (formSel + FORMS.length - 1) % FORMS.length; game.audio.sfx("select"); }
@@ -212,7 +213,8 @@ final class Explorer implements Feature {
             "Álbum: " + Arrays.stream(game.life.catches).filter(c -> c > 0).count() + "/8 espécies      Regiões: "
                 + game.worldMap.visited.size() + "/" + WorldMap.REGIONS.length,
             "Conchas secretas: " + game.shells.found() + "/" + SecretShells.SPOTS.length + "      Conquistas: " + unlocked.size() + "/" + ACHIEVEMENTS.size(),
-            game.trades.complete() ? "Corrente de trocas completa!" : game.trades.item() == null ? "Troca: " + game.trades.hint() : "Troca: " + game.trades.item() + ". " + game.trades.hint()
+            game.trades.complete() ? Lang.done(Lang.t("Corrente de trocas completa!")) : Lang.done(Lang.t("Troca:") + " "
+                + (game.trades.item() == null ? "" : Lang.t(game.trades.item()) + ". ") + Lang.t(game.trades.hint()))
         };
         for (int i = 0; i < rows.length - 1; i++) game.life.text(g, rows[i], 166, 142 + i * 22, 420, i == 0 ? 16 : 14);
         game.life.text(g, rows[rows.length - 1], 166, 142 + (rows.length - 1) * 22, 420, 11);
@@ -227,7 +229,7 @@ final class Explorer implements Feature {
         Achievement a = ACHIEVEMENTS.get(cardSel);
         boolean got = unlocked.contains(a.id());
         game.life.text(g, (got ? "★ " : "? ") + a.name(), 48, 412, 540, 15);
-        game.life.text(g, got ? a.description() : "Ainda não conquistada. " + a.description(), 48, 434, 540, 13);
+        game.life.text(g, got ? a.description() : Lang.done(Lang.t("Ainda não conquistada.") + " " + Lang.t(a.description())), 48, 434, 540, 13);
     }
 
     int chapter() { return chapterOf(game.stage); }
@@ -241,6 +243,6 @@ final class Explorer implements Feature {
         g.setColor(got ? new Color(255, 255, 255, 230) : new Color(160, 168, 176));
         g.setFont(new Font("SansSerif", Font.BOLD, 18));
         String mark = got ? "★" : "?";
-        g.drawString(mark, x + 20 - g.getFontMetrics().stringWidth(mark) / 2, y + 27);
+        g.drawString(Lang.t(mark), x + 20 - g.getFontMetrics().stringWidth(Lang.t(mark)) / 2, y + 27);
     }
 }

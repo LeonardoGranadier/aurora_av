@@ -33,11 +33,12 @@ final class AdventureJournal {
     void record(Npc npc, int previousStage) {
         if (game.dlg == null || !Arrays.asList(CLUES).contains(npc.id)) return;
         if (npc.id.equals("capita") && previousStage != 5 || npc.id.equals("prof") && previousStage != 22) return;
-        clues.putIfAbsent(npc.id, String.join(" ", game.dlg));
+        clues.putIfAbsent(npc.id, String.join("\n", game.dlg));      // uma fala por linha: cada uma é traduzida ao desenhar
     }
     void open(int from) { page = latest(); scroll = 0; returnState = from; game.down.clear(); game.state = Game.JOURNAL; }
     void key(int key) {
         if (key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_L) { game.state = returnState; game.down.clear(); }
+        else if (key == KeyEvent.VK_Z || key == KeyEvent.VK_ENTER) game.hints.ask();
         else if (key == KeyEvent.VK_LEFT || key == KeyEvent.VK_A) { page = Math.max(0, page - 1); scroll = 0; }
         else if (key == KeyEvent.VK_RIGHT || key == KeyEvent.VK_D) { page = Math.min(latest(), page + 1); scroll = 0; }
         else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_W) scroll = Math.max(0, scroll - 1);
@@ -63,12 +64,15 @@ final class AdventureJournal {
         if (page == 6 && game.stage >= 33) {
             List<String> names = new ArrayList<>();
             for (int i = 0; i < ChapterSeven.GUESTS.length; i++) if ((game.chapterSeven.invited & (1 << i)) != 0) names.add(ChapterSeven.GUEST_NAMES[i]);
-            lines.add("Convidados (" + names.size() + "/" + ChapterSeven.GUESTS.length + "): " + (names.isEmpty() ? "ninguém ainda" : String.join(", ", names)));
+            List<String> shown = new ArrayList<>(); for (String name : names) shown.add(Lang.t(name));
+            lines.add(Lang.done(Lang.t("Convidados (" + names.size() + "/" + ChapterSeven.GUESTS.length + "):") + " "
+                + (names.isEmpty() ? Lang.t("ninguém ainda") : String.join(", ", shown))));
         }
         if (page == 7 && game.stage >= 37) {
             List<String> days = new ArrayList<>();
             for (int d = 0; d < 7; d++) if ((game.chapterEight.played & (1 << d)) != 0) days.add(ChapterEight.DAY_NAMES[d]);
-            lines.add("Melodias tocadas: " + (days.isEmpty() ? "nenhuma ainda" : String.join(", ", days)));
+            List<String> shownDays = new ArrayList<>(); for (String day : days) shownDays.add(Lang.t(day));
+            lines.add(Lang.done(Lang.t("Melodias tocadas:") + " " + (days.isEmpty() ? Lang.t("nenhuma ainda") : String.join(", ", shownDays))));
             lines.add("Melodia de hoje (" + ChapterEight.DAY_NAMES[game.chapterEight.weekday()] + "): " + MelodyScreen.names(game.chapterEight.todaysMelody()));
         }
         if (page == 4 && game.stage >= 27) lines.add(game.stage >= 28 ? "Flor-Constelação: entregue à Mamãe." : "Flor-Constelação: recebida de Cintila.");
@@ -84,7 +88,11 @@ final class AdventureJournal {
         List<String> result = new ArrayList<>();
         FontMetrics fm = game.getFontMetrics(new Font("Dialog", Font.PLAIN, game.access.textSize()));
         for (String line : entries()) {
-            if (line.isEmpty()) result.add(""); else result.addAll(game.wrap(line, fm, 554));
+            if (line.isEmpty()) { result.add(""); continue; }
+            if (!line.contains("\n")) { result.addAll(game.wrap(line, fm, 554)); continue; }
+            StringBuilder translated = new StringBuilder();
+            for (String part : line.split("\n")) translated.append(translated.length() == 0 ? "" : " ").append(Lang.t(part));
+            result.addAll(game.wrap(Lang.done(translated.toString()), fm, 554));
         }
         return result;
     }
@@ -100,20 +108,21 @@ final class AdventureJournal {
     void draw(Graphics2D g) {
         g.setColor(new Color(238, 245, 241)); g.fillRect(0, 0, Game.W, Game.H);
         g.setColor(new Color(34, 62, 64)); g.setFont(new Font("Dialog", Font.BOLD, 22));
-        g.drawString("Diário de Aventuras", 24, 34);
-        g.setFont(new Font("Dialog", Font.BOLD, 16)); g.drawString((page + 1) + ". " + TITLES[page], 42, 76);
+        g.drawString(Lang.t("Diário de Aventuras"), 24, 34);
+        g.setFont(new Font("Dialog", Font.BOLD, 16)); g.drawString(Lang.t((page + 1) + ". " + TITLES[page]), 42, 76);
         g.setFont(new Font("Dialog", Font.PLAIN, game.access.textSize()));
         List<String> lines = wrapped(); scroll = Math.min(scroll, maxScroll());
         for (int i = 0; i < game.access.journalRows() && scroll + i < lines.size(); i++) {
             String line = lines.get(scroll + i);
             g.setColor(line.startsWith(">") ? new Color(154, 82, 32) : new Color(34, 62, 64));
-            g.drawString(line, 42, 108 + i * (game.access.large ? 29 : 22));
+            g.drawString(Lang.t(line), 42, 108 + i * (game.access.large ? 29 : 22));
         }
         g.setColor(new Color(90, 139, 130));
         if (scroll > 0) g.fillPolygon(new int[]{606, 612, 618}, new int[]{109, 101, 109}, 3);
         if (scroll < maxScroll()) g.fillPolygon(new int[]{606, 612, 618}, new int[]{411, 419, 411}, 3);
-        g.drawString((page + 1) + " / " + (latest() + 1), 290, 461);
-        if (page > 0) g.drawString("←", 42, 461);
-        if (page < latest()) g.drawString("→", 582, 461);
+        g.drawString(Lang.t((page + 1) + " / " + (latest() + 1)), 290, 461);
+        g.setFont(new Font("Dialog", Font.PLAIN, 12)); g.drawString(Lang.t("Z: pedir uma dica à Concha do Eco"), 380, 34);
+        if (page > 0) g.drawString(Lang.t("←"), 42, 461);
+        if (page < latest()) g.drawString(Lang.t("→"), 582, 461);
     }
 }
