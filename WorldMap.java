@@ -4,15 +4,18 @@ import java.util.*;
 
 /** Regional overview. Discovery is recorded on arrival, not when rendering. */
 final class WorldMap {
-    record Region(String name, int x, int y) {}
+    /** labelRight puts the name beside the node, keeping its vertical edges and diagonals visible. */
+    record Region(String name, int x, int y, boolean labelRight) {
+        Region(String name, int x, int y) { this(name, x, y, false); }
+    }
     static final Region[] REGIONS = {
-        new Region("Casa", 75, 240), new Region("Vila Aurora", 225, 240),
-        new Region("Floresta Verde", 390, 240), new Region("Praia Azul", 225, 345),
-        new Region("Gruta do Eco", 390, 135), new Region("Ilha das Estrelas", 390, 345),
-        new Region("Templo Estrelado", 550, 345), new Region("Trilha da Montanha", 225, 135),
-        new Region("Cabana do Eremita", 75, 135), new Region("Pico Estrelado", 225, 65),
-        new Region(ChapterFive.TRAIL, 550, 240), new Region(ChapterFive.GARDEN, 550, 135),
-        new Region(Gardening.MAP, 75, 345)
+        new Region("Casa", 75, 205), new Region("Vila Aurora", 225, 205, true),
+        new Region("Floresta Verde", 390, 205), new Region("Praia Azul", 225, 290),
+        new Region("Gruta do Eco", 390, 120), new Region("Ilha das Estrelas", 390, 290),
+        new Region("Templo Estrelado", 550, 290), new Region("Trilha da Montanha", 225, 120),
+        new Region("Cabana do Eremita", 75, 120), new Region("Pico Estrelado", 225, 55),
+        new Region(ChapterFive.TRAIL, 550, 205), new Region(ChapterFive.GARDEN, 550, 120),
+        new Region(Gardening.MAP, 75, 290), new Region(ChapterSix.REEF, 390, 365)
     };
     final Game game;
     final Set<String> visited = new TreeSet<>();
@@ -59,6 +62,20 @@ final class WorldMap {
             case 19 -> Set.of("Pico Estrelado");
             case 23, 24 -> Set.of(ChapterFive.TRAIL);
             case 25, 26 -> Set.of(ChapterFive.GARDEN);
+            case 28, 31, 32 -> Set.of("Praia Azul");
+            case 29 -> {
+                Set<String> remaining = new HashSet<>();
+                for (int i = 0; i < 3; i++) if ((game.chapterSix.heard & (1 << i)) == 0) remaining.add(ChapterSix.SHELL_MAPS[i]);
+                yield remaining;
+            }
+            case 30 -> Set.of(ChapterSix.REEF);
+            case 33 -> {
+                Set<String> remaining = new HashSet<>();
+                for (int i = 0; i < ChapterSeven.GUESTS.length; i++)
+                    if ((game.chapterSeven.invited & (1 << i)) == 0) remaining.add(ChapterSeven.GUEST_MAPS[i]);
+                yield remaining;
+            }
+            case 34, 35 -> Set.of("Pico Estrelado");
             default -> Set.of();
         };
     }
@@ -66,7 +83,9 @@ final class WorldMap {
         return game.maps.get(a).warps.stream().anyMatch(w -> w.to().equals(b))
             || game.maps.get(b).warps.stream().anyMatch(w -> w.to().equals(a))
             || a.equals("Praia Azul") && b.equals("Ilha das Estrelas")
-            || b.equals("Praia Azul") && a.equals("Ilha das Estrelas");
+            || b.equals("Praia Azul") && a.equals("Ilha das Estrelas")
+            || a.equals("Ilha das Estrelas") && b.equals(ChapterSix.REEF)                      // bote da ilha
+            || b.equals("Ilha das Estrelas") && a.equals(ChapterSix.REEF);
     }
     void draw(Graphics2D g) {
         g.setColor(new Color(235, 244, 239)); g.fillRect(0, 0, Game.W, Game.H);
@@ -85,7 +104,6 @@ final class WorldMap {
         g.setStroke(new BasicStroke(2)); Set<String> goals = destinations();
         for (Region r : REGIONS) {
             boolean known = visited.contains(r.name), here = game.map.name.equals(r.name);
-            g.setColor(new Color(235, 244, 239)); g.fillRect(r.x - 69, r.y + 15, 138, 35);
             if (goals.contains(r.name)) {
                 g.setColor(new Color(192, 117, 38)); g.drawOval(r.x - 15, r.y - 15, 30, 30);
             }
@@ -94,15 +112,28 @@ final class WorldMap {
             g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 12));
             if (!known) g.drawString("?", r.x - 4, r.y + 4);
             if (here) { g.fillOval(r.x - 3, r.y - 3, 6, 6); }
-            g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));
+            g.setFont(new Font("Dialog", Font.PLAIN, 12)); FontMetrics fm = g.getFontMetrics();
             String label = known ? r.name : "Desconhecido";
-            java.util.List<String> lines = game.wrap(label, g.getFontMetrics(), 133);
-            int y = r.y + 29;
-            for (String line : lines) { g.drawString(line, r.x - g.getFontMetrics().stringWidth(line) / 2, y); y += 14; }
+            java.util.List<String> lines = game.wrap(label, fm, r.labelRight ? 90 : 133);
+            int width = 0; for (String line : lines) width = Math.max(width, fm.stringWidth(line));
+            int left = r.labelRight ? r.x + 18 : r.x - width / 2, top = r.labelRight ? r.y + 8 : r.y + 15;
+            g.setColor(new Color(235, 244, 239)); g.fillRect(left - 3, top, width + 6, lines.size() * 14 + 7);
+            g.setColor(new Color(36, 66, 65));
+            int y = top + 14;
+            for (String line : lines) {
+                g.drawString(line, r.labelRight ? left : r.x - fm.stringWidth(line) / 2, y); y += 14;
+            }
+            int shells = game.shells.remaining(r.name);
+            if (known && game.shells.listening() && shells > 0) {                // Concha que Escuta: conchas restantes
+                g.setColor(new Color(240, 150, 175)); g.fillOval(r.x + 8, r.y - 20, 14, 14);
+                g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 10));
+                g.drawString("" + shells, r.x + 12, r.y - 9);
+            }
         }
-        g.setColor(new Color(217, 233, 225)); g.fillRect(0, 398, Game.W, 82);
-        game.life.text(g, "Você: " + game.map.name, 20, 418, 600, 14);
-        game.life.text(g, Game.OBJETIVOS[game.stage], 20, 442, 600, 13);
+        g.setColor(new Color(217, 233, 225)); g.fillRect(0, 418, Game.W, 62);
+        String shellNote = game.shells.listening() ? "   ·   Conchas secretas aqui: " + game.shells.remaining(game.map.name) + " de " + game.shells.total(game.map.name) : "";
+        game.life.text(g, "Você: " + game.map.name + shellNote, 20, 438, 600, 14);
+        game.life.text(g, Story.OBJECTIVES[game.stage], 20, 460, 600, 13);
         g.setColor(new Color(192, 117, 38)); g.drawOval(364, 17, 12, 12);
         g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));
         g.drawString("Destino da história", 383, 28);

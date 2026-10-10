@@ -15,13 +15,13 @@ final class ChapterFive {
     ChapterFive(Game game) { this.game = game; }
     void reset() { seeds = 0; Arrays.fill(stones, 3); }
     void buildWorld() {
-        Game.GameMap forest = game.maps.get("Floresta Verde");
+        GameMap forest = game.maps.get("Floresta Verde");
         forest.rect(25, 6, 5, 1, '=');
-        forest.warps.add(new Game.Warp(29, 6, TRAIL, 1, 14));
-        forest.addNpc(new Game.Npc("garden_trail_gate", "Passagem coberta de raízes", 29, 6,
+        forest.warps.add(new Warp(29, 6, TRAIL, 1, 14));
+        forest.addNpc(new Npc("garden_trail_gate", "Passagem coberta de raízes", 29, 6,
             new Color(101, 145, 95)).obj("portao").still().stages(0, 22));
 
-        Game.GameMap trail = new Game.GameMap(TRAIL, 24, 20, '#', true);
+        GameMap trail = new GameMap(TRAIL, 24, 20, '#', true);
         trail.rect(1, 3, 22, 16, '.');
         trail.rect(12, 0, 2, 17, '=');
         trail.rect(0, 14, 14, 2, '=');
@@ -30,36 +30,36 @@ final class ChapterFive {
         trail.rect(17, 14, 5, 4, '~');
         for (int[] tree : new int[][]{{2, 4}, {7, 5}, {8, 10}, {2, 11}, {16, 9}, {21, 5}, {6, 17}, {15, 17}})
             trail.t[tree[1]][tree[0]] = '#';
-        trail.warps.add(new Game.Warp(0, 14, "Floresta Verde", 28, 6));
-        trail.warps.add(new Game.Warp(0, 15, "Floresta Verde", 28, 6));
-        trail.warps.add(new Game.Warp(12, 0, GARDEN, 9, 16));
-        trail.warps.add(new Game.Warp(13, 0, GARDEN, 10, 16));
+        trail.warps.add(new Warp(0, 14, "Floresta Verde", 28, 6));
+        trail.warps.add(new Warp(0, 15, "Floresta Verde", 28, 6));
+        trail.warps.add(new Warp(12, 0, GARDEN, 9, 16));
+        trail.warps.add(new Warp(13, 0, GARDEN, 10, 16));
         for (int i = 0; i < 3; i++) {
             int[][] places = {{4, 6}, {20, 11}, {17, 4}};
-            trail.addNpc(new Game.Npc("garden_seed" + i, "Semente de luz", places[i][0], places[i][1],
+            trail.addNpc(new Npc("garden_seed" + i, "Semente de luz", places[i][0], places[i][1],
                 new Color(255, 222, 105)).obj("garden_seed").stages(23, 23));
         }
-        for (int x = 12; x <= 13; x++) trail.addNpc(new Game.Npc("garden_gate", "Portão do jardim", x, 2,
+        for (int x = 12; x <= 13; x++) trail.addNpc(new Npc("garden_gate", "Portão do jardim", x, 2,
             new Color(159, 180, 165)).obj("portao").still().stages(0, 24));
-        trail.addNpc(new Game.Npc("garden_sign", "Marco da trilha", 10, 14,
+        trail.addNpc(new Npc("garden_sign", "Marco da trilha", 10, 14,
             new Color(150, 155, 155)).obj("mural").still());
         game.maps.put(trail.name, trail);
 
-        Game.GameMap garden = new Game.GameMap(GARDEN, 20, 18, '.', true);
+        GameMap garden = new GameMap(GARDEN, 20, 18, '.', true);
         garden.border('#'); garden.rect(6, 5, 8, 7, 'm');
         garden.rect(9, 1, 2, 17, 'm'); garden.rect(4, 8, 12, 1, 'm');
         garden.rect(2, 2, 3, 3, '~'); garden.rect(15, 2, 3, 3, '~');
-        garden.warps.add(new Game.Warp(9, 17, TRAIL, 12, 1));
-        garden.warps.add(new Game.Warp(10, 17, TRAIL, 13, 1));
-        for (int i = 0; i < 3; i++) garden.addNpc(new Game.Npc("garden_stone" + i, "Pedra celeste",
+        garden.warps.add(new Warp(9, 17, TRAIL, 12, 1));
+        garden.warps.add(new Warp(10, 17, TRAIL, 13, 1));
+        for (int i = 0; i < 3; i++) garden.addNpc(new Npc("garden_stone" + i, "Pedra celeste",
             STONES[i][0], STONES[i][1], new Color(150, 181, 188)).obj("garden_stone").still());
-        garden.addNpc(new Game.Npc("garden_fountain", "Fonte das Constelações", 9, 8,
+        garden.addNpc(new Npc("garden_fountain", "Fonte das Constelações", 9, 8,
             new Color(112, 202, 220)).obj("garden_fountain").still());
-        garden.addNpc(new Game.Npc("garden_mural", "Inscrição do jardim", 6, 12,
+        garden.addNpc(new Npc("garden_mural", "Inscrição do jardim", 6, 12,
             new Color(151, 170, 176)).obj("mural").still());
-        garden.addNpc(new Game.Npc("garden_cintila", "Cintila", 10, 6,
+        garden.addNpc(new Npc("garden_cintila", "Cintila", 10, 6,
             new Color(255, 231, 121)).obj("cintila").stages(26, 99));
-        garden.addNpc(new Game.Npc("fogueira", "", 14, 14, new Color(244, 152, 64)).obj("fogueira").still());
+        garden.addNpc(new Npc("fogueira", "", 14, 14, new Color(244, 152, 64)).obj("fogueira").still());
         game.maps.put(garden.name, garden);
     }
     boolean allowWarp(String to) {
@@ -70,7 +70,7 @@ final class ChapterFive {
         return true;
     }
     boolean solved() { return Arrays.equals(stones, TARGET); }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         String id = npc.id;
         if (id.equals("porta_farol") && game.stage == 21) {
             if (!game.isNight()) game.say("", "Uma pequena luz pisca na lente do farol. Talvez a mensagem fique visível à noite.");
@@ -94,7 +94,8 @@ final class ChapterFive {
                 "Achava que era só uma história. Mas as histórias que dividimos também criam raízes, não é?",
                 "Vamos cuidar desta flor juntos. Sempre haverá uma luz aqui para você voltar.",
                 "Lá no alto, Cintila responde com um brilho. O jardim, a vila e o céu agora compartilham a mesma lembrança.",
-                "FIM DO CAPÍTULO 5. A Flor-Constelação está disponível na decoração da casa.");
+                "Capítulo 5 concluído: Laços entre céu e terra.",
+                "A Flor-Constelação já pode enfeitar a sua casa (tecla H).");
             game.afterDlg = () -> game.setStage(28);
             return true;
         }
@@ -170,7 +171,7 @@ final class ChapterFive {
         }
         g.setColor(color); g.fillPolygon(xx, yy, 10);
     }
-    boolean drawObject(Graphics2D g, Game.Npc npc, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc npc, int x, int y) {
         if (npc.id.startsWith("garden_seed")) {
             int bob = (int) (Math.sin(game.frame / 15.0 + npc.x) * 2);
             star(g, x + 16, y + 17 + bob, 11, new Color(254, 219, 109)); return true;

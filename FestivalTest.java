@@ -27,13 +27,13 @@ public class FestivalTest {
             g.life.updateResidents(0.05);
             Set<Point> used = new HashSet<>();
             for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-                Game.Npc npc = g.life.resident(r.id());
+                Npc npc = g.life.resident(r.id());
                 check(used.add(new Point(npc.x, npc.y)), "Festival NPC origin reservation");
                 if (npc.walking) check(used.add(new Point(npc.toX, npc.toY)), "Festival NPC destination reservation");
             }
         }
         for (int i = 0; i < Bonds.IDS.length; i++) {
-            Game.Npc npc = g.life.resident(Bonds.IDS[i]);
+            Npc npc = g.life.resident(Bonds.IDS[i]);
             check(npc.x == Festival.PLAZA[i][0] && npc.y == Festival.PLAZA[i][1], "Resident reaches festival plaza");
         }
         Set<Point> reachable = VillageLifeTest.reachable(g, 6, 7);
@@ -47,7 +47,7 @@ public class FestivalTest {
         date(g, 8, 10);
         for (int tick = 0; tick < 1600; tick++) g.life.updateResidents(0.05);
         for (VillageLife.Resident r : VillageLife.RESIDENTS) {
-            Game.Npc npc = g.life.resident(r.id());
+            Npc npc = g.life.resident(r.id());
             int[] destination = g.weather.destination(r, 0);
             check(npc.x == destination[0] && npc.y == destination[1], "Daily routine resumes after festival");
         }
@@ -85,7 +85,7 @@ public class FestivalTest {
         }
         check(g.life.bellFinished && f.bellWinDay == 7 && f.prizes == 1, "Both wins award prize");
         check(g.life.bellBest == 0, "Ordinary bell record unchanged");
-        Game.Npc souvenir = g.maps.get("Casa").npcs.stream().filter(n -> n.id.equals("festival_souvenir")).findFirst().orElseThrow();
+        Npc souvenir = g.maps.get("Casa").npcs.stream().filter(n -> n.id.equals("festival_souvenir")).findFirst().orElseThrow();
         check(g.vis(souvenir), "Home souvenir visible");
         f.winBells(); f.award(); check(f.prizes == 1, "No duplicate prize");
         g.life.startBells(); check(!g.life.festivalBells && g.life.bellRounds() == 5, "Normal bell mode restored");

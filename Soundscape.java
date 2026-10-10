@@ -9,7 +9,7 @@ final class Soundscape {
     Soundscape(Game game) { this.game = game; }
     String desired() {
         if (game.state == Game.TITLE || game.state == Game.CONFIRM || !game.map.outdoor) return "";
-        String base = game.map.snowy ? "vento" : game.map.name.equals("Praia Azul") || game.map.name.equals("Ilha das Estrelas")
+        String base = game.map.snowy ? "vento" : game.map.name.equals("Praia Azul") || game.map.name.equals("Ilha das Estrelas") || game.map.name.equals(ChapterSix.REEF)
             ? "mar" : game.map.name.equals(ChapterFive.GARDEN) ? "fonte" : "campo";
         return base + (game.isNight() ? "_noite" : "_dia")
             + (!game.map.snowy && game.weather.current() == Weather.RAIN ? "_chuva" : "");

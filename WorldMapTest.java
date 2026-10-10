@@ -25,10 +25,10 @@ public class WorldMapTest {
         Properties legacy = new Properties(); legacy.setProperty("mapa.visitados", "Fake|Casa");
         g.worldMap.load(legacy); check(g.worldMap.visited.equals(Set.of("Casa", "Ilha das Estrelas")), "Unknown save names ignored");
         g.worldMap.load(new Properties()); check(g.worldMap.visited.equals(Set.of("Ilha das Estrelas")), "Legacy save discovers current region only");
-        for (int stage = 0; stage < Game.OBJETIVOS.length; stage++) {
+        for (int stage = 0; stage < Story.OBJECTIVES.length; stage++) {
             g.stage = stage;
             for (String name : g.worldMap.destinations()) check(g.maps.containsKey(name), "Every story destination exists");
-            check(stage == 28 || !g.worldMap.destinations().isEmpty(), "Active story has destination");
+            check(stage == Story.FINAL || !g.worldMap.destinations().isEmpty(), "Active story has destination");
         }
         g.stage = 6; g.frags = 1;
         check(g.worldMap.destinations().equals(Set.of("Praia Azul", "Gruta do Eco")), "Collected fragments removed from destinations");

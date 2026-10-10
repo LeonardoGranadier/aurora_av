@@ -18,15 +18,15 @@ final class Gardening {
     Gardening(Game game) { this.game = game; reset(); }
     void reset() { Arrays.fill(crops, -1); Arrays.fill(growth, 0); Arrays.fill(watered, -1); Arrays.fill(lastDay, 1); Arrays.fill(stock, 0); can = false; }
     void buildWorld() {
-        Game.GameMap village = game.maps.get("Vila Aurora");
+        GameMap village = game.maps.get("Vila Aurora");
         village.rect(9, 6, 1, 5, '=');
-        village.addNpc(new Game.Npc("yard_gate", "Quintal de Casa", 9, 6, COLORS[2]).obj("portao").still());
-        Game.GameMap yard = new Game.GameMap(MAP, 16, 14, '.', true);
+        village.addNpc(new Npc("yard_gate", "Quintal de Casa", 9, 6, COLORS[2]).obj("portao").still());
+        GameMap yard = new GameMap(MAP, 16, 14, '.', true);
         yard.border('#'); yard.rect(6, 9, 2, 5, '=');
-        yard.warps.add(new Game.Warp(6, 13, "Vila Aurora", 9, 7));
-        yard.warps.add(new Game.Warp(7, 13, "Vila Aurora", 9, 7));
-        yard.addNpc(new Game.Npc("yard_tools", "Bancada de jardinagem", 3, 10, COLORS[1]).obj("yard_tools").still());
-        for (int i = 0; i < PLOTS.length; i++) yard.addNpc(new Game.Npc("yard_plot" + i, "Canteiro", PLOTS[i][0], PLOTS[i][1], COLORS[0]).obj("yard_plot").still());
+        yard.warps.add(new Warp(6, 13, "Vila Aurora", 9, 7));
+        yard.warps.add(new Warp(7, 13, "Vila Aurora", 9, 7));
+        yard.addNpc(new Npc("yard_tools", "Bancada de jardinagem", 3, 10, COLORS[1]).obj("yard_tools").still());
+        for (int i = 0; i < PLOTS.length; i++) yard.addNpc(new Npc("yard_plot" + i, "Canteiro", PLOTS[i][0], PLOTS[i][1], COLORS[0]).obj("yard_plot").still());
         yard.rect(12, 9, 2, 2, '~');
         game.maps.put(MAP, yard);
     }
@@ -37,12 +37,12 @@ final class Gardening {
         for (int i = 0; i < 6; i++) {
             if (crops[i] < 0) { lastDay[i] = today; continue; }
             for (int d = lastDay[i]; d < today && growth[i] < DAYS[crops[i]]; d++)
-                if (watered[i] == d || game.weather.forDay(d) == Weather.RAIN) growth[i]++;
+                if (Seasons.grows(crops[i], d) && (watered[i] == d || game.weather.forDay(d) == Weather.RAIN)) growth[i]++;
             lastDay[i] = today;
         }
     }
     boolean ready(int i) { return crops[i] >= 0 && growth[i] >= DAYS[crops[i]]; }
-    boolean talk(Game.Npc npc) {
+    boolean talk(Npc npc) {
         if (npc.id.equals("yard_gate")) { game.travel(MAP, 6, 12); return true; }
         if (npc.id.equals("yard_tools")) {
             can = true;
@@ -65,7 +65,7 @@ final class Gardening {
     void open() { sync(); plot = -1; target = -1; selling = false; selected = 0; status = ""; game.down.clear(); game.state = Game.GARDENING; }
     void openBasket() {
         open(); int x = game.tx + Game.DX[game.dir], y = game.ty + Game.DY[game.dir];
-        for (Game.Npc n : game.map.npcs) if (game.vis(n) && n.x == x && n.y == y) {
+        for (Npc n : game.map.npcs) if (game.vis(n) && n.x == x && n.y == y) {
             target = game.bonds.residentIndex(n.id);
             selling = n.id.equals("rosa_shop");
             if (selling && (game.hour() < 6 || game.hour() >= 21)) { selling = false; status = "A loja abre das 6h às 21h."; }
@@ -82,7 +82,7 @@ final class Gardening {
         return false;
     }
     boolean plant(int i, int type) {
-        if (!can || i < 0 || i >= 6 || crops[i] != -1 || !unlocked(type)) return false;
+        if (!can || i < 0 || i >= 6 || crops[i] != -1 || !unlocked(type) || !Seasons.grows(type, game.weather.day())) return false;
         return transaction(() -> { crops[i] = type; growth[i] = 0; watered[i] = -1; lastDay[i] = game.weather.day(); });
     }
     boolean water(int i) {
@@ -99,7 +99,7 @@ final class Gardening {
     }
     boolean give(int who, int type) {
         if (stock[type] == 0 || game.bonds.gifted[who] == game.bonds.day()) return false;
-        return transaction(() -> { stock[type]--; game.bonds.gifted[who] = game.bonds.day(); game.bonds.addFriendship(who, who == 2 ? 15 : 8); });
+        return transaction(() -> { stock[type]--; game.bonds.gifted[who] = game.bonds.day(); game.bonds.addFriendship(who, game.giftPoints(who, who == 2 ? 15 : 8)); });
     }
     void key(int key) {
         if (key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_V) { game.state = Game.PLAY; game.down.clear(); return; }
@@ -108,9 +108,20 @@ final class Gardening {
         if (key != KeyEvent.VK_Z && key != KeyEvent.VK_ENTER) return;
         if (plot >= 0) {
             if (plant(plot, selected)) { game.state = Game.PLAY; game.toast("Sementes plantadas."); }
-            else status = "Sementes indisponíveis ou falha ao salvar.";
+            else status = unlocked(selected) && !Seasons.grows(selected, game.weather.day())
+                ? NAMES[selected] + " não cresce no " + game.seasons.name().toLowerCase() + ". Plantas fora de estação ficam esperando."
+                : "Sementes indisponíveis ou falha ao salvar.";
         } else if (selling) status = sell(selected) ? "Uma flor vendida." : "Venda indisponível ou falha ao salvar.";
-        else if (target >= 0) status = give(target, selected) ? "Presente entregue!" : "Sem flores, presente diário já entregue ou falha ao salvar.";
+        else if (target >= 0) {
+            int who = target, type = selected;
+            game.access.ask("Entregar 1 " + NAMES[type] + " para " + Bonds.NAMES[who] + "?", () ->
+                status = give(who, type) ? "Presente entregue!" : "Sem flores, presente diário já entregue ou falha ao salvar.");
+        }
+    }
+    static String seasonsOf(int crop) {
+        java.util.List<String> names = new ArrayList<>();
+        for (int s = 0; s < 4; s++) if (Seasons.CROP_SEASONS[s][crop]) names.add(Seasons.NAMES[s]);
+        return names.size() == 4 ? "todas as estações" : String.join(", ", names);
     }
     void save(Properties p) {
         p.setProperty("horta.regador", Boolean.toString(can));
@@ -132,7 +143,7 @@ final class Gardening {
         for (int i = 0; i < 4; i++) stock[i] = read(p, 4, i, 0, 0, 999999);
     }
     String signature() { return can + Arrays.toString(crops) + Arrays.toString(growth) + Arrays.toString(watered) + Arrays.toString(stock); }
-    boolean drawObject(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc n, int x, int y) {
         if (n.id.equals("yard_tools")) {
             g.setColor(new Color(144, 103, 73)); g.fillRect(x, y + 14, 32, 17);
             g.setColor(new Color(69, 155, 172)); g.fillRect(x + 5, y + 5, 15, 12); g.drawOval(x + 16, y + 2, 11, 11); return true;
@@ -164,7 +175,7 @@ final class Gardening {
             g.setColor(COLORS[i]); g.fillOval(51, y - 10, 19, 19);
             boolean known = unlocked(i) || stock[i] > 0;
             game.life.text(g, known ? NAMES[i] : "Semente desconhecida", 86, y, 310, 16);
-            game.life.text(g, known ? DAYS[i] + " dias regados · " + PRICE[i] + " moedas" : "Após concluir o capítulo 5", 86, y + 21, 320, 13);
+            game.life.text(g, known ? DAYS[i] + " dias regados · " + PRICE[i] + " moedas · " + seasonsOf(i) : "Após concluir o capítulo 5", 86, y + 21, 400, 13);
             game.life.text(g, "× " + stock[i], 495, y, 90, 16);
         }
         game.life.text(g, status, 44, 390, 548, 14);

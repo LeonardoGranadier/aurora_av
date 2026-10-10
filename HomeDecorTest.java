@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 /** Testes de economia, colocacao e migracao. Execute em pasta temporaria vazia. */
 public class HomeDecorTest {
     static void check(boolean ok, String message) { VillageLifeTest.check(ok, message); }
-    static Game.Npc npc(Game g, String map, String id) {
+    static Npc npc(Game g, String map, String id) {
         return g.maps.get(map).npcs.stream().filter(n -> n.id.equals(id)).findFirst().orElseThrow();
     }
     static void run() throws Exception {
@@ -70,7 +70,7 @@ public class HomeDecorTest {
         home.openDecor(Game.PLAY); check(g.state == Game.PLAY, "No editing outside house");
         Set<Point> reachable = VillageLifeTest.reachable(g, 6, 7);
         for (String id : new String[]{"rosa_shop", "beto_market"}) {
-            Game.Npc n = npc(g, "Vila Aurora", id); boolean access = false;
+            Npc n = npc(g, "Vila Aurora", id); boolean access = false;
             for (int d = 0; d < 4; d++) access |= reachable.contains(new Point(n.x + Game.DX[d], n.y + Game.DY[d]));
             check(access, "Shop accessible: " + id);
         }

@@ -12,7 +12,7 @@ import java.util.concurrent.*;
 public class Audio {
     static final float RATE = 22050f;
     static final AudioFormat FMT = new AudioFormat(RATE, 16, 1, true, false);
-    static final File DIR = new File("assets/audio"), CONFIG = new File("config.properties");
+    static final File DIR = GameFiles.asset("audio"), CONFIG = GameFiles.data("config.properties").toFile();
     static final float MUSIC_DB = -9f, SFX_DB = -4f;
 
     volatile boolean available, musicOn = true, sfxOn = true;

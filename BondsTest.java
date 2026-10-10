@@ -8,12 +8,12 @@ import javax.swing.SwingUtilities;
 public class BondsTest {
     static void check(boolean ok, String message) { VillageLifeTest.check(ok, message); }
     static void talk(Game g, String id) { g.talk(g.life.resident(id)); g.dlg = null; }
-    static Game.Npc object(Game g, String id) {
+    static Npc object(Game g, String id) {
         return g.map.npcs.stream().filter(n -> n.id.equals(id)).findFirst().orElseThrow();
     }
     static void collect(Game g, String map, String id) {
         g.map = g.maps.get(map);
-        Game.Npc n = object(g, id);
+        Npc n = object(g, id);
         check(g.vis(n), "Quest object visible: " + id);
         Set<Point> reachable = VillageLifeTest.reachable(g, map.equals("Floresta Verde") ? 1 : 14,
             map.equals("Floresta Verde") ? 10 : 1);
@@ -52,7 +52,7 @@ public class BondsTest {
         g.time = 1320; collect(g, "Praia Azul", "bond_light"); talk(g, "prof");
         check(g.bonds.quests[0] == 2, "Professor request complete");
         g.stage = 15; g.talk(g.life.resident("prof"));
-        check(g.stage == 16 && g.itemState("lanterna") == 1, "Professor campaign preserved"); g.dlg = null;
+        check(g.stage == 16 && g.inventory.state("lanterna") == 1, "Professor campaign preserved"); g.dlg = null;
         g.life.catches[4] = 2; int albumCount = g.life.discovered(); int lucas = g.bonds.friendship[3];
         check(g.bonds.give(3, 4), "Favorite gift accepted");
         check(g.bonds.friendship[3] == lucas + 15, "Favorite bonus");
@@ -74,7 +74,7 @@ public class BondsTest {
         VillageLifeTest.tap(g, KeyEvent.VK_ESCAPE); check(g.state == Game.PLAY, "Journal closes to play");
         g.openPause(); g.choose("Laços de Aurora"); VillageLifeTest.tap(g, KeyEvent.VK_ESCAPE);
         check(g.state == Game.MENU, "Journal closes to pause");
-        g.map = g.maps.get("Vila Aurora"); Game.Npc beto = g.life.resident("beto");
+        g.map = g.maps.get("Vila Aurora"); Npc beto = g.life.resident("beto");
         g.tx = beto.x - 1; g.ty = beto.y; g.dir = 3; g.state = Game.PLAY;
         VillageLifeTest.tap(g, KeyEvent.VK_G); check(g.state == Game.BONDS && g.bonds.giftTarget == 1, "Gift only beside resident");
         check(g.saveBeforeClose(), "Close journal saves");

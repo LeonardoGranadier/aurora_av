@@ -1,5 +1,55 @@
 # Testes de Aventura em Aurora
 
+## Rodar tudo
+
+```sh
+sh testar.sh                      # compila e roda todos os testes
+sh testar.sh WorldMapTest BondsTest
+```
+
+Cada teste roda numa pasta temporaria nova com o atalho `assets`. Em caso de falha,
+o script mostra o fim da saida e mantem a pasta (com saves e imagens) para inspecao.
+As secoes abaixo descrevem a cobertura e o procedimento manual equivalente.
+
+## Sistemas inspirados nos classicos
+
+`ClassicFeaturesTest` cobre conchas secretas (esconderijos solidos e alcancaveis, achado unico,
+recompensas acumuladas do Seu Marinho, contador no mapa), corrente de trocas (mascate aos
+domingos, prioridade da historia, persistencia), observatorio (conjuntos, confirmacao, rollback
+em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, limite diario,
+moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
+modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
+
+## Capitulos 6 e 7
+
+`NewChaptersTest` joga os dois capitulos interagindo como o jogador (ficando ao lado e
+apertando Z): capita a noite, bote para o recife, tres conchas cantoras, cancao com erro e
+acerto, baleia, persistencia, convites (sopa da Mamae, persistencia no meio), Cintila a noite,
+festa com os sete convidados, creditos finais, conquistas, decoracoes e destinos do mapa.
+Tambem cobre a pergunta do nome em partidas antigas (responder, nao repetir, pular com Esc).
+
+## Estacoes e culinaria
+
+`SeasonsCookingTest` cobre a ordem das estacoes e o novo ano, peixes favorecidos sem
+eliminar especies, neve no inverno (fora da praia e da ilha), flores por estacao, anuncios,
+aniversarios (presente em dobro, persistencia), calendario, fogao na parede sem bloquear a
+casa, receitas, confirmacao, rollback de ingredientes, efeitos do dia, lancheira diante de
+morador, limite diario de presentes, gato (area, noite, carinho diario) e as 20 conquistas.
+Renderiza a vila nas quatro estacoes, calendario, cozinha, lancheira, cartao e o gato.
+
+## Arquivos e janela
+
+`GameFilesTest` verifica que o desenvolvimento usa a pasta atual, a pasta de dados
+configuravel da versao distribuida, a localizacao dos assets e a escala da janela
+(2x identica a cena original, faixas pretas centralizadas e reducao abaixo de 1x).
+
+## Acessibilidade
+
+Execute `AccessibilityTest` em pasta temporaria sem save nem accessibility.properties.
+Verifica remapeamento, teclas reservadas/conflitos, acao mantida e solta, preferencias,
+texto ampliado paginado, diario com rolagem, relogio preservado, captura cancelavel,
+confirmacoes de presentes/encomendas e protecao da partida existente. Renderiza as telas.
+
 ## Encomendas da Vila
 
 Execute `VillageOrdersTest` em pasta temporaria vazia com assets. Verifica acesso,

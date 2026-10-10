@@ -56,18 +56,18 @@ final class VillageLife {
         festivalBells = false;
     }
 
-    void buildVillage(Game.GameMap village) {
+    void buildVillage(GameMap village) {
         village.rect(8, 7, 11, 7, '.');
         village.rect(8, 10, 11, 2, '=');
         village.rect(18, 7, 2, 7, '=');
         village.t[6][18] = 'D';
-        village.addNpc(new Game.Npc("beto", "Tio Beto", 19, 13, new Color(62, 149, 128)));
-        village.addNpc(new Game.Npc("rosa", "Dona Rosa", 9, 12, new Color(211, 106, 148)));
-        village.addNpc(new Game.Npc("lucas", "Lucas", 17, 10, new Color(239, 178, 60)));
-        village.addNpc(new Game.Npc("sino", "Sinos da Praça", 11, 12, new Color(236, 191, 68)).obj("sino").still());
+        village.addNpc(new Npc("beto", "Tio Beto", 19, 13, new Color(62, 149, 128)));
+        village.addNpc(new Npc("rosa", "Dona Rosa", 9, 12, new Color(211, 106, 148)));
+        village.addNpc(new Npc("lucas", "Lucas", 17, 10, new Color(239, 178, 60)));
+        village.addNpc(new Npc("sino", "Sinos da Praça", 11, 12, new Color(236, 191, 68)).obj("sino").still());
     }
 
-    Game.Npc resident(String id) {
+    Npc resident(String id) {
         return game.maps.get("Vila Aurora").npcs.stream().filter(n -> n.id.equals(id)).findFirst().orElseThrow();
     }
 
@@ -77,10 +77,10 @@ final class VillageLife {
     }
 
     void updateResidents(double dt) {
-        Game.GameMap village = game.maps.get("Vila Aurora");
+        GameMap village = game.maps.get("Vila Aurora");
         int slot = routineSlot();
         for (Resident r : RESIDENTS) {
-            Game.Npc n = resident(r.id());
+            Npc n = resident(r.id());
             if (n.sleeping) {
                 if (slot == 3) continue;
                 if (!walkable(village, n, n.x, n.y)) continue;
@@ -106,12 +106,12 @@ final class VillageLife {
         }
     }
 
-    boolean walkable(Game.GameMap map, Game.Npc self, int x, int y) {
+    boolean walkable(GameMap map, Npc self, int x, int y) {
         if (map.solid(x, y)) return false;
-        for (Game.Warp w : map.warps) if (w.x() == x && w.y() == y) return false;
+        for (Warp w : map.warps) if (w.x() == x && w.y() == y) return false;
         if (game.map == map && (game.tx == x && game.ty == y
                 || game.moving && game.nx == x && game.ny == y)) return false;
-        for (Game.Npc n : map.npcs) {
+        for (Npc n : map.npcs) {
             if (n == self || !game.vis(n)) continue;
             if (n.x == x && n.y == y || n.walking && n.toX == x && n.toY == y) return false;
         }
@@ -119,7 +119,7 @@ final class VillageLife {
     }
 
     // BFS em tiles reserva origem e destino: NPCs não atravessam o jogador nem uns aos outros.
-    int nextStep(Game.GameMap map, Game.Npc n, int targetX, int targetY) {
+    int nextStep(GameMap map, Npc n, int targetX, int targetY) {
         int[][] first = new int[map.h][map.w];
         for (int[] row : first) Arrays.fill(row, -2);
         ArrayDeque<Point> queue = new ArrayDeque<>();
@@ -137,7 +137,7 @@ final class VillageLife {
         return -1;
     }
 
-    boolean talk(Game.Npc n) {
+    boolean talk(Npc n) {
         switch (n.id) {
             case "beto" -> {
                 if (!rod) {
@@ -228,7 +228,8 @@ final class VillageLife {
     }
 
     int discovered() { int count = 0; for (int n : catches) if (n > 0) count++; return count; }
-    double halfZone() { return 0.20 - FISH[fishIndex].difficulty() * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0); }
+    double halfZone() { return halfZoneFor(fishIndex); }
+    double halfZoneFor(int fish) { return 0.20 - FISH[fish].difficulty() * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0) + game.cooking.fishingBonus(); }
     boolean completeAlbum() { return discovered() == FISH.length; }
     void openAlbum(int from) { albumReturn = from; albumSelection = 0; game.state = Game.ALBUM; }
 
@@ -313,7 +314,7 @@ final class VillageLife {
         p.setProperty("vila.sinos", Integer.toString(bellBest));
         for (int i = 0; i < catches.length; i++) p.setProperty("vila.peixe." + i, Integer.toString(catches[i]));
         for (Resident r : RESIDENTS) {
-            Game.Npc n = resident(r.id()); String prefix = "vila.npc." + r.id();
+            Npc n = resident(r.id()); String prefix = "vila.npc." + r.id();
             p.setProperty(prefix + ".x", Integer.toString(n.x)); p.setProperty(prefix + ".y", Integer.toString(n.y));
             p.setProperty(prefix + ".casa", Boolean.toString(n.sleeping));
         }
@@ -328,16 +329,16 @@ final class VillageLife {
         rod = Boolean.parseBoolean(p.getProperty("vila.vara", "false"));
         bellBest = number(p, "vila.sinos", 0, BELL_ROUNDS);
         for (int i = 0; i < catches.length; i++) catches[i] = number(p, "vila.peixe." + i, 0, 999999);
-        Game.GameMap village = game.maps.get("Vila Aurora");
+        GameMap village = game.maps.get("Vila Aurora");
         for (Resident r : RESIDENTS) {
-            Game.Npc n = resident(r.id()); String prefix = "vila.npc." + r.id();
+            Npc n = resident(r.id()); String prefix = "vila.npc." + r.id();
             int x = number(p, prefix + ".x", n.x, village.w - 1), y = number(p, prefix + ".y", n.y, village.h - 1);
             if (!village.solid(x, y)) { n.x = x; n.y = y; }
             n.sleeping = r.goesHome() && x == 18 && y == 6 && Boolean.parseBoolean(p.getProperty(prefix + ".casa", "false"));
         }
         // Saves anteriores podem colocar o jogador onde agora existe um novo morador.
         for (Resident r : RESIDENTS) {
-            Game.Npc n = resident(r.id());
+            Npc n = resident(r.id());
             if (n.sleeping || walkable(village, n, n.x, n.y)) continue;
             boolean found = false;
             for (int radius = 1; radius < village.w + village.h && !found; radius++) {
@@ -378,7 +379,7 @@ final class VillageLife {
         icon.dispose(); return true;
     }
 
-    boolean drawObject(Graphics2D g, Game.Npc n, int x, int y) {
+    boolean drawObject(Graphics2D g, Npc n, int x, int y) {
         if (!n.id.equals("sino")) return false;
         g.setColor(new Color(86, 99, 94)); g.fillRect(x + 3, y + 3, 4, 30); g.fillRect(x + 25, y + 3, 4, 30);
         g.fillRect(x + 3, y + 3, 26, 4);

@@ -1,4 +1,4 @@
-AVENTURA EM AURORA (demo)  -  precisa de JDK 17+
+AVENTURA EM AURORA  -  precisa de JDK 17+
 
 Rodar (dentro desta pasta):
   sh jogar.sh
@@ -8,10 +8,89 @@ Ou manualmente (dentro desta pasta):
   javac *.java
   java Game
 
+Testes:      sh testar.sh              (todos; ou sh testar.sh WorldMapTest ... — veja TESTES.md)
+Distribuir:  sh empacotar.sh           (dist/AventuraEmAurora/ e .zip: jar + assets + jogar.sh/jogar.bat)
+             sh empacotar.sh --instalador   (tambem instalador nativo com Java embutido, via jpackage)
+
+JANELA
+  A janela abre ampliada (2x, 3x...) conforme a tela e pode ser redimensionada; a cena mantem a proporcao.
+  F11 alterna tela cheia (lembrado em video.properties). F12 tira uma foto sem interface (pasta fotos/).
+  F3 mostra quadros por segundo e o tempo de desenho de cada quadro (verde: abaixo de 16 ms).
+  A cena e desenhada em 640x480 e ampliada, entao o custo nao cresce com o tamanho da janela.
+  Erros inesperados ficam em erros.log, na mesma pasta dos saves.
+
+NOVO JOGO
+  A Mamae pergunta seu nome (ate 12 letras) e como prefere ser chamado(a): menino, menina ou
+  "prefiro nao dizer" (falas neutras). Partidas antigas usam as falas neutras.
+  Shift: correr. C: Cartao do Explorador (nome, tempo de jogo, progresso e 20 conquistas). K: lancheira.
+  Dias da semana aparecem no HUD; o festival e sempre no sabado.
+  Texto dos dialogos aparece letra a letra (ESC > Acessibilidade > Velocidade do texto); Z mostra a pagina inteira.
+  A tecla T (+2h) so funciona no modo desenvolvedor (jogar.sh ja liga; ou java -Daurora.dev=true Game).
+  Os creditos rolam ao fim do capitulo 5 e tambem estao no titulo.
+
+ESTACOES DO ANO
+  Cada estacao dura 28 dias: primavera, verao, outono e inverno (depois, um novo ano). O HUD mostra
+  estacao, dia e dia da semana. Primavera tem petalas, verao luz quente, outono copas douradas e inverno
+  neve na vila, floresta e trilhas (a praia e a ilha nao congelam; no inverno, a chuva cai como neve).
+  Peixes mais comuns (peso dobrado, nenhum desaparece): primavera Truta Verde e Sardinha Azul;
+  verao Peixe-Coral e Carpa Dourada; outono Bagre da Lua e Peixe-Lanterna; inverno Peixe Estelar e Lambari.
+  Flores: margarida (primavera a outono), tulipa (primavera e outono), girassol (primavera e verao),
+  Flor Estelar (todas). Fora de estacao, a semente nao pode ser plantada e a planta ja plantada espera, sem morrer.
+  O festival de sabado muda de nome: Flores, Sol, Colheita e Luzes.
+  Calendario: ESC > Calendario, ou -> na previsao do tempo (F). Mostra festivais, mascate e aniversarios.
+
+ANIVERSARIOS
+  Rosa (primavera 18), Beto (verao 5), Prof. Carvalho (outono 12) e Lucas (inverno 9). No dia, um aviso
+  aparece, a fala muda e qualquer presente (peixe, flor ou prato) vale o dobro de amizade.
+
+CULINARIA
+  O fogao fica na cozinha de casa (parede ao norte, a direita). Z abre as receitas; Z cozinha (com confirmacao).
+  Ingredientes saem do estoque de peixes e flores (o album nao perde capturas). Receitas iniciais da Mamae:
+  Sopa de Lambari, Sardinha na Brasa e Cha de Tulipa. Beto, Rosa e Lucas ensinam a sua com 2 coracoes;
+  a Capita ensina depois do capitulo 3 e Cintila depois do capitulo 5 (as cartas avisam).
+  K abre a lancheira: Z come o prato (efeito ate o fim do dia) ou, diante de um morador, oferece
+  (conta como o presente do dia; pratos favoritos valem mais). Efeitos: presentes +50%, passos mais rapidos,
+  faixa de pesca maior, peixes raros mais comuns, visao noturna, conversas com +3 de amizade.
+  Em casa, esquerda/direita alterna fogao e lancheira.
+
+BOLINHA, O GATO
+  Passeia de dia pelo campo a sudoeste da praca e dorme a noite. Um carinho por dia (Z).
+
+CONCHAS SECRETAS
+  Doze conchas escondidas em arvores e pedras de varias regioes. Passe perto e repare num brilho fraco;
+  olhe para o esconderijo e aperte Z. A cada tres, o Seu Marinho entrega um premio (fale com ele):
+  3 = Concha que Escuta (brilho visivel de longe e contador por regiao no Mapa de Aurora),
+  6 = 40 moedas, 9 = 80 moedas, 12 = Colecao de Conchas para decorar a casa.
+
+CORRENTE DE TROCAS
+  Aos domingos, das 8h as 18h, Seu Bento, o mascate, visita a Praia Azul. Ele entrega uma bolinha de gude
+  que passa de mao em mao: Lenhador, Montanhista, Eremita (depois do portao de gelo), Capita (cais) e
+  Prof. Carvalho, que entrega a Chave do Observatorio. A troca atual e a dica ficam no Cartao (C).
+
+OBSERVATORIO
+  No nordeste da vila. Doe quatro conjuntos (com confirmacao): peixes da vila (Lambari, Carpa Dourada,
+  Bagre da Lua), flores do quintal (margarida, tulipa, girassol), tesouros do mar (6 conchas encontradas e
+  30 moedas) e luz das estrelas (Chave do Observatorio e 100 moedas). Cada conjunto muda a vila:
+  lanternas a noite, canteiros na praca, luneta na praia e, por fim, as constelacoes de Aurora a noite.
+  Peixes saem do estoque (o album nao perde capturas). A Luneta vira decoracao da casa.
+
+CARTAS
+  A caixa de correio azul fica ao lado da porta de casa, na vila. Quando algo acontece, alguem escreve:
+  as cartas chegam na manha seguinte, ate duas por dia. A bandeira vermelha indica carta nova.
+  Algumas trazem moedas, guardadas na primeira leitura.
+
 (Opcional) Regerar os sprites provisorios:   java MakeAssets
 (Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
 
 CONTROLES
+  ESC > Acessibilidade e controles lista os atalhos e permite remapear cada acao.
+  Setas navegam, Enter escolhe; pressione a nova tecla. Esc cancela. Teclas em uso sao recusadas.
+  Esc, Enter/Espaco, setas, notas 1-4 e Backspace continuam disponiveis como teclas fixas.
+  O texto grande se aplica a dialogos e diario: dialogos paginam e o diario mantem a rolagem.
+  Reduzir movimento congela efeitos decorativos e elimina transicoes de tela, sem mudar as regras
+  nem o tempo da pesca/sinos. Preferencias ficam em accessibility.properties, separadas da partida.
+  Presentes de peixes/flores e encomendas pedem confirmacao; Cancelar e a escolha inicial.
+  Novo jogo com partida existente exige confirmacao e nao prossegue se o save nao puder ser removido.
   Encomendas: Z no mural azul ao sul do sino da praca; cima/baixo escolhe, Z entrega, ESC volta.
   V abre a cesta de flores. Diante de um morador, oferece flores; diante da banca da Rosa, vende.
   Setas/WASD mover | Z, Enter, Espaco falar/escolher | I caixa de itens | ESC menu de pausa | M liga/desliga musica
@@ -59,7 +138,8 @@ ENCOMENDAS DA VILA
 
 JARDINAGEM NO QUINTAL
   O portao ao lado direito da casa na vila leva ao quintal. Pegue o regador na bancada com Z.
-  Ha seis canteiros e sementes renovaveis: margarida (2 dias regados), tulipa (3), girassol (4).
+  Ha seis canteiros e sementes renovaveis: margarida (2 dias regados), tulipa (3), girassol (4),
+  cada uma na sua estacao (veja ESTACOES DO ANO).
   Concluir o capitulo 5 libera a Flor Estelar (5 dias regados), diferente da lembranca de decoracao.
   Z no canteiro vazio abre a escolha de sementes; cima/baixo escolhe e Z planta, ESC cancela.
   Z no canteiro plantado rega ou colhe. Cada dia regado completo acrescenta um dia de crescimento.
@@ -132,7 +212,7 @@ VIDA NA VILA
   As notas tambem acendem: e possivel jogar sem som. Z tenta novamente; ESC sai.
   Vara, capturas, recorde e posicoes dos moradores ficam no save. Saves antigos sao aceitos.
 
-HISTORIA (5 capitulos)
+HISTORIA (7 capitulos)
   Cap. 1 - A Luz do Farol:      carta -> concha na floresta -> farol aceso.
   Cap. 2 - O Chamado da Capita: garrafa na praia (so de noite) -> Gruta do Eco ->
                                  3 pedacos do mapa: vila (noite), praia (dia), fundo da gruta.
@@ -150,10 +230,21 @@ HISTORIA (5 capitulos)
            para Mamae. A Flor-Constelacao sera liberada no editor de decoracao da casa.
            Sementes e simbolos ficam salvos. Os dois mapas podem ser revisitados.
 
+  Cap. 6 - A Cancao da Mare: depois do cap. 5, fale com a Capita no cais a noite. Ouca as tres conchas
+           cantoras (fundo da Gruta do Eco, praia leste da Ilha e Recife de Coral; o bote fica na praia leste
+           da ilha). Na ponta do recife, a noite, toque a cancao (setas ou 1-4; as notas aparecem em cores e
+           no diario). A baleia Mare volta; conte a Capita. Recompensa: Escama da Mare (decoracao).
+  Cap. 7 - O Festival do Ceu: numa noite clara, a porta do farol guarda o convite de Cintila. Convide
+           Mamae, Seu Marinho, Capita, Prof., Tio Beto, Dona Rosa e Lucas. Leve um prato na lancheira (a Mamae
+           garante uma sopa) e suba ao Pico Estrelado a noite. Converse com todos e fale com Cintila: fim da
+           campanha, creditos e a Lanterna do Festival para a casa. O jogo continua depois do final.
+
+  Partidas antigas sem nome: ao Continuar, a Mamae pergunta o nome e o tratamento uma vez (Esc pula).
+
 CAMPO DE GELO (cap. 4)
   Ao pisar no gelo voce desliza ate bater numa pedra, arvore ou personagem. Use as pedras para parar no lugar certo.
   O layout foi validado por busca: tem solucao (11 movimentos), tem volta e nao deixa o jogador preso.
-  Para mudar: Game.java > buildMaps() > array "pedras" (rode uma busca antes: o gelo precisa continuar resolvivel).
+  Para mudar: World.java > build() > array "pedras" (rode uma busca antes: o gelo precisa continuar resolvivel).
   A Cintila (estrelinha) te segue na parte final: e uma amiga da historia, nao uma criatura capturada.
   A Lanterna (a partir do cap. 4) aumenta o raio de luz nas areas escuras (gruta e templo).
 
@@ -186,6 +277,10 @@ AUDIO
 SAVE
   - savegame.properties (texto puro; apague para zerar). Automatico ao mudar a historia, trocar de mapa e fechar;
     manual em ESC > Salvar jogo. Saves de versoes anteriores continuam funcionando.
+  - Onde fica: "java Game" e jogar.sh usam a pasta do jogo (desenvolvimento). A versao de dist/ (Aurora.java)
+    usa a pasta de dados do usuario: Linux ~/.local/share/aventura-aurora, Windows %APPDATA%\Aventura em Aurora,
+    macOS ~/Library/Application Support/Aventura em Aurora. Para levar uma partida, copie os .properties.
+    Outra pasta: java -Daurora.dados=PASTA -jar AventuraEmAurora.jar
 
 TROCAR SPRITES: substitua qualquer PNG de assets/ mantendo o nome (qualquer resolucao).
 Se um PNG nao existir, o jogo desenha aquele item por codigo.
@@ -199,11 +294,26 @@ Se um PNG nao existir, o jogo desenha aquele item por codigo.
   Personagens (folha 3x4; colunas: parado|passo1|passo2; linhas: baixo|cima|esquerda|direita):
          player, mae, prof, marinho, lenhador, capita, eremita, montanhista            (* = fundo transparente)
 
-COMO ADICIONAR CONTEUDO (em Game.java)
+ORGANIZACAO DO CODIGO
+  Game.java        janela, laco principal, movimento, menus, save/load e desenho do mundo
+  World.java       mapas da campanha (capitulos 1-4); Npc.java, GameMap.java e Warp.java descrevem o mundo
+  Story.java       objetivos, faixas de capitulo e dialogos dos capitulos 1-4
+  Inventory.java   caixa de itens (tecla I)
+  Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
+  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat
+                   sistemas inspirados nos classicos
+                   (veja ESTUDO-DE-DESIGN.md)
+  GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida
+  Demais classes   um sistema cada (ChapterFive, VillageLife, Bonds, Festival, HomeDecor, Weather, Gardening,
+                   VillageOrders, WorldMap, AdventureJournal, Soundscape, Accessibility, Audio), com seu proprio
+                   buildWorld/reset/save/load/talk/key/draw, chamados por Game.
+
+COMO ADICIONAR CONTEUDO
   - NPC/objeto: map.addNpc(new Npc(id, nome, x, y, cor).obj("sprite").still().when("noite").stages(min, max))
-  - Dialogo/progresso: case em talk(), com say(...) e setStage(n); acao ao fim do dialogo: afterDlg = () -> ...
+  - Dialogo/progresso: case em Story.talk(), com game.say(...) e game.setStage(n);
+    acao ao fim do dialogo: game.afterDlg = () -> ...  Texto do objetivo: Story.OBJECTIVES. Faixa: Story.banner().
   - Mapa com neve: GameMap.snowy = true e clear = 'n'. Gelo: tile 'i'. Neve: tile 'n'.
-  - Novo item na caixa: ITEM_KEYS / ITEM_NAMES / ITEM_COLORS, itemState() e itemDesc() (+ sprite item_<chave>.png)
-  - Viajar por codigo: travel("Mapa", x, y).  Coletavel: take(n).  Novo mapa: buildMaps() + Warp nas duas pontas.
-  - Musica do novo mapa: musicFor().  Novo dado no save: save() e loadGame().
+  - Novo item na caixa: Inventory.KEYS / NAMES / COLORS, state() e desc() (+ sprite item_<chave>.png)
+  - Viajar por codigo: travel("Mapa", x, y).  Coletavel: take(n).  Novo mapa: World.build() + Warp nas duas pontas.
+  - Musica do novo mapa: Game.musicFor().  Novo dado no save: Game.save() e Game.loadGame().
   - Cuidado ao fechar passagens: use arvores/paredes de lado a lado (neve e andavel; um NPC sozinho no corredor pode ser contornado).
