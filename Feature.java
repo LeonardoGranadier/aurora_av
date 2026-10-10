@@ -28,6 +28,13 @@ interface Feature {
     /** Elementos sobre o mapa, abaixo do HUD. */
     default void drawWorld(Graphics2D g, int camX, int camY) {}
 
+    /** O jogador tentou andar para (x, y), ocupado: true se o sistema empurrou o que estava lá e liberou a passagem. */
+    default boolean push(int x, int y, int dir) { return false; }
+    /** O jogador terminou um passo em (x, y). */
+    default void stepped(int x, int y) {}
+    /** O jogador chegou a um mapa (porta, viagem ou carregamento). */
+    default void arrive(GameMap map) {}
+
     /** Avanço do relógio durante o jogo (estado PLAY). */
     default void update(double dt) {}
     /** Tela própria: o estado de tela que este sistema controla. */

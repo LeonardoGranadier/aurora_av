@@ -31,7 +31,7 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ⏳ **Controle/gamepad.** Java não lê controles sem biblioteca nativa (SDL via LWJGL ou Jamepad).
   As ações já passam por `Accessibility.translate`, então o mapeamento entra num único lugar.
   Exige trocar o build para Gradle/Maven por causa das dependências.
-- ⏳ Vários espaços de save (3 slots) com miniatura.
+- ✅ Três espaços de save com nome, capítulo e estação de cada partida.
 - ⏳ Dicas em camadas para quem travar (coruja/concha do eco: vaga → específica).
 
 ## 3. Conteúdo e profundidade (P1)
@@ -49,15 +49,15 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Capítulo 6, A Canção da Maré**: conchas cantoras, Recife de Coral (região nova), canção e a baleia guardiã.
 - ✅ **Capítulo 7, O Festival do Céu**: convites, banquete com a culinária e festa no Pico; novo final com créditos.
 - ✅ Partidas antigas: a Mamãe pergunta nome e tratamento uma vez.
-- ⏳ Capítulo 8 (ideia): a irmã do Lucas volta à vila; uma melodia por dia da semana leva a um lugar novo.
-- ⏳ **Puzzles opcionais** com os itens da história (Lanterna revelando símbolos, blocos empurráveis na gruta).
+- ✅ **Capítulo 8, A Melodia da Semana**: melodias por dia da semana, Vale dos Ecos e ponte de pedras; novo final.
+- ✅ **Enigmas opcionais**: pedras empurráveis (Ruínas do Vale), pegadas reveladas pela Lanterna, baú que o Cristal derrete.
 
 ## 4. Encantos (P2)
 
 - ✅ Modo foto (F12), pose de "item obtido", créditos com resumo da jornada.
 - ✅ Lanternas e canteiros na vila, luneta na praia, constelações no observatório.
 - ✅ Gato da vila. ⏳ Gaivotas na praia e outros animais.
-- ⏳ Música própria para cada estação (o sintetizador de `Audio` permite variações).
+- ✅ Música própria de cada estação na vila e na floresta.
 - ⏳ Rádio com músicas e notícias da vila (estilo Pokégear).
 
 ## 5. Distribuição e divulgação 🧑

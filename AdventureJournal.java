@@ -6,8 +6,8 @@ import java.util.List;
 /** Campaign history derived from progress; optional clues require an actual conversation. */
 final class AdventureJournal {
     static final String[] TITLES = {"A Luz do Farol", "O Chamado da Capitã", "A Ilha das Estrelas", "A Estrela Cadente", "O Jardim das Constelações",
-        "A Canção da Maré", "O Festival do Céu"};
-    static final int[] START = {0, 4, 8, 15, 22, 28, 32}, END = {4, 8, 15, 21, 28, 32, 36};
+        "A Canção da Maré", "O Festival do Céu", "A Melodia da Semana"};
+    static final int[] START = {0, 4, 8, 15, 22, 28, 32, 36}, END = {4, 8, 15, 21, 28, 32, 36, 42};
     static final String[] SUMMARIES = {
         "A carta levou você até Seu Marinho. A Concha Brilhante devolveu a luz ao farol.",
         "O bilhete da Capitã Estrela revelou um mapa partido. Os três fragmentos foram reunidos.",
@@ -15,7 +15,8 @@ final class AdventureJournal {
         "Na montanha, você encontrou Cintila e a ajudou a voltar ao céu pelo farol.",
         "O jardim voltou a florescer. Cintila ofereceu uma Flor-Constelação, agora compartilhada com Mamãe.",
         "Três conchas cantoras ensinaram a canção da Maré. Tocada na ponta do recife, ela trouxe a baleia guardiã de volta.",
-        "Sete amigos subiram ao Pico Estrelado. Sob uma chuva de estrelas, Aurora inteira celebrou o Festival do Céu."
+        "Sete amigos subiram ao Pico Estrelado. Sob uma chuva de estrelas, Aurora inteira celebrou o Festival do Céu.",
+        "As melodias da semana abriram o caminho até o Vale dos Ecos. A ponte subiu, e Lia voltou para os braços do Lucas."
     };
     static final String[] CLUES = {"garrafa", "capita", "mural", "prof", "garden_sign", "garden_mural"};
     static final String[] CLUE_NAMES = {"Bilhete da Capitã", "Os fragmentos", "Inscrição do templo", "O caminho do jardim", "Marco da trilha", "Inscrição do jardim"};
@@ -63,6 +64,12 @@ final class AdventureJournal {
             List<String> names = new ArrayList<>();
             for (int i = 0; i < ChapterSeven.GUESTS.length; i++) if ((game.chapterSeven.invited & (1 << i)) != 0) names.add(ChapterSeven.GUEST_NAMES[i]);
             lines.add("Convidados (" + names.size() + "/" + ChapterSeven.GUESTS.length + "): " + (names.isEmpty() ? "ninguém ainda" : String.join(", ", names)));
+        }
+        if (page == 7 && game.stage >= 37) {
+            List<String> days = new ArrayList<>();
+            for (int d = 0; d < 7; d++) if ((game.chapterEight.played & (1 << d)) != 0) days.add(ChapterEight.DAY_NAMES[d]);
+            lines.add("Melodias tocadas: " + (days.isEmpty() ? "nenhuma ainda" : String.join(", ", days)));
+            lines.add("Melodia de hoje (" + ChapterEight.DAY_NAMES[game.chapterEight.weekday()] + "): " + MelodyScreen.names(game.chapterEight.todaysMelody()));
         }
         if (page == 4 && game.stage >= 27) lines.add(game.stage >= 28 ? "Flor-Constelação: entregue à Mamãe." : "Flor-Constelação: recebida de Cintila.");
         lines.add(""); lines.add("Pistas registradas");

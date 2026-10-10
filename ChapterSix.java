@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.*;
 
 /**
@@ -20,8 +19,6 @@ final class ChapterSix implements Feature {
 
     final Game game;
     int heard;          // bits das conchas ouvidas
-    int progress;       // notas certas na tentativa atual
-    String status = "";
 
     ChapterSix(Game game) { this.game = game; }
 
@@ -32,7 +29,7 @@ final class ChapterSix implements Feature {
     }
     boolean whaleHome() { return game.stage >= TELL; }
 
-    @Override public void reset() { heard = 0; progress = 0; status = ""; }
+    @Override public void reset() { heard = 0; }
 
     @Override public void buildWorld() {
         GameMap reef = new GameMap(REEF, 24, 16, '~', true);
@@ -105,7 +102,7 @@ final class ChapterSix implements Feature {
                     : "Ao longe, um jato de água sobe do mar. A Maré vigia a baía.");
                 else if (game.stage < PLAY_SONG) game.say("", "A ponta do recife olha para o mar aberto. O vento parece cantarolar algo incompleto.");
                 else if (!game.isNight()) game.say("", "O mar está calmo demais. O canto da Maré só responde à noite. A fogueira do recife permite esperar.");
-                else { progress = 0; status = ""; game.down.clear(); game.state = Game.SONG; }
+                else game.melody.open("Canção da Maré", "As notas também aparecem em cores: dá para tocar sem som.", SONG, this::whaleReturns);
             }
             default -> { return false; }
         }
@@ -118,42 +115,14 @@ final class ChapterSix implements Feature {
         return b.toString();
     }
 
-    // ---------- Tocar a canção ----------
-    @Override public boolean owns(int state) { return state == Game.SONG; }
-    @Override public void key(int key) {
-        if (key == KeyEvent.VK_ESCAPE) { game.audio.sfx("back"); game.state = Game.PLAY; game.down.clear(); return; }
-        int note = switch (key) {
-            case KeyEvent.VK_UP, KeyEvent.VK_1 -> 0;
-            case KeyEvent.VK_RIGHT, KeyEvent.VK_2 -> 1;
-            case KeyEvent.VK_DOWN, KeyEvent.VK_3 -> 2;
-            case KeyEvent.VK_LEFT, KeyEvent.VK_4 -> 3;
-            default -> -1;
-        };
-        if (note < 0) return;
-        game.audio.sfx("bell" + note);
-        if (note != SONG[progress]) { progress = 0; status = "A nota se perde no vento. Comece de novo: " + songText() + "."; game.audio.sfx("bad"); return; }
-        if (++progress < SONG.length) { status = "Continue..."; return; }
-        game.state = Game.PLAY; game.down.clear();
+    /** A canção certa traz a Maré de volta. */
+    void whaleReturns() {
         game.setStage(TELL);
         game.audio.sfx("fanfare");
         game.say("", "A última nota se espalha pela água... e o mar responde.",
             "Uma baleia enorme, salpicada de luzes como um céu noturno, ergue-se ao lado do recife: é a Maré!",
             "Ela canta de volta, e o farol, lá longe, pisca em resposta. A guardiã encontrou o caminho de casa.",
             "Conte à Capitã Estrela o que aconteceu.");
-    }
-    @Override public void draw(Graphics2D g) {
-        game.life.panel(g, "Canção da Maré", "Toque as notas na ordem · setas ou 1-4 · Esc: sair");
-        for (int i = 0; i < SONG.length; i++) {
-            int x = 70 + i * 104, y = 150;
-            Color c = VillageLife.BELL_COLORS[SONG[i]];
-            boolean played = i < progress;
-            g.setColor(played ? c : new Color(c.getRed(), c.getGreen(), c.getBlue(), 90)); g.fillOval(x, y, 70, 70);
-            g.setColor(new Color(40, 50, 60)); g.setStroke(new BasicStroke(i == progress ? 4 : 1)); g.drawOval(x, y, 70, 70); g.setStroke(new BasicStroke(1));
-            game.life.text(g, VillageLife.BELL_NAMES[SONG[i]], x + 18, y + 96, 80, 16);
-            game.life.text(g, VillageLife.BELL_KEYS[SONG[i]], x + 2, y + 118, 100, 11);
-        }
-        game.life.text(g, status, 48, 330, 540, 15);
-        game.life.text(g, "As notas também aparecem em cores: dá para tocar sem som.", 48, 420, 540, 12);
     }
 
     // ---------- Desenho ----------
@@ -196,7 +165,6 @@ final class ChapterSix implements Feature {
     @Override public void save(Properties p) { p.setProperty("mare.conchas", "" + heard); }
     @Override public void load(Properties p) {
         heard = game.stage >= PLAY_SONG ? 7 : game.stage == LISTEN ? game.life.number(p, "mare.conchas", 0, 7) : 0;
-        progress = 0;
     }
     @Override public String signature() { return "m" + heard; }
 }

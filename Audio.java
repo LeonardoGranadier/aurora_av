@@ -211,6 +211,14 @@ public class Audio {
         theme("cabana",          67, DORIAN,  88, new int[]{0, 3, 4, 0}, 0, "0.12.1.2", 0, 0.18, 0.26, 0.55, false, false, 16);
         theme("pico",            64, LYDIAN,  66, new int[]{0, 4, 2, 3}, 2, "0.2.1.2.", 0, 0.30, 0.30, 0.45, true,  false, 17);
         theme("jardim",          65, LYDIAN,  74, new int[]{0, 3, 5, 4}, 2, "0.21.210", 0, 0.22, 0.27, 0.48, true,  false, 18);
+        // estações (a primavera usa as trilhas originais de dia)
+        theme("vila_verao",      67, MAJOR,  128, new int[]{0, 3, 4, 4}, 1, "01212101", 2, 0.08, 0.22, 0.65, false, false, 19);
+        theme("vila_outono",     64, DORIAN,  96, new int[]{0, 3, 6, 4}, 0, "0.12.1.2", 1, 0.22, 0.24, 0.45, true,  false, 20);
+        theme("vila_inverno",    62, MAJOR,   80, new int[]{0, 5, 3, 4}, 2, "0.1.2.1.", 0, 0.30, 0.26, 0.60, true,  false, 21);
+        theme("floresta_verao",  64, MAJOR,  112, new int[]{0, 4, 3, 4}, 1, "0.12.210", 1, 0.15, 0.22, 0.60, false, false, 22);
+        theme("floresta_outono", 62, DORIAN,  88, new int[]{0, 6, 3, 4}, 0, "0.1.2.1.", 0, 0.28, 0.26, 0.45, true,  false, 23);
+        theme("floresta_inverno",60, MINOR,   70, new int[]{0, 5, 3, 6}, 2, "0...1.2.", 0, 0.38, 0.28, 0.45, true,  false, 24);
+        theme("vale",            65, LYDIAN,  90, new int[]{0, 4, 5, 3}, 2, "01210121", 0, 0.18, 0.28, 0.55, true,  false, 25);
     }
     static final String[] SFX = {"blip", "select", "confirm", "back", "pickup", "door", "bad", "fire",
                                  "fanfare", "save", "sleep", "step", "warp", "slide", "twinkle", "bell0", "bell1", "bell2", "bell3"};

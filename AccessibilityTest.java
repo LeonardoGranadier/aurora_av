@@ -46,7 +46,7 @@ public class AccessibilityTest {
         tap(g, KeyEvent.VK_Q); check(g.state == Game.HANDOFF, "Order confirmation"); tap(g, KeyEvent.VK_ESCAPE);
         check(g.orders.total == 0, "Cancelled order unchanged");
         check(g.save(false), "Existing save prepared"); g.openTitle(); g.choose("Novo jogo");
-        check(g.state == Game.CONFIRM && g.menuSel == 0, "New game protects existing save"); tap(g, KeyEvent.VK_ESCAPE);
+        check(g.state == Game.NAMING && g.slot == 1, "New game uses a free slot instead of erasing"); tap(g, KeyEvent.VK_ESCAPE);
         check(g.state == Game.TITLE && Files.exists(Path.of(Game.SAVE)), "Cancelled new game retains save");
         g.newGame(); check(a.large && a.keys[4] == KeyEvent.VK_Q, "Preferences survive new game");
         System.out.println("PASS: " + VillageLifeTest.checks + " accessibility checks");

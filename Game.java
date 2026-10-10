@@ -39,11 +39,16 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27;
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27, SLOTS_SCREEN = 28;
     static final String VERSION = "1.0.0";
     /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
     static final boolean DEV = Boolean.getBoolean("aurora.dev");
     static final String SAVE = GameFiles.data("savegame.properties").toString(), BACKUP = SAVE + ".bak";
+    /** Três espaços de save; o primeiro é o arquivo de sempre (partidas antigas continuam nele). */
+    static final String[] SLOTS = {SAVE, GameFiles.data("savegame2.properties").toString(), GameFiles.data("savegame3.properties").toString()};
+    int slot;
+    String savePath() { return SLOTS[slot]; }
+    String backupPath() { return savePath() + ".bak"; }
 
     // ---------- Estado do jogo ----------
     final Map<String, GameMap> maps = new HashMap<>();
@@ -84,13 +89,17 @@ public class Game extends JPanel implements KeyListener {
     final Mailbox mail = new Mailbox(this);
     final Explorer explorer = new Explorer(this);
     final Credits credits = new Credits(this);
+    final MelodyScreen melody = new MelodyScreen(this);
     final ChapterSix chapterSix = new ChapterSix(this);
     final ChapterSeven chapterSeven = new ChapterSeven(this);
+    final ChapterEight chapterEight = new ChapterEight(this);
+    final Puzzles puzzles = new Puzzles(this);
+    final SaveSlots saveSlots = new SaveSlots(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(chapterSix, chapterSeven, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -263,7 +272,10 @@ public class Game extends JPanel implements KeyListener {
                 tx = nx; ty = ny; moving = false; prog = 0;
                 int ax = tx + DX[dir], ay = ty + DY[dir];
                 if (map.at(tx, ty) == 'i' && free(ax, ay)) { nx = ax; ny = ay; moving = true; sliding = true; }   // gelo: continua deslizando
-                else { sliding = false; audio.sfx("step"); checkWarp(); }
+                else {
+                    sliding = false; audio.sfx("step"); checkWarp();
+                    for (Feature f : features) f.stepped(tx, ty);
+                }
             }
         } else if (dlg == null) {
             int d = -1;
@@ -274,7 +286,7 @@ public class Game extends JPanel implements KeyListener {
             if (d >= 0) {
                 dir = d;
                 int ax = tx + DX[d], ay = ty + DY[d];
-                if (free(ax, ay)) {
+                if (free(ax, ay) || pushAhead(ax, ay, d)) {
                     nx = ax; ny = ay; moving = true; prog = 0;
                     if (map.at(ax, ay) == 'i') audio.sfx("slide");
                 }
@@ -283,6 +295,12 @@ public class Game extends JPanel implements KeyListener {
     }
 
     boolean held(int a, int b) { return down.contains(a) || down.contains(b); }
+    /** Pedras empurráveis: o sistema move o que está à frente e o jogador ocupa o lugar. */
+    boolean pushAhead(int x, int y, int d) {
+        for (Feature f : features) if (f.push(x, y, d)) return free(x, y);
+        return false;
+    }
+    void arrived() { worldMap.arrive(); for (Feature f : features) f.arrive(map); }
     /** Segurar Shift corre (como os tênis de corrida dos Pokémon). */
     boolean running() { return down.contains(KeyEvent.VK_SHIFT) && !sliding; }
     /** Pontos de amizade de um presente: dobram no aniversário e crescem com o prato "Coração quente". */
@@ -306,7 +324,7 @@ public class Game extends JPanel implements KeyListener {
             if (w.x() == tx && w.y() == ty) {
                 if (!chapter.allowWarp(w.to())) { toast("A passagem ainda está selada."); return; }
                 map = maps.get(w.to()); tx = w.tx(); ty = w.ty(); fade = 1; resetFollower();
-                worldMap.arrive();
+                arrived();
                 audio.sfx("door");
                 if (map.name.equals("Templo Estrelado") && stage == 11) setStage(12);
                 save(false);
@@ -340,7 +358,7 @@ public class Game extends JPanel implements KeyListener {
         banner = Story.banner(st);
         bannerT = 4;
         if (Story.fanfare(st)) audio.sfx("fanfare");
-        if (st == Story.FINAL && !credits.seen) { credits.seen = true; credits.open(PLAY, true); }
+        if (st == Story.FINAL && credits.seenAt < Story.FINAL) { credits.seenAt = Story.FINAL; credits.open(PLAY, true); }
         refreshObjects();
     }
 
@@ -373,7 +391,7 @@ public class Game extends JPanel implements KeyListener {
 
     void travel(String mapName, int x, int y) {
         map = maps.get(mapName); tx = x; ty = y; moving = false; sliding = false; prog = 0; fade = 1; resetFollower();
-        worldMap.arrive();
+        arrived();
         audio.sfx("warp");
         save(false);
     }
@@ -420,13 +438,23 @@ public class Game extends JPanel implements KeyListener {
     }
 
     // ---------- Música ----------
+    /** Trilha de dia conforme a estação: a primavera usa a original. */
+    String seasonal(String place) {
+        return switch (seasons.current()) {
+            case Seasons.SUMMER -> place + "_verao";
+            case Seasons.AUTUMN -> place + "_outono";
+            case Seasons.WINTER -> place + "_inverno";
+            default -> place + "_dia";
+        };
+    }
+
     String musicFor() {
-        if (state == TITLE || state == CONFIRM) return "titulo";
+        if (state == TITLE || state == CONFIRM || state == SLOTS_SCREEN) return "titulo";
         boolean n = isNight();
         return switch (map.name) {
             case "Casa" -> "casa";
-            case "Vila Aurora", "Quintal de Casa" -> n ? "vila_noite" : "vila_dia";
-            case "Floresta Verde" -> n ? "floresta_noite" : "floresta_dia";
+            case "Vila Aurora", "Quintal de Casa" -> n ? "vila_noite" : seasonal("vila");
+            case "Floresta Verde" -> n ? "floresta_noite" : seasonal("floresta");
             case "Praia Azul" -> stage >= 15 && n ? "final" : n ? "praia_noite" : "praia_dia";
             case "Ilha das Estrelas" -> n ? "ilha_noite" : "ilha_dia";
             case "Gruta do Eco" -> "gruta";
@@ -434,7 +462,8 @@ public class Game extends JPanel implements KeyListener {
             case "Cabana do Eremita" -> "cabana";
             case "Pico Estrelado" -> "pico";
             case "Templo Estrelado" -> "templo";
-            case "Trilha dos Vagalumes" -> n ? "floresta_noite" : "floresta_dia";
+            case "Trilha dos Vagalumes" -> n ? "floresta_noite" : seasonal("floresta");
+            case ChapterEight.VALLEY -> "vale";
             case ChapterSix.REEF -> n ? "ilha_noite" : "ilha_dia";
             case "Jardim das Constelações" -> "jardim";
             default -> "vila_dia";
@@ -501,11 +530,11 @@ public class Game extends JPanel implements KeyListener {
             gardening.save(p);
             orders.save(p);
             for (Feature f : features) f.save(p);
-            Path tmp = Paths.get(SAVE + ".tmp");                       // grava num temporário e troca (evita save corrompido)
+            Path tmp = Paths.get(savePath() + ".tmp");                 // grava num temporário e troca (evita save corrompido)
             try (OutputStream o = Files.newOutputStream(tmp)) { p.store(o, "Aventura em Aurora - save"); }
-            if (Files.isRegularFile(Paths.get(SAVE)))                          // a versão anterior vira o backup
-                Files.copy(Paths.get(SAVE), Paths.get(BACKUP), StandardCopyOption.REPLACE_EXISTING);
-            Files.move(tmp, Paths.get(SAVE), StandardCopyOption.REPLACE_EXISTING);
+            if (Files.isRegularFile(Paths.get(savePath())))                    // a versão anterior vira o backup
+                Files.copy(Paths.get(savePath()), Paths.get(backupPath()), StandardCopyOption.REPLACE_EXISTING);
+            Files.move(tmp, Paths.get(savePath()), StandardCopyOption.REPLACE_EXISTING);
             lastSig = sig();
             if (showToast) { toast("Jogo salvo!"); audio.sfx("save"); }
             return true;
@@ -516,16 +545,35 @@ public class Game extends JPanel implements KeyListener {
     }
 
     boolean saveBeforeClose() {
-        if (state != TITLE && state != CONFIRM) return save(false);
+        boolean inGame = switch (state) {
+            case TITLE, CONFIRM, SLOTS_SCREEN -> false;
+            case CREDITS -> credits.returnState != TITLE;
+            case NAMING -> explorer.legacy;                      // novo jogo ainda sem nome não grava nada
+            default -> true;
+        };
+        if (inGame) return save(false);
         return true;
     }
 
     /** Partida salva; se o arquivo principal estiver ilegível, tenta o backup da gravação anterior. */
-    Properties readSave() {
-        if (!new File(SAVE).exists()) return null;
-        Properties p = readSaveFile(SAVE);
-        return p != null ? p : readSaveFile(BACKUP);
+    Properties readSave() { return readSlot(slot); }
+    static Properties readSlot(int s) {
+        if (!new File(SLOTS[s]).exists()) return null;
+        Properties p = readSaveFile(SLOTS[s]);
+        return p != null ? p : readSaveFile(SLOTS[s] + ".bak");
     }
+    /** Espaço jogado por último (arquivo mais recente), ou -1 se não houver partida. */
+    static int latestSlot() {
+        int best = -1; long newest = Long.MIN_VALUE;
+        for (int s = 0; s < SLOTS.length; s++) {
+            if (readSlot(s) == null) continue;
+            long modified = new File(SLOTS[s]).lastModified();
+            if (best < 0 || modified > newest) { best = s; newest = modified; }
+        }
+        return best;
+    }
+    static int usedSlots() { int n = 0; for (int s = 0; s < SLOTS.length; s++) if (readSlot(s) != null) n++; return n; }
+    static int freeSlot() { for (int s = 0; s < SLOTS.length; s++) if (!new File(SLOTS[s]).exists()) return s; return -1; }
     static Properties readSaveFile(String path) {
         File f = new File(path);
         if (!f.isFile()) return null;
@@ -538,13 +586,16 @@ public class Game extends JPanel implements KeyListener {
     }
 
     /** Texto do slot de save na tela de título (ou null se não houver save válido). */
-    String readInfo() {
-        Properties p = readSave();
+    String readInfo() { return slotInfo(slot); }
+    static String slotInfo(int s) {
+        Properties p = readSlot(s);
         if (p == null) return null;
         try {
             int st = Integer.parseInt(p.getProperty("fase"));
             int dia = (int) (Double.parseDouble(p.getProperty("tempo")) / 1440) + 1;
-            return "Capítulo " + Explorer.chapterOf(st) + "  •  Dia " + dia + "  •  " + p.getProperty("mapa");
+            String name = Explorer.clean(p.getProperty("explorador.nome", ""));
+            return (name.isEmpty() ? "" : name + "  •  ") + "Capítulo " + Explorer.chapterOf(st) + "  •  "
+                + Seasons.NAMES[Seasons.season(dia)] + " " + Seasons.dayOfSeason(dia) + "  •  " + p.getProperty("mapa");
         } catch (Exception e) { return null; }
     }
 
@@ -591,9 +642,11 @@ public class Game extends JPanel implements KeyListener {
 
     // ---------- Menus ----------
     void openTitle() {
-        saveInfo = readInfo();
+        int last = latestSlot();
+        saveInfo = last >= 0 ? slotInfo(last) : null;
         opts.clear();
         if (saveInfo != null) opts.add("Continuar");
+        if (usedSlots() > 1) opts.add("Carregar jogo");
         opts.add("Novo jogo"); opts.add("Créditos"); opts.add("Sair");
         menuSel = 0; state = TITLE;
     }
@@ -612,6 +665,13 @@ public class Game extends JPanel implements KeyListener {
         opts.add(5, "Volumes de áudio");
         opts.add(5, "Acessibilidade e controles");
         state = MENU;
+    }
+    /** Carrega o espaço s e entra no jogo (partidas antigas sem nome ganham a pergunta da Mamãe). */
+    void continueSlot(int s) {
+        slot = s;
+        if (!loadGame()) { toast("Não foi possível carregar o save."); return; }
+        state = PLAY;
+        if (explorer.name.isBlank() && !explorer.asked) explorer.askLegacy();
     }
     void openConfirm() { opts.clear(); opts.addAll(List.of("Não, voltar", "Sim, apagar e começar")); menuSel = 0; state = CONFIRM; }
 
@@ -633,17 +693,18 @@ public class Game extends JPanel implements KeyListener {
         if (o.startsWith("Música")) { audio.setMusic(!audio.musicOn); openPause(); return; }
         if (o.startsWith("Efeitos")) { audio.setSfx(!audio.sfxOn); openPause(); return; }
         switch (o) {
-            case "Continuar" -> {
-                if (!loadGame()) { toast("Não foi possível carregar o save."); return; }
-                state = PLAY;
-                if (explorer.name.isBlank() && !explorer.asked) explorer.askLegacy();   // partidas de antes da tela de nome
+            case "Continuar" -> { if (latestSlot() >= 0) continueSlot(latestSlot()); }
+            case "Carregar jogo" -> saveSlots.open(false);
+            case "Novo jogo" -> {
+                int free = freeSlot();
+                if (free >= 0) { slot = free; newGame(); explorer.startNaming(); }   // um espaço livre: nada é apagado
+                else saveSlots.open(true);
             }
-            case "Novo jogo" -> { if (saveInfo != null) openConfirm(); else { newGame(); explorer.startNaming(); } }
             case "Créditos" -> credits.open(TITLE, false);
             case "Cartão do Explorador" -> explorer.openCard(MENU);
             case "Calendário" -> seasons.openCalendar(MENU);
             case "Lancheira" -> { cooking.openLunchbox(); cooking.returnState = MENU; }
-            case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(SAVE)); Files.deleteIfExists(Paths.get(BACKUP)); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); explorer.startNaming(); }
+            case "Sim, apagar e começar" -> { try { Files.deleteIfExists(Paths.get(savePath())); Files.deleteIfExists(Paths.get(backupPath())); } catch (Exception e) { toast("Não foi possível apagar a partida."); return; } newGame(); explorer.startNaming(); }
             case "Não, voltar" -> openTitle();
             case "Sair" -> System.exit(0);
             case "Voltar ao jogo" -> state = PLAY;
@@ -791,6 +852,7 @@ public class Game extends JPanel implements KeyListener {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, W, H);
         if (state == TITLE || state == CONFIRM) { drawTitle(g); drawToast(g); return; }
+        if (state == SLOTS_SCREEN) { drawTitle(g); saveSlots.draw(g); drawToast(g); return; }
 
         double mv = moving ? prog : 0;
         double ppx = (tx + (nx - tx) * mv) * T, ppy = (ty + (ny - ty) * mv) * T;
@@ -1000,10 +1062,11 @@ public class Game extends JPanel implements KeyListener {
         g.setFont(new Font("Serif", Font.ITALIC, 17));
         g.setColor(new Color(255, 255, 255, 200)); center(g, "uma pequena história de exploração", 150);
 
+        if (state == SLOTS_SCREEN) return;                                   // os cartões dos saves ocupam o lugar do menu
         int y0 = 235;
         if (state == CONFIRM) {
             g.setFont(new Font("SansSerif", Font.PLAIN, 15)); g.setColor(new Color(255, 255, 255, 230));
-            center(g, "Já existe um jogo salvo. Apagar e começar de novo?", 208);
+            center(g, "O espaço " + (slot + 1) + " já tem uma partida. Apagar e começar de novo?", 208);
         }
         g.setFont(new Font("SansSerif", Font.BOLD, 22));
         for (int i = 0; i < opts.size(); i++) {
@@ -1072,7 +1135,8 @@ public class Game extends JPanel implements KeyListener {
         int hh = (int) hour(), mm = (int) ((hour() - hh) * 60);
         int dia = (int) (time / 1440) + 1;
         String obj = "Objetivo: " + Story.OBJECTIVES[stage] + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
-            : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)" : "");
+            : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)"
+            : stage == ChapterEight.BELLS ? " (" + chapterEight.count() + "/" + ChapterEight.DAYS_NEEDED + ")" : "");
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
         int bw = Math.max(280, g.getFontMetrics().stringWidth(obj) + 32);

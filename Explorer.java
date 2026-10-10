@@ -32,7 +32,9 @@ final class Explorer implements Feature {
         new Achievement("trocas", "Rei das Trocas", "Completou a corrente de trocas da vila.", g -> g.trades.complete()),
         new Achievement("observatorio", "Céu Restaurado", "Restaurou o observatório do professor.", g -> g.observatory.complete()),
         new Achievement("mare", "Canção da Maré", "Trouxe a baleia guardiã de volta para a baía.", g -> g.stage >= ChapterSix.DONE),
-        new Achievement("festival_ceu", "Festival do Céu", "Reuniu Aurora inteira no alto do Pico Estrelado.", g -> g.stage >= Story.FINAL),
+        new Achievement("festival_ceu", "Festival do Céu", "Reuniu Aurora inteira no alto do Pico Estrelado.", g -> g.stage >= ChapterSeven.FINAL),
+        new Achievement("melodia", "Melodia da Semana", "Trouxe a Lia de volta para o Lucas.", g -> g.stage >= ChapterEight.FINAL),
+        new Achievement("enigmas", "Mestre dos Enigmas", "Abriu os três baús escondidos de Aurora.", g -> g.puzzles.openedCount() == Puzzles.CHESTS.length),
         new Achievement("ano", "Um Ano em Aurora", "Viveu as quatro estações da vila.", g -> g.day() + 1 > Seasons.LENGTH * 3),
         new Achievement("chef", "Chef de Aurora", "Cozinhou todas as receitas.", g -> g.cooking.cooked.size() == Cooking.RECIPES.length),
         new Achievement("aniversario", "Quem Ama Lembra", "Deu um presente de aniversário a um morador.", g -> !g.seasons.birthdayGifts.isEmpty()),
@@ -229,7 +231,7 @@ final class Explorer implements Feature {
     }
 
     int chapter() { return chapterOf(game.stage); }
-    static int chapterOf(int s) { return s < 4 ? 1 : s < 8 ? 2 : s <= 15 ? 3 : s <= 21 ? 4 : s < 28 ? 5 : s < 32 ? 6 : 7; }
+    static int chapterOf(int s) { return s < 4 ? 1 : s < 8 ? 2 : s <= 15 ? 3 : s <= 21 ? 4 : s < 28 ? 5 : s < 32 ? 6 : s < 36 ? 7 : 8; }
 
     void medal(Graphics2D g, int x, int y, boolean got, int index) {
         Color[] colors = {new Color(241, 196, 65), new Color(120, 200, 230), new Color(230, 130, 110), new Color(150, 210, 140)};
