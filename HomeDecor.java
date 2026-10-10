@@ -28,7 +28,11 @@ final class HomeDecor {
         new Item("colecao_conchas", "Coleção de Conchas", 0, 1, 1, true, new Color(240, 150, 175)),
         new Item("luneta", "Luneta do Observatório", 0, 1, 1, true, new Color(190, 150, 80)),
         new Item("escama", "Escama da Maré", 0, 1, 1, true, new Color(90, 140, 200)),
-        new Item("lanterna_festa", "Lanterna do Festival", 0, 1, 1, true, new Color(255, 190, 110))
+        new Item("lanterna_festa", "Lanterna do Festival", 0, 1, 1, true, new Color(255, 190, 110)),
+        new Item("partitura", "Partitura Perdida", 0, 1, 1, true, new Color(240, 230, 200)),
+        new Item("estrela_gruta", "Estrela da Gruta", 0, 1, 1, true, new Color(200, 220, 255)),
+        new Item("floco", "Floco Eterno", 0, 1, 1, true, new Color(190, 230, 250)),
+        new Item("caixinha", "Caixinha de Música", 0, 1, 1, true, new Color(170, 120, 200))
     };
     final Game game;
     int coins;
@@ -76,6 +80,8 @@ final class HomeDecor {
             case 17 -> game.shells.rewarded >= SecretShells.REWARDS.length;
             case 18 -> game.observatory.complete();
             case 19 -> game.stage >= ChapterSix.DONE;
+            case 20 -> game.stage >= ChapterSeven.FINAL;
+            case 21, 22, 23 -> game.puzzles.opened[id - 21];
             default -> game.stage >= Story.FINAL;
         };
     }
@@ -353,6 +359,22 @@ final class HomeDecor {
                 a.setColor(new Color(110, 90, 70)); a.drawLine(16, 2, 16, 8);
                 a.setColor(color); a.fillRoundRect(9, 8, 14, 18, 6, 6);
                 a.setColor(new Color(255, 240, 180)); a.fillOval(12, 12, 8, 10);
+            }
+            case 21 -> {
+                a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
+                a.setColor(color); a.fillRect(6, 6, 20, 20);
+                a.setColor(new Color(60, 60, 80)); for (int i = 0; i < 4; i++) a.drawLine(8, 10 + i * 4, 24, 10 + i * 4);
+                a.fillOval(12, 15, 4, 3); a.fillOval(18, 11, 4, 3);
+            }
+            case 22 -> { a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5); game.chapter.star(a, 16, 15, 11, color); }
+            case 23 -> {
+                a.setColor(color); a.setStroke(new BasicStroke(2));
+                for (int i = 0; i < 3; i++) { double ang = i * Math.PI / 3; a.drawLine(16 - (int) (Math.cos(ang) * 11), 16 - (int) (Math.sin(ang) * 11), 16 + (int) (Math.cos(ang) * 11), 16 + (int) (Math.sin(ang) * 11)); }
+            }
+            case 24 -> {
+                a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
+                a.setColor(color); a.fillRect(7, 14, 18, 12); a.setColor(color.darker()); a.fillRect(7, 10, 18, 5);
+                a.setColor(new Color(230, 200, 90)); a.fillRect(24, 18, 4, 2);
             }
             default -> { }
         }

@@ -212,7 +212,7 @@ VIDA NA VILA
   As notas tambem acendem: e possivel jogar sem som. Z tenta novamente; ESC sai.
   Vara, capturas, recorde e posicoes dos moradores ficam no save. Saves antigos sao aceitos.
 
-HISTORIA (7 capitulos)
+HISTORIA (8 capitulos)
   Cap. 1 - A Luz do Farol:      carta -> concha na floresta -> farol aceso.
   Cap. 2 - O Chamado da Capita: garrafa na praia (so de noite) -> Gruta do Eco ->
                                  3 pedacos do mapa: vila (noite), praia (dia), fundo da gruta.
@@ -239,7 +239,23 @@ HISTORIA (7 capitulos)
            garante uma sopa) e suba ao Pico Estrelado a noite. Converse com todos e fale com Cintila: fim da
            campanha, creditos e a Lanterna do Festival para a casa. O jogo continua depois do final.
 
+  Cap. 8 - A Melodia da Semana: depois do cap. 7, fale com o Lucas. Toque a melodia do dia no sino da praca
+           em 3 dias diferentes (cada dia da semana tem a sua; a tela mostra as notas). A rocha no fundo da
+           Gruta do Eco se abre para o Vale dos Ecos. Empurre as tres pedras sobre as placas (ande contra elas)
+           para erguer a ponte; a pedra do eco recoloca tudo. Fale com Lia no coreto e depois com o Lucas.
+           Fim da campanha, creditos e a Caixinha de Musica para a casa.
+
   Partidas antigas sem nome: ao Continuar, a Mamae pergunta o nome e o tratamento uma vez (Esc pula).
+
+ENIGMAS ESCONDIDOS (opcionais, 3 baus com moedas e decoracoes)
+  Ruinas do Vale: no Vale dos Ecos, ao norte da ponte, duas pedras sobre duas placas abrem o portao.
+  Pegadas de estrela: na Gruta do Eco, com a Lanterna (cap. 4), pise nas pegadas da menor a maior luz.
+  Bau congelado: no alto da Trilha da Montanha, o Cristal de Calor (cap. 4) derrete o gelo.
+
+SAVES
+  Tres espacos. Continuar abre o ultimo jogado; Carregar jogo (com 2 ou mais partidas) mostra os tres.
+  Novo jogo usa um espaco livre sem apagar nada; com todos ocupados, escolha qual substituir (pede confirmacao).
+  Na tela dos espacos, Delete apaga uma partida. O espaco 1 e o savegame.properties de sempre.
 
 CAMPO DE GELO (cap. 4)
   Ao pisar no gelo voce desliza ate bater numa pedra, arvore ou personagem. Use as pedras para parar no lugar certo.
@@ -263,7 +279,8 @@ AUDIO
     Interiores e titulo silenciam o ambiente externo. A montanha conserva o vento sem chuva.
     As ondas nao fazem mais parte das musicas sintetizadas. WAVs personalizados antigos
     podem conter sons ambientes proprios, que continuam sujeitos ao volume de musica.
-  - Tudo e SINTETIZADO por codigo: 18 trilhas (com versoes de dia e de noite) e 19 efeitos.
+  - Tudo e SINTETIZADO por codigo: 25 trilhas (com versoes de dia, de noite e de cada estacao na vila e
+    na floresta) e 19 efeitos.
     A trilha troca sozinha quando voce muda de mapa ou anoitece.
   - ESC > Musica / Efeitos liga e desliga cada um (ou tecla M para a musica). Fica gravado em config.properties.
   - Sem placa de som, o jogo roda normalmente, so que mudo.
@@ -300,7 +317,8 @@ ORGANIZACAO DO CODIGO
   Story.java       objetivos, faixas de capitulo e dialogos dos capitulos 1-4
   Inventory.java   caixa de itens (tecla I)
   Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
-  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat
+  Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat,
+  ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida

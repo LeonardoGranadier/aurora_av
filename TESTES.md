@@ -20,6 +20,15 @@ em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, li
 moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
 modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
 
+## Capitulo 8, enigmas, saves e musica
+
+`ChapterEightTest` joga o capitulo 8 (Lucas, melodias em tres dias da semana com erro e
+repeticao, passagem da gruta, pedras empurradas, reinicio ao sair, ponte, Lia, creditos do
+novo final, compatibilidade dos creditos ja vistos), os tres enigmas opcionais (ruinas com
+pedra do eco, pegadas que exigem a Lanterna e respeitam a ordem, bau que exige o Cristal),
+a musica de cada estacao e os tres espacos de save (novo jogo em espaco livre, ultimo jogado,
+carregar, substituir com confirmacao, apagar um so espaco).
+
 ## Capitulos 6 e 7
 
 `NewChaptersTest` joga os dois capitulos interagindo como o jogador (ficando ao lado e

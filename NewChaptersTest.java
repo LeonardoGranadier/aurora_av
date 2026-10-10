@@ -43,7 +43,7 @@ public class NewChaptersTest {
         day(g); meet(g, ChapterSix.REEF, "recife_ponta"); check(g.state == Game.PLAY && g.dlg != null, "Song waits for night"); finish(g);
         night(g); meet(g, ChapterSix.REEF, "recife_ponta"); check(g.state == Game.SONG, "Song screen opens");
         tap(g, KeyEvent.VK_DOWN); tap(g, KeyEvent.VK_RIGHT);
-        check(g.chapterSix.progress == 0 && g.chapterSix.status.startsWith("A nota"), "Wrong note restarts");
+        check(g.melody.progress == 0 && g.melody.status.startsWith("A nota"), "Wrong note restarts");
         tap(g, KeyEvent.VK_DOWN); tap(g, KeyEvent.VK_UP); VillageLifeTest.screenshot(g, "song");
         tap(g, KeyEvent.VK_LEFT); tap(g, KeyEvent.VK_2); tap(g, KeyEvent.VK_3);
         check(g.stage == ChapterSix.TELL && g.state == Game.PLAY && g.dlg != null, "Song calls the whale");
@@ -78,13 +78,12 @@ public class NewChaptersTest {
         g.travel("Pico Estrelado", 10, 9); g.dir = 1; g.toastT = 0; g.bannerT = 0; VillageLifeTest.screenshot(g, "festival-sky");
         meet(g, "Pico Estrelado", "festa_lucas"); check(g.dlg != null && g.dlg[0].contains("sinos"), "Guests talk"); finish(g);
         meet(g, "Pico Estrelado", "ceu_cintila"); finish(g);
-        check(g.stage == Story.FINAL && g.state == Game.CREDITS, "Finale rolls the credits");
-        g.credits.scroll = 300; VillageLifeTest.screenshot(g, "credits-final"); tap(g, KeyEvent.VK_Z);
+        check(g.stage == ChapterSeven.FINAL && g.state == Game.PLAY, "Chapter 7 ends without credits: chapter 8 follows");
         check(g.home.unlocked(20), "Festival lantern unlocked");
         g.explorer.checkTimer = 0; g.update();
         check(g.explorer.unlocked.contains("festival_ceu") && g.explorer.unlocked.contains("mare"), "Chapter achievements");
         check(!g.vis(npc(g, "Pico Estrelado", "festa_mae")), "Guests go home after the party");
-        check(g.worldMap.destinations().isEmpty() && Explorer.chapterOf(g.stage) == 7, "Campaign complete");
+        check(g.worldMap.destinations().equals(Set.of("Vila Aurora")) && Explorer.chapterOf(g.stage) == 8, "Chapter 8 points to the village");
         g.worldMap.open(Game.PLAY); VillageLifeTest.screenshot(g, "map-final"); tap(g, KeyEvent.VK_ESCAPE);
     }
 

@@ -8,12 +8,13 @@ final class Credits implements Feature {
     /** Edite para assinar o jogo. */
     static final String AUTHOR = "Leonardo Granadier";
     static final String[] CAST = {"Mamãe", "Seu Marinho", "Capitã Estrela", "Prof. Carvalho", "Tio Beto", "Dona Rosa",
-        "Lucas", "Lenhador", "Eremita", "Montanhista", "Seu Bento, o mascate", "Bolinha, o gato", "Maré, a baleia", "Cintila"};
+        "Lucas", "Lenhador", "Eremita", "Montanhista", "Seu Bento, o mascate", "Lia", "Bolinha, o gato", "Maré, a baleia", "Cintila"};
 
     final Game game;
     double scroll;
     int returnState = Game.TITLE;
-    boolean ending, seen;
+    boolean ending;
+    int seenAt = -1;   // etapa final em que os créditos já rolaram (novos finais rolam de novo)
 
     Credits(Game game) { this.game = game; }
 
@@ -27,7 +28,7 @@ final class Credits implements Feature {
         if (ending) {
             l.addAll(List.of("#Obrigado por jogar!", "", game.explorer.nameOr("Você") + " devolveu a luz ao farol,",
                 "cruzou o mar, ajudou uma estrela a voltar para casa,", "fez um jardim florescer, devolveu a canção da baleia Maré",
-                "e reuniu Aurora inteira no Festival do Céu.", "",
+                "reuniu Aurora inteira no Festival do Céu", "e trouxe a Lia de volta com a melodia da semana.", "",
                 "Tempo de jogo: " + Explorer.clock(game.explorer.playSeconds) + "   ·   Dia " + (game.day() + 1),
                 "Conquistas: " + game.explorer.unlocked.size() + "/" + Explorer.ACHIEVEMENTS.size()
                     + "   ·   Conchas: " + game.shells.found() + "/" + SecretShells.SPOTS.length, ""));
@@ -76,7 +77,11 @@ final class Credits implements Feature {
         }
     }
 
-    @Override public void reset() { seen = false; }
-    @Override public void save(Properties p) { p.setProperty("creditos.final", "" + seen); }
-    @Override public void load(Properties p) { seen = Boolean.parseBoolean(p.getProperty("creditos.final", "false")) || game.stage >= Story.FINAL; }
+    @Override public void reset() { seenAt = -1; }
+    @Override public void save(Properties p) { p.setProperty("creditos.etapa", "" + seenAt); }
+    @Override public void load(Properties p) {
+        try { seenAt = Integer.parseInt(p.getProperty("creditos.etapa", "-1")); } catch (NumberFormatException e) { seenAt = -1; }
+        if (Boolean.parseBoolean(p.getProperty("creditos.final", "false"))) seenAt = Math.max(seenAt, ChapterSeven.FINAL);   // versão anterior
+        if (game.stage >= Story.FINAL) seenAt = Story.FINAL;
+    }
 }

@@ -37,10 +37,16 @@ final class Story {
         "Convide os amigos para o Festival do Céu.",
         "Leve um prato na lancheira (K) e suba ao Pico Estrelado à noite.",
         "Celebre com os amigos e fale com Cintila no alto do Pico Estrelado.",
+        "Capítulo 7 concluído! O Lucas anda inquieto: fale com ele na vila.",
+        "Toque a melodia do dia no sino da praça, em 3 dias diferentes.",
+        "Uma passagem se abriu no fundo da Gruta do Eco. Siga até o Vale dos Ecos.",
+        "Empurre as pedras sobre as placas para erguer a ponte até o coreto.",
+        "Atravesse a ponte e fale com Lia no coreto do Vale dos Ecos.",
+        "Encontre o Lucas na praça da vila: a Lia voltou!",
         "Fim da jornada! Aurora continua esperando por você."
     };
     /** Última etapa da campanha: ao chegar nela, os créditos rolam. */
-    static final int FINAL = 36;
+    static final int FINAL = 42;
 
     final Game game;
     Story(Game game) { this.game = game; }
@@ -78,6 +84,12 @@ final class Story {
         case 34 -> "Todos os amigos foram convidados!";
         case 35 -> "O Festival do Céu começou!";
         case 36 -> "Capítulo 7 concluído: O Festival do Céu";
+        case 37 -> "Capítulo 8: A Melodia da Semana";
+        case 38 -> "O eco abriu um caminho!";
+        case 39 -> "O Vale dos Ecos";
+        case 40 -> "A ponte subiu!";
+        case 41 -> "Lia foi encontrada!";
+        case 42 -> "Capítulo 8 concluído: A Melodia da Semana";
         default -> "Objetivo atualizado";
         };
     }
