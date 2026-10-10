@@ -161,9 +161,23 @@ public class ChapterEightTest {
         g.travel(ChapterEight.VALLEY, 11, 16); check(g.musicFor().equals("vale"), "Valley music");
     }
 
+    static void hints(Game g) throws Exception {
+        check(Hints.HINTS.length == Story.OBJECTIVES.length, "One hint set per story stage");
+        for (String[] h : Hints.HINTS) check(h.length == 3 && Arrays.stream(h).allMatch(x -> !x.isBlank()), "Three hint layers");
+        g.newGame(); g.state = Game.PLAY; g.stage = 6;
+        g.journal.open(Game.PLAY); tap(g, KeyEvent.VK_Z);
+        check(g.state == Game.PLAY && g.dlg != null && g.dlg.length == 2 && g.dlg[0].equals(Hints.HINTS[6][0]), "Journal gives the vague hint first");
+        g.dlg = null; g.hints.ask(); check(g.dlg.length == 3 && g.dlg[1].equals(Hints.HINTS[6][1]), "Second request adds where to go"); g.dlg = null;
+        g.hints.ask(); g.hints.ask(); check(g.dlg.length == 3 && g.dlg[2].equals(Hints.HINTS[6][2]), "Third request explains; stays at three");
+        VillageLifeTest.screenshot(g, "hint"); g.dlg = null;
+        check(g.save(false) && g.loadGame() && g.hints.level == 3, "Hint level persists");
+        g.state = Game.PLAY; g.stage = 7; g.hints.ask(); check(g.dlg.length == 2 && g.dlg[0].equals(Hints.HINTS[7][0]), "New stage restarts hints"); g.dlg = null;
+        g.openPause(); g.choose("Pedir uma dica"); check(g.state == Game.PLAY && g.dlg != null, "Pause menu hint"); g.dlg = null;
+    }
+
     static void run() throws Exception {
         Game g = new Game(); g.state = Game.PLAY;
-        chapterEight(g); puzzles(g); music(g); slots(g);
+        chapterEight(g); puzzles(g); music(g); hints(g); slots(g);
         System.out.println("PASS: " + VillageLifeTest.checks + " chapter 8, puzzle and slot checks");
     }
     public static void main(String[] args) throws Exception {

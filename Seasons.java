@@ -156,7 +156,7 @@ final class Seasons implements Feature {
             if (who >= 0) note = "♥ " + Bonds.NAMES[who].replace("Prof. ", "").replace("Tio ", "").replace("Dona ", "");
             if (!note.isEmpty()) {
                 g.setColor(who >= 0 ? new Color(200, 70, 110) : col == 6 ? new Color(60, 140, 90) : new Color(150, 100, 60));
-                g.setFont(new Font("SansSerif", Font.BOLD, 10)); g.drawString(note, x + 6, y + 38);
+                g.setFont(new Font("SansSerif", Font.BOLD, 10)); g.drawString(Lang.t(note), x + 6, y + 38);
             }
         }
         String detail = "Festival aos sábados: " + FESTIVALS[s] + ". Peixes comuns: " + VillageLife.FISH[SEASON_FISH[s][0]].name()

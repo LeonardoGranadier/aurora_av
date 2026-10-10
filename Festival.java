@@ -184,7 +184,7 @@ final class Festival {
         g.setColor(new Color(27, 45, 49, 235)); g.fillRoundRect(x, y, 198, 33, 6, 6);
         g.setColor(remaining <= 15 ? new Color(255, 158, 125) : Color.WHITE);
         g.setFont(new Font("SansSerif", Font.BOLD, 15));
-        g.drawString(String.format("%02ds  ·  %d/%d peixes", (int) Math.ceil(remaining), score, FISH_GOAL), x + 13, y + 22);
+        g.drawString(Lang.t(String.format("%02ds  ·  %d/%d peixes", (int) Math.ceil(remaining), score, FISH_GOAL)), x + 13, y + 22);
     }
     void drawDecorations(Graphics2D g, int camX, int camY) {
         if (!active() || !game.map.name.equals("Vila Aurora")) return;

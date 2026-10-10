@@ -94,9 +94,9 @@ final class WorldMap {
     void draw(Graphics2D g) {
         g.setColor(new Color(235, 244, 239)); g.fillRect(0, 0, Game.W, Game.H);
         g.setFont(new Font("Dialog", Font.BOLD, 21)); g.setColor(new Color(36, 66, 65));
-        g.drawString("Mapa de Aurora", 20, 30);
+        g.drawString(Lang.t("Mapa de Aurora"), 20, 30);
         g.setFont(new Font("Dialog", Font.PLAIN, 12));
-        g.drawString(visited.size() + "/" + REGIONS.length + " regiões", 525, 28);
+        g.drawString(Lang.t(visited.size() + "/" + REGIONS.length + " regiões"), 525, 28);
         for (int i = 0; i < REGIONS.length; i++) for (int j = i + 1; j < REGIONS.length; j++) {
             Region a = REGIONS[i], b = REGIONS[j];
             if (!connected(a.name, b.name)) continue;
@@ -114,24 +114,24 @@ final class WorldMap {
             g.setColor(here ? new Color(41, 121, 140) : known ? new Color(100, 145, 109) : new Color(177, 188, 185));
             g.fillOval(r.x - 9, r.y - 9, 18, 18);
             g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 12));
-            if (!known) g.drawString("?", r.x - 4, r.y + 4);
+            if (!known) g.drawString(Lang.t("?"), r.x - 4, r.y + 4);
             if (here) { g.fillOval(r.x - 3, r.y - 3, 6, 6); }
             g.setFont(new Font("Dialog", Font.PLAIN, 12)); FontMetrics fm = g.getFontMetrics();
             String label = known ? r.name : "Desconhecido";
             java.util.List<String> lines = game.wrap(label, fm, r.labelRight ? 90 : 133);
-            int width = 0; for (String line : lines) width = Math.max(width, fm.stringWidth(line));
+            int width = 0; for (String line : lines) width = Math.max(width, fm.stringWidth(Lang.t(line)));
             int left = r.labelRight ? r.x + 18 : r.x - width / 2, top = r.labelRight ? r.y + 8 : r.y + 15;
             g.setColor(new Color(235, 244, 239)); g.fillRect(left - 3, top, width + 6, lines.size() * 14 + 7);
             g.setColor(new Color(36, 66, 65));
             int y = top + 14;
             for (String line : lines) {
-                g.drawString(line, r.labelRight ? left : r.x - fm.stringWidth(line) / 2, y); y += 14;
+                g.drawString(Lang.t(line), r.labelRight ? left : r.x - fm.stringWidth(Lang.t(line)) / 2, y); y += 14;
             }
             int shells = game.shells.remaining(r.name);
             if (known && game.shells.listening() && shells > 0) {                // Concha que Escuta: conchas restantes
                 g.setColor(new Color(240, 150, 175)); g.fillOval(r.x + 8, r.y - 20, 14, 14);
                 g.setColor(Color.WHITE); g.setFont(new Font("Dialog", Font.BOLD, 10));
-                g.drawString("" + shells, r.x + 12, r.y - 9);
+                g.drawString(Lang.t("" + shells), r.x + 12, r.y - 9);
             }
         }
         g.setColor(new Color(217, 233, 225)); g.fillRect(0, 418, Game.W, 62);
@@ -140,6 +140,6 @@ final class WorldMap {
         game.life.text(g, Story.OBJECTIVES[game.stage], 20, 460, 600, 13);
         g.setColor(new Color(192, 117, 38)); g.drawOval(364, 17, 12, 12);
         g.setColor(new Color(36, 66, 65)); g.setFont(new Font("Dialog", Font.PLAIN, 12));
-        g.drawString("Destino da história", 383, 28);
+        g.drawString(Lang.t("Destino da história"), 383, 28);
     }
 }

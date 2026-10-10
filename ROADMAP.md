@@ -32,7 +32,7 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
   As ações já passam por `Accessibility.translate`, então o mapeamento entra num único lugar.
   Exige trocar o build para Gradle/Maven por causa das dependências.
 - ✅ Três espaços de save com nome, capítulo e estação de cada partida.
-- ⏳ Dicas em camadas para quem travar (coruja/concha do eco: vaga → específica).
+- ✅ Dicas em camadas (Concha do Eco): vaga, onde ir, o que fazer — no diário ou no menu de pausa.
 
 ## 3. Conteúdo e profundidade (P1)
 
@@ -65,7 +65,8 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - **itch.io** primeiro (aceita o .zip e os instaladores; "pague quanto quiser"; coleta opiniões cedo).
 - **Steam** depois: taxa por jogo, página com capturas e trailer; conquistas e nuvem pedem Steamworks (ex.: steamworks4j).
 - **Página da loja**: capturas em 2x (F12 gera fotos em 2x), GIF da pesca e do festival, trailer de 30–60 s.
-- **Tradução** (inglês, espanhol): exige tirar os textos do código para arquivos `textos_pt.properties` etc.
+- ✅ **Tradução para inglês**, com troca no título e no menu, dicionário em `assets/lang/en.tsv` e `LangTest`
+  garantindo que nenhum texto fique sem tradução. ⏳ Espanhol: basta criar `assets/lang/es.tsv` e acrescentar "es" em `Lang.CODES`.
 
 ## 6. Arquitetura
 

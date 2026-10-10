@@ -54,9 +54,9 @@ final class SaveSlots implements Feature {
             g.setColor(sel ? new Color(255, 248, 225, 245) : new Color(255, 255, 255, 215)); g.fillRoundRect(x, y, w, 62, 14, 14);
             g.setColor(sel ? new Color(200, 60, 50) : new Color(40, 40, 60)); g.setStroke(new BasicStroke(sel ? 3 : 1)); g.drawRoundRect(x, y, w, 62, 14, 14); g.setStroke(new BasicStroke(1));
             g.setColor(new Color(40, 40, 60)); g.setFont(new Font("SansSerif", Font.BOLD, 16));
-            g.drawString("Espaço " + (s + 1), x + 16, y + 26);
+            g.drawString(Lang.t("Espaço " + (s + 1)), x + 16, y + 26);
             g.setFont(new Font("SansSerif", Font.PLAIN, 13)); g.setColor(info == null ? new Color(120, 120, 140) : new Color(50, 60, 70));
-            g.drawString(info == null ? "Vazio" : info, x + 16, y + 48);
+            g.drawString(Lang.t(info == null ? "Vazio" : info), x + 16, y + 48);
         }
         g.setFont(new Font("SansSerif", Font.PLAIN, 12)); g.setColor(new Color(255, 255, 255, 200));
         game.center(g, "Setas: escolher · Z: " + (choosingNew ? "começar aqui" : "jogar") + " · Delete: apagar · Esc: voltar", 452);

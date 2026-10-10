@@ -20,6 +20,17 @@ em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, li
 moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
 modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
 
+## Idiomas
+
+`LangTest` liga o ingles e percorre o jogo: conversa com todos os personagens e objetos
+de todos os mapas em cada etapa da historia, de dia e de noite, le os dialogos inteiros e
+abre todas as telas (itens, cartao, diario, calendario, mapa, cozinha, cartas, decoracao,
+observatorio, creditos, nome, saves, menus e dicas). Falha listando em `faltando.txt` todo
+texto desenhado sem traducao. Uma frase de controle confirma que a varredura enxerga faltas.
+
+Para auditar os demais testes em ingles, rode-os com `-Daurora.idioma=en` e
+`-Daurora.idioma.faltando=arquivo.txt`: ao sair, o arquivo lista o que ficou sem traducao.
+
 ## Capitulo 8, enigmas, saves e musica
 
 `ChapterEightTest` joga o capitulo 8 (Lucas, melodias em tres dias da semana com erro e

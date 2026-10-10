@@ -157,7 +157,7 @@ final class Cooking implements Feature {
                         game.say(Bonds.NAMES[who], favorite(who, r) ? "Meu prato favorito! Como você sabia? Muito obrigado!" : "Que cheiro bom! Vou comer agora mesmo. Obrigado!");
                     } else status = "Não foi possível entregar.";
                 });
-            } else if (eat(r)) { game.audio.sfx("pickup"); status = "Delicioso! Hoje: " + effectList(RECIPES[r].effect()) + "."; }
+            } else if (eat(r)) { game.audio.sfx("pickup"); status = Lang.done(Lang.t("Delicioso! Hoje:") + " " + effectList(RECIPES[r].effect()) + "."); }
             else status = "Não foi possível salvar.";
         }
         if (selected != old) { game.audio.sfx("select"); status = ""; }
@@ -169,9 +169,10 @@ final class Cooking implements Feature {
         for (int f : RECIPES[r].flowers()) parts.add(Gardening.NAMES[f]);
         return String.join(" + ", parts);
     }
+    /** Efeitos já traduzidos para o idioma atual ("Nome (descrição); ..."). */
     static String effectList(int bits) {
         List<String> parts = new ArrayList<>();
-        for (int i = 0; i < EFFECT_NAMES.length; i++) if ((bits & (1 << i)) != 0) parts.add(EFFECT_NAMES[i] + " (" + EFFECT_TEXT[i] + ")");
+        for (int i = 0; i < EFFECT_NAMES.length; i++) if ((bits & (1 << i)) != 0) parts.add(Lang.t(EFFECT_NAMES[i]) + " (" + Lang.t(EFFECT_TEXT[i]) + ")");
         return String.join("; ", parts);
     }
 
@@ -189,10 +190,10 @@ final class Cooking implements Feature {
             game.life.text(g, right, 290, y, 300, 12);
         }
         Recipe r = RECIPES[selected];
-        String info = !known(selected) ? r.teacher() + "." : "Efeito: " + effectList(r.effect()) + ".";
-        if (target >= 0 && favorite(target, selected) && known(selected)) info += " Prato favorito!";
-        game.life.text(g, status.isEmpty() ? info : status, 44, 400, 552, 13);
-        if (effectDay == game.day() && effects != 0) game.life.text(g, "Ativo hoje: " + effectList(effects).replaceAll(" \\([^)]*\\)", ""), 44, 440, 552, 12);
+        String info = !known(selected) ? Lang.t(r.teacher()) + "." : Lang.t("Efeito:") + " " + effectList(r.effect()) + ".";
+        if (target >= 0 && favorite(target, selected) && known(selected)) info += " " + Lang.t("Prato favorito!");
+        game.life.text(g, status.isEmpty() ? Lang.done(info) : status, 44, 400, 552, 13);
+        if (effectDay == game.day() && effects != 0) game.life.text(g, Lang.done(Lang.t("Ativo hoje:") + " " + effectList(effects).replaceAll(" \\([^)]*\\)", "")), 44, 440, 552, 12);
     }
 
     // ---------- Save ----------

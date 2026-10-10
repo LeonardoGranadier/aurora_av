@@ -63,8 +63,8 @@ final class TradeQuest implements Feature {
     @Override public boolean talk(Npc n) {
         if (n.id.equals("mascate")) {
             if (step == 0) { trade(); return true; }
-            game.say(n.name, complete() ? "A corrente se fechou! Uma bolinha virou a chave do céu. Que história boa, hein?"
-                : "Já trocou a " + STEPS[0].item().toLowerCase() + "? Siga a corrente: " + hint());
+            if (complete()) game.say(n.name, "A corrente se fechou! Uma bolinha virou a chave do céu. Que história boa, hein?");
+            else game.say(n.name, "Já trocou a bolinha de gude? Siga a corrente:", hint());
             return true;
         }
         if (step == 0 || complete() || !STEPS[step].giver().equals(n.id) || !available(n.id)) return false;
@@ -78,8 +78,9 @@ final class TradeQuest implements Feature {
         step++;
         game.audio.sfx("pickup");
         game.itemGet("troca");
-        String[] lines = Arrays.copyOf(s.lines(), s.lines().length + 1);
-        lines[lines.length - 1] = "Você recebeu: " + received + "! " + (complete() ? "" : "Dica: " + hint());
+        String[] lines = Arrays.copyOf(s.lines(), s.lines().length + (complete() ? 1 : 2));
+        lines[s.lines().length] = "Você recebeu: " + received + "!";
+        if (!complete()) lines[s.lines().length + 1] = hint();
         game.say(s.giverName(), lines);
     }
 
