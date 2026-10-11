@@ -35,7 +35,7 @@ final class Credits implements Feature {
         }
         l.addAll(List.of("#Aventura em Aurora", "versão " + Game.VERSION, "", "@Criação", AUTHOR, "", "@Elenco"));
         l.addAll(Arrays.asList(CAST));
-        l.addAll(List.of("", "@Feito com", "Java e Swing, sem bibliotecas externas", "Música e efeitos sintetizados por código", "",
+        l.addAll(List.of("", "@Feito com", "Java e Swing", "Música e efeitos sintetizados por código", "Controles: Jamepad (SDL2)", "",
             "@Inspirado em", "Pokémon Red, Blue, Gold e Silver", "The Legend of Zelda: Link's Awakening e The Minish Cap",
             "Harvest Moon, Stardew Valley e Animal Crossing", "EarthBound e Golden Sun", ""));
         if (ending) l.addAll(List.of("A vila continua aqui.", "Ainda há conchas, trocas, estrelas e amigos esperando.", ""));

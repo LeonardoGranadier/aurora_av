@@ -2,6 +2,7 @@
 *.class
 .build/
 dist/
+lib/
 
 # Dados locais do jogador: partida e preferencias
 savegame.properties

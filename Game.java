@@ -96,11 +96,13 @@ public class Game extends JPanel implements KeyListener {
     final Puzzles puzzles = new Puzzles(this);
     final SaveSlots saveSlots = new SaveSlots(this);
     final Hints hints = new Hints(this);
+    final WorldLife worldLife = new WorldLife(this);
+    final Gamepad gamepad = new Gamepad(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -264,6 +266,7 @@ public class Game extends JPanel implements KeyListener {
      * demorar a ser desenhado, o jogo não fica em câmera lenta (até 250 ms de atraso são recuperados).
      */
     void tick() {
+        gamepad.poll();
         long now = System.nanoTime();
         double elapsed = Math.min(0.25, (now - last) / 1e9);
         last = now;
@@ -767,6 +770,16 @@ public class Game extends JPanel implements KeyListener {
         if (state == ACCESSIBILITY && access.capturing) { access.capture(raw); return; }
         if (k == KeyEvent.VK_UNDEFINED) return;
         if (!down.add(k)) return; // ignora auto-repeat
+        dispatch(k);
+    }
+
+    /** Controle: aperta uma ação lógica (as mesmas do teclado, já traduzidas). */
+    void pressLogical(int k) { if (down.add(k)) dispatch(k); }
+    /** Controle: solta a ação, a menos que uma tecla do teclado ainda a segure. */
+    void releaseLogical(int k) { if (!pressedKeys.containsValue(k)) down.remove(k); }
+
+    /** Ação lógica vinda do teclado (após o remapeamento) ou do controle. */
+    void dispatch(int k) {
         if (state == ACCESSIBILITY) { access.key(k); return; }
         if (state == HANDOFF) { access.confirmKey(k); return; }
         if (state == WORLD_MAP) { worldMap.key(k); return; }
@@ -957,6 +970,7 @@ public class Game extends JPanel implements KeyListener {
             }
         }
         weather.drawWorld(g);
+        for (Feature f : features) f.drawSky(g, camX, camY);
         drawItemGet(g, (int) ppx - camX, (int) ppy - camY - 4);
         if (!photo && state == PLAY && dlg == null && !moving) drawInteractionHint(g, camX, camY);
         if (photo) return;
@@ -1407,6 +1421,7 @@ public class Game extends JPanel implements KeyListener {
             Properties video = new Properties();
             try (InputStream in = Files.newInputStream(GameFiles.data("video.properties"))) { video.load(in); } catch (Exception ignored) {}
             if (Boolean.parseBoolean(video.getProperty("telaCheia"))) game.toggleFullscreen();
+            game.gamepad.start();                                         // controle, se a biblioteca estiver em lib/
         });
     }
 }

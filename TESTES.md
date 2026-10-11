@@ -20,6 +20,14 @@ em falha de save, mudancas na vila, ceu a noite), cartas (chegada pela manha, li
 moedas uma vez), nome e tratamento, conquistas, cartao, creditos, texto letra a letra, correr,
 modo desenvolvedor, foto, backup do save e registro de erros. Renderiza as telas novas.
 
+## Controle e vida no mundo
+
+`GamepadTest` usa um controle simulado (sem hardware): segurar e soltar direcional, A em
+dialogos sem repetir, Start/B na pausa, X/Y/RB/LB/Select abrindo telas, RT correndo, teclado
+e controle juntos, remapeamento, segurar A na pesca e desconexao soltando tudo.
+`WorldLifeTest` renderiza as estacoes com efeitos, testa agua para os peixes, conversa entre
+moradores (fala, resposta, pausa, silencio longe do jogador), traducoes e "reduzir movimento".
+
 ## Idiomas
 
 `LangTest` liga o ingles e percorre o jogo: conversa com todos os personagens e objetos

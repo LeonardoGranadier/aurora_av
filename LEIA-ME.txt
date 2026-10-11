@@ -19,6 +19,24 @@ JANELA
   A cena e desenhada em 640x480 e ampliada, entao o custo nao cresce com o tamanho da janela.
   Erros inesperados ficam em erros.log, na mesma pasta dos saves.
 
+CONTROLE
+  Xbox, PlayStation, Switch Pro e Steam Deck (biblioteca Jamepad/SDL2, baixada para lib/ por bibliotecas.sh;
+  jogar.sh baixa na primeira vez). Sem ela, o jogo usa so o teclado. Conectar ou desconectar avisa na tela.
+  Direcional/analogico: mover · A: falar/escolher (segurar na pesca) · B ou Start: voltar/pausa · RT: correr
+  X: itens · Y: cartao · RB: diario · LB: lancheira · Select: mapa · LT: cesta de flores.
+  Os botoes acionam as mesmas acoes do teclado, entao funcionam junto com as teclas remapeadas.
+
+VIDA NO MUNDO
+  Gaivotas na praia, vagalumes nas noites de primavera e verao, borboletas de dia, petalas na primavera,
+  folhas no outono, peixes pulando nas aguas e conversas curtas entre moradores proximos.
+  Com "reduzir movimento", esses efeitos nao aparecem.
+
+PUBLICAR (itch.io)
+  loja/PAGINA-ITCH.md tem textos (pt/en), tags, controles e o passo a passo. Imagens em loja/ (capa, icone,
+  capturas em 2x nos dois idiomas), geradas por Capturas.java.
+  sh empacotar.sh --portatil gera a pasta com Java embutido do seu sistema. No GitHub, a automacao
+  .github/workflows/pacotes.yml roda os testes e gera os pacotes de Windows, macOS e Linux a cada envio.
+
 IDIOMA / LANGUAGE
   Portugues e ingles. Troque em "Idioma" no titulo ou no menu de pausa (fica salvo em idioma.properties).
   Na primeira vez, o jogo usa o idioma do sistema. Para escolher na linha de comando: -Daurora.idioma=en
@@ -331,6 +349,8 @@ ORGANIZACAO DO CODIGO
   Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat,
   ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
   Lang.java        idiomas: todo texto desenhado passa por Lang.t (dicionario em assets/lang/)
+  Gamepad.java     controle (Jamepad por reflexao, opcional) · WorldLife.java efeitos de ambiente
+  Capturas.java    ferramenta: imagens da loja (fora do pacote do jogo)
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida

@@ -27,6 +27,8 @@ interface Feature {
     default boolean drawObject(Graphics2D g, Npc n, int x, int y) { return false; }
     /** Elementos sobre o mapa, abaixo do HUD. */
     default void drawWorld(Graphics2D g, int camX, int camY) {}
+    /** Elementos sobre a iluminação (noite, cavernas): brilhos, pássaros, partículas. */
+    default void drawSky(Graphics2D g, int camX, int camY) {}
 
     /** O jogador tentou andar para (x, y), ocupado: true se o sistema empurrou o que estava lá e liberou a passagem. */
     default boolean push(int x, int y, int dir) { return false; }

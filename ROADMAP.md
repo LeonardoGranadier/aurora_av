@@ -28,9 +28,7 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ Indicador de interação ("Z" sobre o que está à frente; "~" na água com a vara).
 - ✅ Correr segurando Shift.
 - ✅ Dias da semana no HUD.
-- ⏳ **Controle/gamepad.** Java não lê controles sem biblioteca nativa (SDL via LWJGL ou Jamepad).
-  As ações já passam por `Accessibility.translate`, então o mapeamento entra num único lugar.
-  Exige trocar o build para Gradle/Maven por causa das dependências.
+- ✅ **Controle** (Jamepad/SDL2, opcional, carregado por reflexão; o build continua sem Gradle).
 - ✅ Três espaços de save com nome, capítulo e estação de cada partida.
 - ✅ Dicas em camadas (Concha do Eco): vaga, onde ir, o que fazer — no diário ou no menu de pausa.
 
@@ -56,12 +54,13 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 
 - ✅ Modo foto (F12), pose de "item obtido", créditos com resumo da jornada.
 - ✅ Lanternas e canteiros na vila, luneta na praia, constelações no observatório.
-- ✅ Gato da vila. ⏳ Gaivotas na praia e outros animais.
+- ✅ Gato da vila, gaivotas, vagalumes, borboletas, pétalas, folhas, peixes pulando e conversas entre moradores.
 - ✅ Música própria de cada estação na vila e na floresta.
 - ⏳ Rádio com músicas e notícias da vila (estilo Pokégear).
 
 ## 5. Distribuição e divulgação 🧑
 
+- ✅ Página pronta em `loja/` (textos pt/en, capa, ícone, capturas) e pacotes portáteis automáticos pelo GitHub Actions.
 - **itch.io** primeiro (aceita o .zip e os instaladores; "pague quanto quiser"; coleta opiniões cedo).
 - **Steam** depois: taxa por jogo, página com capturas e trailer; conquistas e nuvem pedem Steamworks (ex.: steamworks4j).
 - **Página da loja**: capturas em 2x (F12 gera fotos em 2x), GIF da pesca e do festival, trailer de 30–60 s.
