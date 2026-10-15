@@ -43,10 +43,15 @@ final class Story {
         "Empurre as pedras sobre as placas para erguer a ponte até o coreto.",
         "Atravesse a ponte e fale com Lia no coreto do Vale dos Ecos.",
         "Encontre o Lucas na praça da vila: a Lia voltou!",
+        "Capítulo 8 concluído! À noite, a Cintila chama do alto do Pico Estrelado.",
+        "Atravesse as raízes ao norte do Jardim das Constelações.",
+        "Acenda as 4 lanternas da Floresta Antiga: flor, peixe, prato e canção.",
+        "À noite, fale com a Grande Árvore no centro da Floresta Antiga.",
+        "Volte para casa e conte tudo à Mamãe.",
         "Fim da jornada! Aurora continua esperando por você."
     };
     /** Última etapa da campanha: ao chegar nela, os créditos rolam. */
-    static final int FINAL = 42;
+    static final int FINAL = ChapterNine.FINAL;
 
     final Game game;
     Story(Game game) { this.game = game; }
@@ -90,6 +95,11 @@ final class Story {
         case 40 -> "A ponte subiu!";
         case 41 -> "Lia foi encontrada!";
         case 42 -> "Capítulo 8 concluído: A Melodia da Semana";
+        case 43 -> "Capítulo 9: O Eclipse de Aurora";
+        case 44 -> "A Floresta Antiga";
+        case 45 -> "As quatro lanternas brilham!";
+        case 46 -> "A aurora tomou o céu!";
+        case 47 -> "Capítulo 9 concluído: O Eclipse de Aurora";
         default -> "Objetivo atualizado";
         };
     }

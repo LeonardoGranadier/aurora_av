@@ -16,9 +16,9 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ `erros.log` na pasta de dados com aviso amigável; erros repetidos são gravados uma vez.
 - ✅ Backup do save (`savegame.properties.bak`) recuperado automaticamente se o principal estiver ilegível.
 - ✅ Nome e tratamento do jogador no novo jogo; as 4 falas com "(a)" agora seguem a escolha (ou ficam neutras).
-- 🧑 **Arte final.** Os sprites ainda são provisórios (`MakeAssets.java`). É o que mais pesa na página da loja.
-  Basta trocar os PNGs de `assets/` mantendo os nomes. Sprites novos que o jogo já aceita: `mascate`
-  (folha 3x4 de personagem), `observatorio`, `luneta`, `caixa_correio` (hoje desenhados por código).
+- ✅ **Arte própria em pixel art** (`Characters.java`, `Tiles.java`, gerados pelo `MakeAssets`): personagens 16x16 com
+  contorno, rosto, cabelo e caminhada de 3 quadros; grama, caminho, areia, água, árvores, pinheiros, pedras, telhado e piso.
+  🧑 Um artista ainda pode trocar os PNGs de `assets/` mantendo os nomes.
 - 🧑 **Teste com jogadores reais**: 5 a 10 pessoas que nunca viram o jogo, só observando onde travam.
 - ⏳ Assinatura de código dos instaladores (Windows/macOS mostram aviso sem ela). 🧑 exige certificado.
 
@@ -38,7 +38,7 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Corrente de trocas** de 6 passos, começando com o mascate de domingo.
 - ✅ **Observatório** com 4 conjuntos de doação que mudam a vila e a tela de constelações.
 - ✅ **Cartas** na caixa de correio (14 cartas ligadas a eventos, algumas com moedas).
-- ✅ **Cartão do Explorador** com tempo de jogo e **16 conquistas** (prontas para virar conquistas da Steam).
+- ✅ **Cartão do Explorador** com tempo de jogo e **16 conquistas** (prontas para virar conquistas da Steam; hoje são 25).
 - ✅ **Estações do ano** (28 dias): paisagem, peixes favorecidos, flores por estação, neve, nomes do festival,
   falas e cartas de cada estação, calendário.
 - ✅ **Culinária**: fogão em casa, 8 receitas ensinadas pelos moradores, lancheira (K), efeitos do dia e pratos favoritos.
@@ -48,6 +48,8 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Capítulo 7, O Festival do Céu**: convites, banquete com a culinária e festa no Pico; novo final com créditos.
 - ✅ Partidas antigas: a Mamãe pergunta nome e tratamento uma vez.
 - ✅ **Capítulo 8, A Melodia da Semana**: melodias por dia da semana, Vale dos Ecos e ponte de pedras; novo final.
+- ✅ **Capítulo 9, O Eclipse de Aurora**: Floresta Antiga, 4 lanternas (flor, peixe, prato e canção), Grande Árvore,
+  aurora boreal no céu noturno depois do final, Coruja Sábia, nova conquista (25) e novo final com créditos.
 - ✅ **Enigmas opcionais**: pedras empurráveis (Ruínas do Vale), pegadas reveladas pela Lanterna, baú que o Cristal derrete.
 
 ## 4. Encantos (P2)

@@ -272,7 +272,13 @@ HISTORIA (8 capitulos)
            em 3 dias diferentes (cada dia da semana tem a sua; a tela mostra as notas). A rocha no fundo da
            Gruta do Eco se abre para o Vale dos Ecos. Empurre as tres pedras sobre as placas (ande contra elas)
            para erguer a ponte; a pedra do eco recoloca tudo. Fale com Lia no coreto e depois com o Lucas.
-           Fim da campanha, creditos e a Caixinha de Musica para a casa.
+           Recompensa: a Caixinha de Musica para a casa.
+
+  Cap. 9 - O Eclipse de Aurora: depois do cap. 8, fale com Cintila no Pico Estrelado a noite. As raizes
+           ao norte do Jardim das Constelacoes abrem a Floresta Antiga. Acenda as 4 lanternas: uma flor (ha
+           uma margarida silvestre no sul da floresta), um peixe do estoque, um prato (a Mamae da uma sopa) e
+           a cancao gravada na pedra. A noite, fale com a Grande Arvore e depois com a Mamae, em casa.
+           Fim da campanha, creditos, a Semente da Grande Arvore e uma aurora no ceu de todas as noites.
 
   Partidas antigas sem nome: ao Continuar, a Mamae pergunta o nome e o tratamento uma vez (Esc pula).
 

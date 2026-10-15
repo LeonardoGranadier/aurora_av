@@ -42,11 +42,19 @@ Para auditar os demais testes em ingles, rode-os com `-Daurora.idioma=en` e
 ## Capitulo 8, enigmas, saves e musica
 
 `ChapterEightTest` joga o capitulo 8 (Lucas, melodias em tres dias da semana com erro e
-repeticao, passagem da gruta, pedras empurradas, reinicio ao sair, ponte, Lia, creditos do
-novo final, compatibilidade dos creditos ja vistos), os tres enigmas opcionais (ruinas com
+repeticao, passagem da gruta, pedras empurradas, reinicio ao sair, ponte, Lia, fim do capitulo
+sem creditos, compatibilidade dos creditos ja vistos), os tres enigmas opcionais (ruinas com
 pedra do eco, pegadas que exigem a Lanterna e respeitam a ordem, bau que exige o Cristal),
 a musica de cada estacao e os tres espacos de save (novo jogo em espaco livre, ultimo jogado,
 carregar, substituir com confirmacao, apagar um so espaco).
+
+## Capitulo 9
+
+`ChapterNineTest` joga o capitulo 9: Cintila no Pico a noite, raizes que se abrem, passagem
+de ida e volta para a Floresta Antiga, lanternas que recusam sem presente, flor silvestre,
+peixe gasto sem perder o album, sopa da Mamae, cancao, persistencia das lanternas, Grande
+Arvore que so desperta a noite, aurora no ceu, conquista, carta da coruja, diario, creditos do
+novo final e a Semente da Grande Arvore. Gera `ancient-forest.png`, `aurora-sky.png` e `credits-ch9.png`.
 
 ## Capitulos 6 e 7
 

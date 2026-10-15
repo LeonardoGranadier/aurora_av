@@ -16,7 +16,8 @@ final class WorldMap {
         new Region("Cabana do Eremita", 75, 120), new Region("Pico Estrelado", 225, 55),
         new Region(ChapterFive.TRAIL, 550, 205), new Region(ChapterFive.GARDEN, 550, 120),
         new Region(Gardening.MAP, 75, 290), new Region(ChapterSix.REEF, 390, 365),
-        new Region(ChapterEight.VALLEY, 390, 55)
+        new Region(ChapterEight.VALLEY, 390, 55),
+        new Region(ChapterNine.FOREST, 550, 55)
     };
     final Game game;
     final Set<String> visited = new TreeSet<>();
@@ -80,6 +81,10 @@ final class WorldMap {
             case 36, 37, 41 -> Set.of("Vila Aurora");
             case 38 -> Set.of("Gruta do Eco");
             case 39, 40 -> Set.of(ChapterEight.VALLEY);
+            case 42 -> Set.of("Pico Estrelado");
+            case 43 -> Set.of(ChapterFive.GARDEN);
+            case 44, 45 -> Set.of(ChapterNine.FOREST);
+            case 46 -> Set.of("Vila Aurora");
             default -> Set.of();
         };
     }
