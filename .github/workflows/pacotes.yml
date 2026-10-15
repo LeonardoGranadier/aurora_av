@@ -36,6 +36,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '17' }
+      - name: Versão do jogo (Game.VERSION)
+        run: |
+          version=$(sed -n 's/.*static final String VERSION = "\(.*\)";.*/\1/p' Game.java)
+          echo "AURORA_VERSAO=$version" >> "$GITHUB_ENV"
       - name: Gerar pacote portátil
         run: sh empacotar.sh --portatil
       - uses: actions/upload-artifact@v4
@@ -56,4 +60,4 @@ jobs:
           case "${{ matrix.sistema }}" in linux) arch=linux-amd64 ;; windows) arch=windows-amd64 ;; mac) arch=darwin-amd64 ;; esac
           curl -L -o butler.zip "https://broth.itch.zone/butler/$arch/LATEST/archive/default"
           unzip -q butler.zip -d butler && chmod +x butler/butler* || true
-          ./butler/butler push "dist/AventuraEmAurora-${{ matrix.sistema }}" "${{ vars.ITCH_PROJECT }}:${{ matrix.sistema }}"
+          ./butler/butler push "dist/AventuraEmAurora-${{ matrix.sistema }}" "${{ vars.ITCH_PROJECT }}:${{ matrix.sistema }}" --userversion "$AURORA_VERSAO"
