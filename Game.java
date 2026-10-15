@@ -1036,8 +1036,11 @@ public class Game extends JPanel implements KeyListener {
             g.setColor(outer);
             g.fillRect(0, 0, W, Math.max(0, y));
             g.fillRect(0, y + 2 * r, W, Math.max(0, H - y - 2 * r));
-            g.fillRect(0, Math.max(0, y), Math.max(0, x), 2 * r);
-            g.fillRect(x + 2 * r, Math.max(0, y), Math.max(0, W - x - 2 * r), 2 * r);
+            int top = Math.max(0, y), bottom = Math.min(H, y + 2 * r);        // laterais só na faixa do círculo:
+            if (bottom > top) {                                                // sobrepostas, escureceriam em dobro
+                g.fillRect(0, top, Math.max(0, x), bottom - top);
+                g.fillRect(x + 2 * r, top, Math.max(0, W - x - 2 * r), bottom - top);
+            }
         }
         g.setComposite(old);
     }

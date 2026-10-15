@@ -6,8 +6,25 @@ import javax.swing.SwingUtilities;
 public class WorldLifeTest {
     static void check(boolean ok, String message) { VillageLifeTest.check(ok, message); }
     static void at(Game g, int shownDay, int hour) { g.time = (shownDay - 1) * 1440 + hour * 60; }
+    /** Night shade near any screen edge: everything outside the light circle gets the same darkness, never twice. */
+    static void nightShade(Game g) {
+        int[][] centers = {{320, 10}, {320, -150}, {20, 240}, {630, 240}, {320, 470}, {-100, -100}, {700, 600}};
+        for (int[] c : centers) {
+            java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(Game.W, Game.H, java.awt.image.BufferedImage.TYPE_INT_RGB);
+            java.awt.Graphics2D gr = img.createGraphics();
+            gr.setColor(java.awt.Color.WHITE); gr.fillRect(0, 0, Game.W, Game.H);
+            g.glow(gr, c[0], c[1], 190, new java.awt.Color(10, 20, 70, 50), new java.awt.Color(10, 20, 70, 175), 0.8f);
+            gr.dispose();
+            int darkest = 255, lightest = 0;
+            for (int y = 0; y < Game.H; y += 7) for (int x = 0; x < Game.W; x += 7)
+                if (Math.hypot(x - c[0], y - c[1]) > 200) { int red = img.getRGB(x, y) >> 16 & 255; darkest = Math.min(darkest, red); lightest = Math.max(lightest, red); }
+            check(lightest - darkest <= 3, "Uniform night shade around " + c[0] + "," + c[1] + " (" + darkest + ".." + lightest + ")");
+        }
+    }
+
     static void run() throws Exception {
         Game g = new Game(); g.state = Game.PLAY;
+        nightShade(g);
         g.travel("Vila Aurora", 15, 15); at(g, 3, 10); g.frame = 20;
         g.toastT = 0; g.bannerT = 0; VillageLifeTest.screenshot(g, "life-spring-day");
         at(g, 30, 22); g.frame = 400; VillageLifeTest.screenshot(g, "life-summer-night");
