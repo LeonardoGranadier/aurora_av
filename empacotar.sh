@@ -21,7 +21,8 @@ rm -rf "$out" "dist/$name.zip"
 mkdir -p "$out"
 
 # Apenas o codigo do jogo: testes e ferramentas (sprites, capturas da loja) ficam fora do pacote.
-sources=$(ls ./*.java | grep -v 'Test\.java$' | grep -v '/MakeAssets\.java$' | grep -v '/Capturas\.java$')
+sources=$(ls ./*.java | grep -v 'Test\.java$' | grep -v '/MakeAssets\.java$' | grep -v '/Capturas\.java$' \
+    | grep -v '/Characters\.java$' | grep -v '/Tiles\.java$')
 # shellcheck disable=SC2086
 javac -encoding UTF-8 --release 17 -d "$classes" $sources
 

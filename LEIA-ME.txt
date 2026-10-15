@@ -108,7 +108,7 @@ CARTAS
   as cartas chegam na manha seguinte, ate duas por dia. A bandeira vermelha indica carta nova.
   Algumas trazem moedas, guardadas na primeira leitura.
 
-(Opcional) Regerar os sprites provisorios:   java MakeAssets
+(Opcional) Regerar os sprites:   java MakeAssets   (personagens em Characters.java, tiles em Tiles.java)
 (Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
 
 CONTROLES
