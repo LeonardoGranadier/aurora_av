@@ -56,6 +56,11 @@ na praia, lago da trilha), doacoes com moedas, alas completas, conquistas, persi
 pelo menu, o radio (faixa bloqueada, faixa tocando em casa, jornal de 112 dias com festa aos
 sabados) e os icones (um diferente por conquista, versao cinza, navegacao do cartao).
 
+O mesmo teste cobre o barco (antes do capitulo 3, sem moedas, confirmacao, carta nautica, Alto-mar
+com peixe de aguas fundas, Ilha da Tartaruga, volta para casa) e os fosseis (pa depois de 3 doacoes,
+terra brilhando em um terco dos lugares por dia, lugares alcancaveis, fossil ou moedas, comentario do
+professor, ala completa, conquistas e persistencia, inclusive de saves da versao anterior).
+
 ## Steam
 
 `SteamTest` confere que, sem a steamworks4j, a ponte fica desligada; que cada conquista vira um

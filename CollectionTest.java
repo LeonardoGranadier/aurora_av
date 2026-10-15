@@ -17,6 +17,20 @@ public class CollectionTest {
         throw new AssertionError("No day with season " + season + " and weather " + weather);
     }
     static void at(Game g, int day, int hour) { g.time = day * 1440 + hour * 60; }
+    /** Flood fill from the map's warps (or the boat dock of the turtle island), walking on non-solid tiles. */
+    static boolean reachable(GameMap m, int tx, int ty) {
+        boolean[][] seen = new boolean[m.h][m.w]; Deque<int[]> q = new ArrayDeque<>();
+        for (Warp w : m.warps) q.add(new int[]{w.x(), w.y()});
+        if (m.name.equals(Boat.TURTLE)) q.add(new int[]{Boat.PORTS[3].x(), Boat.PORTS[3].y()});
+        while (!q.isEmpty()) {
+            int[] c = q.poll(); int x = c[0], y = c[1];
+            if (x < 0 || y < 0 || x >= m.w || y >= m.h || seen[y][x] || m.solid(x, y)) continue;
+            seen[y][x] = true;
+            if (x == tx && y == ty) return true;
+            q.add(new int[]{x + 1, y}); q.add(new int[]{x - 1, y}); q.add(new int[]{x, y + 1}); q.add(new int[]{x, y - 1});
+        }
+        return false;
+    }
     static Random always(double value) { return new Random() { @Override public double nextDouble() { return value; } }; }
 
     static void museum(Game g) throws Exception {
@@ -66,17 +80,82 @@ public class CollectionTest {
         VillageLifeTest.screenshot(g, "museum-bugs");
         Arrays.fill(g.museum.fish, 1); Arrays.fill(g.museum.bugs, 1);
         for (int t = 0; t < 2; t++) { g.museum.tab = t; for (int i = 0; i < g.museum.count(); i++) { g.museum.selected = i; tap(g, KeyEvent.VK_Z); } }
-        check(g.museum.complete() && g.home.unlocked(26) && g.home.unlocked(27), "Both wings: aquarium and insect frame");
+        check(g.museum.fishWing() && g.museum.bugWing() && !g.museum.complete() && g.home.unlocked(26) && g.home.unlocked(27), "Fish and bug wings: aquarium and insect frame");
         tap(g, KeyEvent.VK_ESCAPE);
         g.explorer.checkTimer = 0; g.update();
-        check(g.explorer.unlocked.containsAll(List.of("lendario", "insetos", "curador")), "Collection achievements");
-        check(g.save(false) && g.loadGame() && g.museum.complete() && g.museum.net && g.museum.bugs[0] == 1, "Museum persists");
+        check(g.explorer.unlocked.containsAll(List.of("lendario", "insetos")) && !g.explorer.unlocked.contains("curador"), "Collection achievements");
+        check(g.save(false) && g.loadGame() && g.museum.fishWing() && g.museum.net && g.museum.bugs[0] == 1, "Museum persists");
         Properties p = new Properties(); g.museum.save(p); p.setProperty("museu.peixe.3", "0"); g.museum.load(p);
         check(!g.museum.donatedFish(3), "Load never keeps a donation without the catch");
+        Properties legacy = new Properties(); legacy.setProperty("museu.rede", "true"); legacy.setProperty("museu.doado", "" + (1 | 1 << 2 | 1 << 8));
+        legacy.setProperty("museu.peixe.0", "1"); legacy.setProperty("museu.peixe.2", "1"); legacy.setProperty("museu.inseto.0", "2");
+        g.museum.load(legacy);
+        check(g.museum.donatedFish(0) && g.museum.donatedFish(2) && g.museum.donatedBug(0) && !g.museum.donatedFish(1) && !g.museum.shovel, "Old saves keep their donations");
         g.state = Game.PLAY; g.openPause(); check(g.opts.contains("Coleção do Museu"), "Pause menu shows the collection");
         g.choose("Coleção do Museu"); check(g.state == Game.MUSEUM, "Collection from the menu"); tap(g, KeyEvent.VK_Z);
         check(g.museum.status.contains("Museu"), "Donating from the menu asks to visit"); tap(g, KeyEvent.VK_ESCAPE);
         check(g.state == Game.MENU, "Back to the menu"); g.state = Game.PLAY;
+    }
+
+    static void boatAndFossils(Game g) throws Exception {
+        g.newGame(); g.state = Game.PLAY; g.stage = 14;
+        check(!g.vis(npc(g, "Praia Azul", "gaivota")), "No boat for sale before chapter 3 ends");
+        g.stage = 15; g.home.coins = 100;
+        meet(g, "Praia Azul", "gaivota"); finish(g); finish(g);
+        check(!g.boat.owned && g.home.coins == 100, "Not enough coins");
+        g.home.coins = 200; meet(g, "Praia Azul", "gaivota"); finish(g);
+        check(g.state == Game.HANDOFF, "Asks before paying"); tap(g, KeyEvent.VK_LEFT); tap(g, KeyEvent.VK_Z); finish(g);
+        check(g.boat.owned && g.home.coins == 50, "Boat repaired for 150 coins");
+        meet(g, "Praia Azul", "gaivota"); check(g.state == Game.BOAT && Boat.PORTS[g.boat.selected].map().equals("Ilha das Estrelas"), "Nautical chart opens");
+        VillageLifeTest.screenshot(g, "boat-chart");
+        g.boat.selected = 2; tap(g, KeyEvent.VK_Z); check(g.map.name.equals(Boat.SEA) && g.state == Game.PLAY, "Sailed to the open sea");
+        check(g.worldMap.visited.contains(Boat.SEA), "Open sea on the world map");
+        g.toastT = 0; g.bannerT = 0; g.fade = 0; VillageLifeTest.screenshot(g, "open-sea");
+        // pesca de águas fundas: sem peixe comum, o raro morde mais
+        g.life.rod = true; at(g, 3, 10); g.tx = 9; g.ty = 8; g.dir = 0;
+        g.museum.random = always(0.6); g.life.cast(); check(g.state == Game.FISHING && g.life.rare >= 8, "Deep-sea fish bites often");
+        g.life.endFish(true, ""); check(g.museum.fish[g.life.rare] == 1, "Deep-sea fish collected"); g.state = Game.PLAY;
+        g.explorer.checkTimer = 0; g.update(); check(g.explorer.unlocked.contains("marinheiro"), "Sailor achievement");
+        meet(g, Boat.SEA, "gaivota_mar"); check(g.state == Game.BOAT, "Helm opens the chart");
+        g.boat.selected = 3; tap(g, KeyEvent.VK_Z); check(g.map.name.equals(Boat.TURTLE), "Turtle island");
+        meet(g, Boat.TURTLE, "tartaruga"); check(g.dlg != null && g.dlg[0].contains("pá"), "Turtle points to the shovel"); finish(g);
+        g.toastT = 0; g.bannerT = 0; g.fade = 0; g.tx = 9; g.ty = 9; VillageLifeTest.screenshot(g, "turtle-island");
+        meet(g, Boat.TURTLE, "gaivota_ilha"); g.boat.selected = 0; tap(g, KeyEvent.VK_Z); check(g.map.name.equals("Praia Azul"), "Sailed home");
+        check(g.save(false) && g.loadGame() && g.boat.owned, "Boat persists"); g.state = Game.PLAY;
+
+        // fósseis: a pá vem depois de 3 doações
+        g.stage = 15; g.museum.net = true;
+        int day = 0; while (!Museum.active(0, day)) day++;
+        at(g, day, 10);
+        check(!g.vis(npc(g, "Praia Azul", "escavar0")), "No glowing ground without the shovel");
+        g.museum.fish[0] = 1; g.museum.bugs[0] = 1; g.museum.bugs[1] = 1;
+        meet(g, "Vila Aurora", "museu"); finish(g); check(!g.museum.shovel, "No shovel before three donations"); g.state = Game.PLAY;
+        for (int[] d : new int[][]{{0, 0}, {1, 0}, {1, 1}}) { g.museum.given[d[0]][d[1]] = true; }
+        meet(g, "Vila Aurora", "museu"); check(g.museum.shovel && g.dlg != null, "Professor gives the shovel"); finish(g);
+        check(g.state == Game.MUSEUM && g.museum.wings() == 3, "Fossil wing opens"); tap(g, KeyEvent.VK_ESCAPE);
+        check(g.vis(npc(g, "Praia Azul", "escavar0")), "Glowing ground today");
+        int active = 0; for (int i = 0; i < Museum.SPOTS.length; i++) if (Museum.active(i, day)) active++;
+        check(active >= 3 && active <= 6, "About a third of the spots glow each day");
+        g.museum.random = always(0); meet(g, "Praia Azul", "escavar0");
+        check(g.museum.fossils[0] == 1 && g.dlg[0].contains("Amonite"), "Dug an ammonite"); finish(g);
+        check(!g.vis(npc(g, "Praia Azul", "escavar0")), "Dug spot rests until tomorrow");
+        int coins = g.home.coins; g.museum.random = always(0.99);
+        int other = 1; while (!Museum.active(other, day)) other++;
+        meet(g, Museum.SPOTS[other].map(), "escavar" + other); check(g.home.coins > coins, "Sometimes only coins"); finish(g);
+        for (Museum.Spot sp : Museum.SPOTS) {
+            GameMap m = g.maps.get(sp.map());
+            check("#~HLXR".indexOf(m.at(sp.x(), sp.y())) < 0 && reachable(m, sp.x(), sp.y()), "Dig spot reachable " + sp);
+        }
+        // doar e completar a ala
+        meet(g, "Vila Aurora", "museu"); g.museum.tab = Museum.FOSSIL_WING; g.museum.selected = 0; coins = g.home.coins; tap(g, KeyEvent.VK_Z);
+        check(g.museum.donatedFossil(0) && g.home.coins == coins + 30 && g.museum.status.contains("amonite"), "Professor comments the fossil");
+        VillageLifeTest.screenshot(g, "museum-fossils");
+        Arrays.fill(g.museum.fossils, 1); Arrays.fill(g.museum.fish, 1); Arrays.fill(g.museum.bugs, 1);
+        for (int t = 0; t < 3; t++) { g.museum.tab = t; for (int i = 0; i < g.museum.count(); i++) { g.museum.selected = i; tap(g, KeyEvent.VK_Z); } }
+        check(g.museum.complete() && g.home.unlocked(28), "Three wings: miniature skeleton");
+        tap(g, KeyEvent.VK_ESCAPE); g.explorer.checkTimer = 0; g.update();
+        check(g.explorer.unlocked.containsAll(List.of("paleontologo", "curador")), "Fossil and curator achievements");
+        check(g.save(false) && g.loadGame() && g.museum.shovel && g.museum.fossilWing(), "Fossils persist"); g.state = Game.PLAY;
     }
 
     static void radio(Game g) throws Exception {
@@ -127,8 +206,8 @@ public class CollectionTest {
 
     static void run() throws Exception {
         Game g = new Game(); g.state = Game.PLAY;
-        museum(g); radio(g); icons(g);
-        System.out.println("PASS: " + VillageLifeTest.checks + " museum, radio and icon checks");
+        museum(g); boatAndFossils(g); radio(g); icons(g);
+        System.out.println("PASS: " + VillageLifeTest.checks + " museum, boat, radio and icon checks");
     }
     public static void main(String[] args) throws Exception {
         if (Files.exists(Path.of(Game.SAVE))) throw new IllegalStateException("Use a clean temporary directory.");

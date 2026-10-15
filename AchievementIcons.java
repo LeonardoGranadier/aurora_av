@@ -20,8 +20,8 @@ final class AchievementIcons {
     static int kind(String id) {
         return switch (id) {
             case "farol", "mapa", "marujo", "estrela_mar", "cintila", "jardim", "mare", "festival_ceu", "melodia", "guardiao" -> 0;
-            case "amizade", "pedidos", "encomendas", "festival", "aniversario", "gato", "chef", "ano" -> 1;
-            case "album", "lendario", "insetos", "curador", "observatorio", "sinos" -> 2;
+            case "amizade", "pedidos", "marinheiro", "encomendas", "festival", "aniversario", "gato", "chef", "ano" -> 1;
+            case "album", "lendario", "insetos", "curador", "observatorio", "sinos", "paleontologo" -> 2;
             default -> 3;
         };
     }
@@ -94,6 +94,8 @@ final class AchievementIcons {
             case "guardiao" -> decor(g, "semente_arvore");
             case "lendario" -> game.life.drawFish(g, 14, 24, 28, Museum.FISH[7].color());
             case "insetos" -> { Graphics2D s = scaled(g, 1.2); game.museum.drawBug(s, 9, 0, 0, Museum.BUGS[9].color(), false); s.dispose(); }
+            case "paleontologo" -> { Graphics2D s = scaled(g, 1.25); game.museum.drawFossil(s, 0, 0, 0, Museum.FOSSILS[0].color()); s.dispose(); }
+            case "marinheiro" -> { Graphics2D s = scaled(g, 1.3); game.boat.drawObject(s, new Npc("gaivota_ilha", "", 0, 0, Color.WHITE), 0, -4); s.dispose(); }
             case "curador" -> { Graphics2D s = scaled(g, 1.0); game.museum.drawObject(s, new Npc("museu", "", 0, 0, Color.WHITE), 0, 0); s.dispose(); }
             case "enigmas" -> chest(g);
             case "ano" -> seasons(g);

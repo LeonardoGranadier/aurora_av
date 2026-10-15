@@ -1686,7 +1686,6 @@ Pescou os oito peixes raros de Aurora.	Caught all eight rare fish of Aurora.
 Amigo dos Insetos	Friend of Bugs
 Pegou os dez insetos de Aurora.	Caught all ten bugs of Aurora.
 Curador do Museu	Museum Curator
-Completou as duas alas do Museu de Aurora.	Completed both wings of the Aurora Museum.
 ← → trocar de canal · ↑ ↓ escolher · Z: tocar · Esc: sair	← → switch channel · ↑ ↓ choose · Z: play · Esc: leave
 Rádio Melodia {0}/{1}	Melody Radio {0}/{1}
 Jornal de Aurora	Aurora News
@@ -1726,3 +1725,83 @@ Há convites misteriosos circulando pela vila. Ninguém sabe quem está organiza
 O Lucas anda pela praça olhando para o sino. Ele diz que a irmã adorava as melodias da semana.	Lucas wanders the square staring at the bell. He says his sister loved the melodies of the week.
 As estrelas andam piscando mais fraco. A Cintila pediu para todos olharem o céu com atenção.	The stars have been twinkling more faintly. Cintila asked everyone to watch the sky closely.
 A aurora voltou a dançar sobre a vila! Moradores dormem tarde para não perder nenhuma noite.	The aurora is dancing over the village again! Villagers stay up late so they don't miss a single night.
+Céu limpo	Clear sky
+OBJETIVO	OBJECTIVE
+Mover	Move
+Correr	Run
+Falar	Talk
+Lanche	Snack
+Cartão	Card
+Menu	Menu
+Alto-mar	Open Sea
+Ilha da Tartaruga	Turtle Island
+Gaivota	Seagull
+Vovó Tartaruga	Grandma Turtle
+Carta náutica da Gaivota	The Seagull's Sea Chart
+Setas: escolher · Z: navegar · Esc: ficar	Arrows: choose · Z: sail · Esc: stay
+O cais de casa, ao lado do farol.	The home pier, next to the lighthouse.
+A ilha do Templo Estrelado.	The island of the Starry Temple.
+Mar aberto: peixes de águas fundas mordem a qualquer hora.	Open water: deep-sea fish bite at any hour.
+Uma ilhota de areia branca. Dizem que uma tartaruga muito velha mora lá.	A little white-sand island. They say a very old turtle lives there.
+Um lugar que a Gaivota ainda não conhece.	A place the Seagull doesn't know yet.
+Você já está aqui.	You're already here.
+A Gaivota ainda não conhece esse caminho.	The Seagull doesn't know that route yet.
+Essa é a Gaivota, meu primeiro barco. Está velhinha, mas o casco é bom.	This is the Seagull, my very first boat. She's old, but the hull is sound.
+Por {0} moedas eu conserto a vela e ela é sua. Com ela dá para ir ao Alto-mar e às ilhas pequenas.	For {0} coins I'll fix the sail and she's yours. With her you can reach the Open Sea and the little islands.
+Junte {0} moedas e volte. A Gaivota espera por você.	Save up {0} coins and come back. The Seagull will wait for you.
+Pagar {0} moedas pelo conserto da Gaivota?	Pay {0} coins to repair the Seagull?
+Vela nova, leme firme! A Gaivota é sua. Fale com ela no cais para abrir a carta náutica.	New sail, steady helm! The Seagull is yours. Talk to her at the pier to open the sea chart.
+Hmmm... no meu tempo, o farol nem existia. Os barcos se guiavam pelas estrelas.	Hmmm... in my day, the lighthouse didn't even exist. Boats steered by the stars.
+A areia daqui guarda coisas mais velhas que eu. E olha que eu sou bem velha.	The sand here keeps things older than me. And I'm very old indeed.
+Já vi a baleia Maré pequenininha, do tamanho de um barco. Cresceu bem, aquela.	I saw Maré the whale when she was tiny, the size of a boat. She grew up well, that one.
+Quando o mar fica parado e cinzento, os peixes do fundo sobem para espiar.	When the sea turns still and gray, the deep fish rise up to peek.
+Dizem que, no Alto-mar, à noite, uma lula gigante acende as águas como lanterna.	They say that on the Open Sea, at night, a giant squid lights up the water like a lantern.
+Cave onde a areia brilha. O mar devolve o que guardou, um pouquinho por dia.	Dig where the sand glows. The sea gives back what it kept, a little each day.
+Hmmm... uma visita! Faz tempo. Se gosta de coisas antigas, peça uma pá ao professor do museu.	Hmmm... a visitor! It's been a while. If you like old things, ask the museum's professor for a shovel.
+Atum-Azul	Bluefin Tuna
+Peixe-Espada	Swordfish
+Lula-Gigante	Giant Squid
+Peixe-Lua	Sunfish
+Qualquer estação, de dia, no Alto-mar (de barco).	Any season, by day, on the Open Sea (by boat).
+Verão e outono, de dia, no Alto-mar (de barco).	Summer and autumn, by day, on the Open Sea (by boat).
+Qualquer estação, à noite, no Alto-mar (de barco).	Any season, at night, on the Open Sea (by boat).
+Inverno e primavera, de dia, no Alto-mar (de barco).	Winter and spring, by day, on the Open Sea (by boat).
+Amonite	Ammonite
+Dente de Tubarão Antigo	Ancient Shark Tooth
+Trilobita	Trilobite
+Pena de Pedra	Stone Feather
+Folha Fóssil	Fossil Leaf
+Ovo de Pedra	Stone Egg
+Casco Antigo	Ancient Shell
+Crânio Estelar	Starry Skull
+Na areia da Praia Azul e da Ilha da Tartaruga.	In the sand of Blue Beach and Turtle Island.
+Na terra da Trilha da Montanha e do Vale dos Ecos.	In the ground of the Mountain Trail and Echo Valley.
+No chão da Floresta Verde e do Vale dos Ecos.	On the ground of the Green Forest and Echo Valley.
+No chão da vila e da Floresta Verde.	On the ground of the village and the Green Forest.
+Na terra da vila e da Trilha da Montanha.	In the ground of the village and the Mountain Trail.
+Só na Ilha da Tartaruga.	Only on Turtle Island.
+Uma amonite! Esses caracóis do mar viviam aqui quando Aurora inteira era fundo de oceano.	An ammonite! These sea snails lived here when all of Aurora was the bottom of the ocean.
+Olhe o tamanho deste dente! O tubarão dono dele devia ser maior que o barco da Capitã.	Look at the size of this tooth! Its shark must have been bigger than the Captain's boat.
+Trilobitas andavam pelo fundo do mar muito antes dos peixes. Este está perfeito!	Trilobites crawled along the seabed long before fish. This one is perfect!
+Uma pena guardada na pedra... Então já havia aves voando sobre Aurora há tanto tempo!	A feather kept in stone... So birds were already flying over Aurora that long ago!
+Repare nas nervuras da folha. Esta árvore é parente distante da Grande Árvore.	Look at the leaf's veins. This tree is a distant relative of the Great Tree.
+Um ovo de pedra! Nunca vamos saber o que ia nascer dele. Talvez seja melhor assim.	A stone egg! We'll never know what was going to hatch. Maybe that's for the best.
+O casco de uma tartaruga antiga. A Vovó Tartaruga vai gostar de saber que tem um parente no museu.	The shell of an ancient turtle. Grandma Turtle will love knowing she has a relative in the museum.
+Um crânio com marcas de estrela... Os peixes-estrela do mito eram de verdade!	A skull with star markings... The star fish of legend were real!
+Prof. Carvalho:	Prof. Carvalho:
+Terra brilhando	Glowing ground
+Você está enchendo as vitrines! Hora de abrir a terceira ala: a dos fósseis.	You're filling up the displays! Time to open the third wing: fossils.
+Leve esta pá. Onde a terra brilhar, cave com Z. O chão de Aurora guarda bichos de muito antes da vila.	Take this shovel. Wherever the ground glows, dig with Z. Aurora's soil keeps creatures from long before the village.
+Na praia, na floresta, na montanha, no vale... e dizem que a ilhota da tartaruga está cheia deles.	On the beach, in the forest, on the mountain, in the valley... and they say the turtle's little island is full of them.
+Você ganhou a Pá do Professor!	You got the Professor's Shovel!
+Fóssil novo! {a}! Leve ao Museu de Aurora.	New fossil! {a}! Take it to the Aurora Museum.
+Você desenterrou: {a}!	You dug up: {a}!
+Só terra e umas moedas antigas: +{0} moedas.	Just dirt and a few old coins: +{0} coins.
+Fósseis {0}/{1}	Fossils {0}/{1}
+Ala dos fósseis completa! Um Esqueleto em Miniatura foi para a sua casa.	Fossil wing complete! A Miniature Skeleton was sent to your home.
+Esqueleto em Miniatura	Miniature Skeleton
+Paleontólogo	Paleontologist
+Desenterrou os oito fósseis de Aurora.	Dug up all eight fossils of Aurora.
+Marinheiro da Gaivota	Seagull's Sailor
+Consertou o próprio barco e navegou até o Alto-mar.	Repaired your own boat and sailed to the Open Sea.
+Completou as três alas do Museu de Aurora.	Completed all three wings of the Aurora Museum.

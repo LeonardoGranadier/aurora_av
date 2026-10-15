@@ -34,7 +34,7 @@ Imagens geradas por `Capturas.java` (rode `java -Daurora.dados=$(mktemp -d) -cp 
 | `fundo-1438x810.png` | Page Background (opcional) |
 | `icone-comunidade-184x184.png` | Community Icon |
 
-- **Capturas**: `loja/capturas/*-pt.png` e `*-en.png` (1280x960, mínimo de 5). Ordem sugerida: 10, 02, 01, 09, 11, 04, 03, 07, 05, 06, 08.
+- **Capturas**: `loja/capturas/*-pt.png` e `*-en.png` (1280x960, mínimo de 5). Ordem sugerida: 10, 02, 12, 01, 09, 11, 04, 03, 07, 05, 06, 08.
 - **Textos**: reaproveite `loja/PAGINA-ITCH.md` (pt e en). Descrição curta com até 300 caracteres.
 - **Idiomas**: Português (Brasil) e Inglês, interface e legendas (o jogo não tem vozes).
 - **Etiquetas sugeridas**: Cozy, Adventure, Exploration, Pixel Graphics, Top-Down, Fishing, Cooking, Puzzle,
@@ -104,7 +104,9 @@ a partir de `AchievementIcons.java` (os mesmos brasões do Cartão do Explorador
 | `ACH_ANIVERSARIO` | Quem Ama Lembra | Deu um presente de aniversário a um morador. |
 | `ACH_LENDARIO` | Pescador Lendário | Pescou os oito peixes raros de Aurora. |
 | `ACH_INSETOS` | Amigo dos Insetos | Pegou os dez insetos de Aurora. |
-| `ACH_CURADOR` | Curador do Museu | Completou as duas alas do Museu de Aurora. |
+| `ACH_PALEONTOLOGO` | Paleontólogo | Desenterrou os oito fósseis de Aurora. |
+| `ACH_MARINHEIRO` | Marinheiro da Gaivota | Consertou o próprio barco e navegou até o Alto-mar. |
+| `ACH_CURADOR` | Curador do Museu | Completou as três alas do Museu de Aurora. |
 | `ACH_GATO` | Amigo do Bolinha | Fez carinho no Bolinha em sete dias diferentes. |
 
 O `SteamTest` garante que todo id vira um nome de API único e válido. Para testar fora da Steam, crie

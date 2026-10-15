@@ -25,7 +25,9 @@ interface Feature {
     default boolean visible(Npc n) { return true; }
     /** Desenho próprio de um objeto do mapa; true substitui o desenho padrão. */
     default boolean drawObject(Graphics2D g, Npc n, int x, int y) { return false; }
-    /** Elementos sobre o mapa, abaixo do HUD. */
+    /** Elementos no chão, sobre os tiles e abaixo dos personagens (cascos, sombras, marcas). */
+    default void drawGround(Graphics2D g, int camX, int camY) {}
+    /** Elementos sobre o mapa e os personagens, abaixo do HUD. */
     default void drawWorld(Graphics2D g, int camX, int camY) {}
     /** Elementos sobre a iluminação (noite, cavernas): brilhos, pássaros, partículas. */
     default void drawSky(Graphics2D g, int camX, int camY) {}

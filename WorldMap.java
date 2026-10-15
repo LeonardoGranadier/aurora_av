@@ -17,7 +17,8 @@ final class WorldMap {
         new Region(ChapterFive.TRAIL, 550, 205), new Region(ChapterFive.GARDEN, 550, 120),
         new Region(Gardening.MAP, 75, 290), new Region(ChapterSix.REEF, 390, 365),
         new Region(ChapterEight.VALLEY, 390, 55),
-        new Region(ChapterNine.FOREST, 550, 55)
+        new Region(ChapterNine.FOREST, 550, 55),
+        new Region(Boat.TURTLE, 225, 365), new Region(Boat.SEA, 550, 365)
     };
     final Game game;
     final Set<String> visited = new TreeSet<>();
@@ -93,6 +94,8 @@ final class WorldMap {
             || game.maps.get(b).warps.stream().anyMatch(w -> w.to().equals(a))
             || a.equals("Praia Azul") && b.equals("Ilha das Estrelas")
             || b.equals("Praia Azul") && a.equals("Ilha das Estrelas")
+            || a.equals("Praia Azul") && (b.equals(Boat.SEA) || b.equals(Boat.TURTLE))                // a Gaivota
+            || b.equals("Praia Azul") && (a.equals(Boat.SEA) || a.equals(Boat.TURTLE))
             || a.equals("Ilha das Estrelas") && b.equals(ChapterSix.REEF)                      // bote da ilha
             || b.equals("Ilha das Estrelas") && a.equals(ChapterSix.REEF);
     }
