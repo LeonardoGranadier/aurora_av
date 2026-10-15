@@ -37,6 +37,7 @@ final class VillageLife {
     final Random random = new Random();
     boolean rod;
     final int[] catches = new int[FISH.length];
+    int rare = -1;                         // peixe raro (Museum.FISH) fisgado agora, ou -1
     int bellBest, albumSelection, albumReturn;
     int fishPhase, fishIndex;
     double fishTimer, fishElapsed, fishPosition, fishVelocity, fishTarget, catchProgress;
@@ -50,7 +51,7 @@ final class VillageLife {
     VillageLife(Game game) { this.game = game; }
 
     void reset() {
-        rod = false; Arrays.fill(catches, 0); bellBest = 0;
+        rod = false; Arrays.fill(catches, 0); bellBest = 0; rare = -1;
         sequence.clear(); result = ""; fishPhase = WAIT;
         lit = -1; showing = false; bellFinished = false;
         festivalBells = false;
@@ -179,8 +180,9 @@ final class VillageLife {
     void cast() {
         if (!rod) { game.say("", "A água se mexe... O Tio Beto, na vila, deve ter uma vara sobrando."); return; }
         List<Integer> pool = availableFish();
-        if (pool.isEmpty()) { game.say("", "As águas estão quietas. Talvez em outro horário, ou depois de uma nova aventura."); return; }
-        fishIndex = game.weather.chooseFish(pool, random);
+        rare = game.museum.roll();                                             // peixe raro do museu, no lugar de um comum
+        if (pool.isEmpty() && rare < 0) { game.say("", "As águas estão quietas. Talvez em outro horário, ou depois de uma nova aventura."); return; }
+        fishIndex = pool.isEmpty() ? 0 : game.weather.chooseFish(pool, random);
         fishPhase = WAIT; fishTimer = 1.8 + random.nextDouble() * 2.8; fishElapsed = 0;
         fishPosition = 0.5; fishVelocity = 0; fishTarget = 0.5; catchProgress = 0.3;
         result = ""; game.state = Game.FISHING;
@@ -199,7 +201,7 @@ final class VillageLife {
             }
             return;
         }
-        double difficulty = FISH[fishIndex].difficulty();
+        double difficulty = difficulty();
         fishTarget = 0.5 + 0.25 * Math.sin(fishElapsed * (0.8 + difficulty * 0.2))
             + 0.08 * Math.sin(fishElapsed * 2.1);
         double force = game.down.contains(KeyEvent.VK_Z) ? 1.25 : -1.0;
@@ -216,7 +218,12 @@ final class VillageLife {
 
     void endFish(boolean success, String text) {
         fishPhase = RESULT;
-        if (success) {
+        if (success && rare >= 0) {
+            result = game.museum.caughtFish(rare);
+            game.festival.caughtFish();
+            game.audio.sfx("fanfare");
+            game.save(false);
+        } else if (success) {
             boolean first = catches[fishIndex] == 0, hadTrophy = completeAlbum();
             catches[fishIndex] = Math.min(999999, catches[fishIndex] + 1);
             game.festival.caughtFish();
@@ -228,8 +235,10 @@ final class VillageLife {
     }
 
     int discovered() { int count = 0; for (int n : catches) if (n > 0) count++; return count; }
-    double halfZone() { return halfZoneFor(fishIndex); }
-    double halfZoneFor(int fish) { return 0.20 - FISH[fish].difficulty() * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0) + game.cooking.fishingBonus(); }
+    double difficulty() { return rare >= 0 ? Museum.FISH[rare].difficulty() : FISH[fishIndex].difficulty(); }
+    double halfZone() { return zone(difficulty()); }
+    double halfZoneFor(int fish) { return zone(FISH[fish].difficulty()); }
+    double zone(double difficulty) { return 0.20 - difficulty * 0.025 + (game.bonds.quests[1] == 2 ? 0.035 : 0) + game.cooking.fishingBonus(); }
     boolean completeAlbum() { return discovered() == FISH.length; }
     void openAlbum(int from) { albumReturn = from; albumSelection = 0; game.state = Game.ALBUM; }
 
@@ -475,7 +484,8 @@ final class VillageLife {
             text(g, Math.round(catchProgress * 100) + "%", 508, 392, 75, 16);
         } else {
             text(g, result, 60, 285, 520, 19);
-            if (catches[fishIndex] > 0) drawFish(g, 470, 350, 54, FISH[fishIndex].color());
+            if (rare >= 0 && game.museum.fish[rare] > 0) drawFish(g, 470, 350, 54, Museum.FISH[rare].color());
+            else if (rare < 0 && catches[fishIndex] > 0) drawFish(g, 470, 350, 54, FISH[fishIndex].color());
             text(g, "Z  ↵", 60, 394, 160, 17);
         }
         text(g, "ESC", 548, 437, 55, 13);

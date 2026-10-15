@@ -1614,3 +1614,115 @@ Então era você lá na floresta? Uma flor, um peixe, um prato e uma canção...
 Toma, guarde esta semente que caiu no quintal ontem à noite. Brilha igualzinho às raízes que você contou.	Here, keep this seed that fell in the backyard last night. It glows just like the roots you told me about.
 Sob a aurora	Under the aurora
 Huu. Esta carta veio no bico, então perdoe a letra. A Grande Árvore dorme tranquila de novo, e a floresta deixa a passagem aberta para você. Volte quando quiser; as lanternas acendem sozinhas para os amigos. Mando 30 moedas que achei nos ninhos. Não pergunte de quem eram.	Hoo. This letter came by beak, so forgive the handwriting. The Great Tree sleeps peacefully again, and the forest leaves the way open for you. Come back whenever you like; the lanterns light themselves for friends. I'm sending 30 coins I found in the nests. Don't ask whose they were.
+Museu de Aurora	Aurora Museum
+Coleção do Museu	Museum Collection
+Rádio de Aurora	Aurora Radio
+Rádio	Radio
+Salmão-Real	King Salmon
+Enguia Elétrica	Electric Eel
+Peixe-Neblina	Mistfish
+Carpa Arco-Íris	Rainbow Carp
+Truta de Gelo	Ice Trout
+Baiacu Dourado	Golden Puffer
+Peixe-Vagalume	Firefly Fish
+Rei do Recife	Reef King
+Borboleta-Limão	Lemon Butterfly
+Joaninha	Ladybug
+Cigarra	Cicada
+Vagalume-Rei	Firefly King
+Besouro-Rinoceronte	Rhino Beetle
+Libélula Azul	Blue Dragonfly
+Grilo-Cantor	Singing Cricket
+Mariposa-Lua	Moon Moth
+Besouro-de-Gelo	Frost Beetle
+Borboleta-Aurora	Aurora Butterfly
+Outono, de dia, no lago da Floresta Verde.	Autumn, by day, in the Green Forest pond.
+Verão, à noite, no lago da vila, quando chove.	Summer, at night, in the village pond, when it rains.
+Qualquer estação, no mar da Praia Azul, em dia de neblina.	Any season, in the sea at Blue Beach, on a foggy day.
+Primavera, de dia, no lago da Trilha dos Vagalumes.	Spring, by day, in the Firefly Trail pond.
+Inverno, de manhã cedo, no lago da Floresta Verde.	Winter, early in the morning, in the Green Forest pond.
+Verão, com sol, no mar da Ilha das Estrelas.	Summer, on sunny days, in the sea around Star Island.
+Verão e outono, à noite, no lago da Trilha dos Vagalumes.	Summer and autumn, at night, in the Firefly Trail pond.
+Depois do capítulo 6, à noite, nas águas do Recife de Coral.	After chapter 6, at night, in the waters of the Coral Reef.
+Primavera e verão, de dia, no canto sudoeste da vila.	Spring and summer, by day, in the village's southwest corner.
+Primavera, de dia, perto do lago da Floresta Verde.	Spring, by day, near the Green Forest pond.
+Verão, de dia, nas árvores do sul da Floresta Verde.	Summer, by day, in the trees of the southern Green Forest.
+Verão, à noite, no sul da Trilha dos Vagalumes.	Summer, at night, in the south of the Firefly Trail.
+Verão, à noite, no sudoeste da Floresta Verde.	Summer, at night, in the southwest of the Green Forest.
+Verão e outono, de dia, na beira do lago da vila.	Summer and autumn, by day, at the edge of the village pond.
+Outono, à noite, no sudeste da vila.	Autumn, at night, in the village's southeast.
+Outono e inverno, à noite, no oeste da Trilha dos Vagalumes.	Autumn and winter, at night, in the west of the Firefly Trail.
+Qualquer estação, de dia, na neve perto da cabana do Eremita.	Any season, by day, in the snow near the Hermit's cabin.
+Depois do capítulo 9, à noite, no leste da Floresta Antiga.	After chapter 9, at night, in the east of the Ancient Forest.
+Peixe raro! {a}! Leve ao Museu de Aurora.	Rare fish! {a}! Take it to the Aurora Museum.
+Inseto novo! {a}! Leve ao Museu de Aurora.	New bug! {a}! Take it to the Aurora Museum.
+Você pegou: {a}!	You caught: {a}!
+Um(a) {a}! Sem uma rede, ele(a) escapa entre os dedos. O museu ao lado do observatório empresta uma.	A {a}! Without a net, it slips right through your fingers. The museum next to the observatory lends one.
+Uma placa na porta: "Museu em arrumação. Abre depois que o farol voltar a brilhar."	A sign on the door: "Museum being set up. Opens once the lighthouse shines again."
+Um bilhete do Prof. Carvalho está preso na porta, junto de uma rede:	A note from Prof. Carvalho is pinned to the door, next to a net:
+"O Museu de Aurora precisa de ajuda! Traga peixes raros e insetos. Cada espécie tem sua estação, sua hora e seu clima."	"The Aurora Museum needs help! Bring rare fish and bugs. Each species has its own season, time and weather."
+"A rede é sua. Os insetos aparecem pousados pelo mapa; fale com eles para pegar. Prof. C."	"The net is yours. Bugs rest here and there around the map; talk to them to catch them. Prof. C."
+Você ganhou a Rede de Insetos! O rádio de casa também dá dicas do que aparece em cada dia.	You got the Bug Net! The radio at home also gives tips on what shows up each day.
+Tab: trocar de ala · Setas: escolher · Z: doar · Esc: sair	Tab: switch wing · Arrows: choose · Z: donate · Esc: leave
+Peixes raros {0}/{1}	Rare fish {0}/{1}
+Insetos {0}/{1}	Bugs {0}/{1}
+Doadas: {0}/{1}	Donated: {0}/{1}
+Onde:	Where:
+Encontrados: {0}	Found: {0}
+Ainda não encontrado.	Not found yet.
+Pegue a rede na porta do museu.	Pick up the net at the museum door.
+Esta espécie já está na vitrine.	This species is already on display.
+Você ainda não encontrou esta espécie.	You haven't found this species yet.
+Não foi possível salvar a doação.	The donation could not be saved.
+Doado:	Donated:
+O professor deixou {0} moedas de agradecimento.	The professor left {0} coins as thanks.
+Ala dos peixes completa! Um Aquário Raro foi para a sua casa.	Fish wing complete! A Rare Aquarium was sent to your home.
+Ala dos insetos completa! Um Quadro de Insetos foi para a sua casa.	Bug wing complete! A Bug Display was sent to your home.
+Para doar, vá até o Museu de Aurora, ao lado do observatório.	To donate, go to the Aurora Museum, next to the observatory.
+Aquário Raro	Rare Aquarium
+Quadro de Insetos	Bug Display
+Pescador Lendário	Legendary Angler
+Pescou os oito peixes raros de Aurora.	Caught all eight rare fish of Aurora.
+Amigo dos Insetos	Friend of Bugs
+Pegou os dez insetos de Aurora.	Caught all ten bugs of Aurora.
+Curador do Museu	Museum Curator
+Completou as duas alas do Museu de Aurora.	Completed both wings of the Aurora Museum.
+← → trocar de canal · ↑ ↓ escolher · Z: tocar · Esc: sair	← → switch channel · ↑ ↓ choose · Z: play · Esc: leave
+Rádio Melodia {0}/{1}	Melody Radio {0}/{1}
+Jornal de Aurora	Aurora News
+Desligar o rádio	Turn off the radio
+Bloqueada: visite {a}	Locked: visit {a}
+O rádio está desligado.	The radio is off.
+A faixa escolhida toca em casa e aqui no rádio.	The chosen track plays at home and here on the radio.
+Lar Doce Lar	Home Sweet Home
+Manhã na Vila	Village Morning
+Verão na Praça	Summer in the Square
+Folhas de Outono	Autumn Leaves
+Neve no Telhado	Snow on the Roof
+Lanternas da Vila	Village Lanterns
+Trilha Verde	Green Trail
+Vagalumes	Fireflies
+Brisa da Praia	Beach Breeze
+Ondas à Noite	Night Waves
+Ecos da Gruta	Cave Echoes
+Montanha Névoa	Misty Mountain
+Hoje é {a}, dia {0}. Estação: {b}.	Today is {a}, day {0}. Season: {b}.
+Previsão: hoje, {a}; amanhã, {b}.	Forecast: today, {a}; tomorrow, {b}.
+Hoje tem festa na praça: {a}!	There's a party in the square today: {a}!
+No sábado tem festa na praça: {a}.	On Saturday there's a party in the square: {a}.
+Hoje é aniversário de {a}. Um presente vale em dobro!	Today is {a}'s birthday. A gift counts double!
+Daqui a {0} dia(s) é aniversário de {a}.	In {0} day(s) it's {a}'s birthday.
+O sino da praça toca a melodia de {a} hoje.	The square's bell plays {a}'s melody today.
+Receita do dia: {a}.	Recipe of the day: {a}.
+Dica do museu:	Museum tip:
+O Prof. Carvalho ainda procura doações para restaurar o observatório.	Prof. Carvalho is still looking for donations to restore the observatory.
+O farol da Praia Azul continua apagado. Seu Marinho diz que só uma luz especial pode acendê-lo.	The lighthouse at Blue Beach is still dark. Mr. Marinho says only a special light can relight it.
+Pescadores contam ter visto uma garrafa boiando na Praia Azul, numa noite de lua.	Fishermen say they saw a bottle floating off Blue Beach on a moonlit night.
+A Capitã Estrela prepara o barco. Dizem que ela vai atrás de uma ilha que só aparece nos mapas antigos.	Captain Estrela is readying her boat. They say she's after an island that only appears on old maps.
+Uma estrela cadente riscou o céu na direção da Montanha Névoa. O Prof. Carvalho está animadíssimo.	A shooting star streaked across the sky toward Misty Mountain. Prof. Carvalho is thrilled.
+A Trilha dos Vagalumes voltou a brilhar. Será que o velho jardim ao norte vai florescer de novo?	The Firefly Trail is glowing again. Will the old garden to the north bloom once more?
+Os pescadores juram ouvir o mar cantando à noite. A Capitã acha que é uma baleia.	Fishermen swear they hear the sea singing at night. The Captain thinks it's a whale.
+Há convites misteriosos circulando pela vila. Ninguém sabe quem está organizando a festa no Pico.	Mysterious invitations are going around the village. Nobody knows who's organizing the party on the Peak.
+O Lucas anda pela praça olhando para o sino. Ele diz que a irmã adorava as melodias da semana.	Lucas wanders the square staring at the bell. He says his sister loved the melodies of the week.
+As estrelas andam piscando mais fraco. A Cintila pediu para todos olharem o céu com atenção.	The stars have been twinkling more faintly. Cintila asked everyone to watch the sky closely.
+A aurora voltou a dançar sobre a vila! Moradores dormem tarde para não perder nenhuma noite.	The aurora is dancing over the village again! Villagers stay up late so they don't miss a single night.

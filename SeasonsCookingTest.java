@@ -126,7 +126,7 @@ public class SeasonsCookingTest {
         }
         g.explorer.checkTimer = 0; g.update();
         check(g.cat.petDays == 7 && g.explorer.unlocked.contains("gato"), "Cat friendship achievement");
-        check(Explorer.ACHIEVEMENTS.size() == 25, "Twenty-five achievements");
+        check(Explorer.ACHIEVEMENTS.size() == 28, "Twenty-eight achievements");
         g.explorer.openCard(Game.PLAY); VillageLifeTest.screenshot(g, "card-20"); tap(g, KeyEvent.VK_ESCAPE);
         g.travel("Vila Aurora", 4, 14); g.toastT = 0; VillageLifeTest.screenshot(g, "cat");
     }

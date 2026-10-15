@@ -101,6 +101,16 @@ CORRENTE DE TROCAS
   que passa de mao em mao: Lenhador, Montanhista, Eremita (depois do portao de gelo), Capita (cais) e
   Prof. Carvalho, que entrega a Chave do Observatorio. A troca atual e a dica ficam no Cartao (C).
 
+MUSEU DE AURORA (ao lado do observatorio, depois do capitulo 1)
+  Na primeira visita voce ganha a Rede de Insetos. Peixes raros mordem no lugar dos comuns em certa
+  estacao, hora, clima e lugar; insetos aparecem pousados pelo mapa (fale com eles para pegar, um por dia).
+  Doe cada especie no museu (20 moedas). Ala completa: Aquario Raro ou Quadro de Insetos. A tela do museu
+  mostra onde achar cada especie; tambem em ESC > Colecao do Museu.
+
+RADIO DE AURORA (mesinha de casa ou ESC > Radio de Aurora)
+  Radio Melodia: cada regiao visitada libera sua musica; a faixa escolhida toca em casa.
+  Jornal de Aurora: clima de hoje e amanha, festa de sabado, aniversarios, noticias da historia e uma dica do museu.
+
 OBSERVATORIO
   No nordeste da vila. Doe quatro conjuntos (com confirmacao): peixes da vila (Lambari, Carpa Dourada,
   Bagre da Lua), flores do quintal (margarida, tulipa, girassol), tesouros do mar (6 conchas encontradas e
@@ -361,6 +371,7 @@ ORGANIZACAO DO CODIGO
   ChapterSix/Seven/Eight/Nine, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
   Lang.java        idiomas: todo texto desenhado passa por Lang.t (dicionario em assets/lang/)
   Gamepad.java     controle (Jamepad por reflexao, opcional) · WorldLife.java efeitos de ambiente
+  Museum.java      museu, peixes raros e insetos · Radio.java radio de casa · AchievementIcons.java brasoes
   Steam.java       conquistas da Steam (steamworks4j por reflexao, opcional; sem ela nao faz nada)
   Capturas.java    ferramenta: imagens da loja (fora do pacote do jogo)
                    sistemas inspirados nos classicos

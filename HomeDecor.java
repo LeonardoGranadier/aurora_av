@@ -33,7 +33,9 @@ final class HomeDecor {
         new Item("estrela_gruta", "Estrela da Gruta", 0, 1, 1, true, new Color(200, 220, 255)),
         new Item("floco", "Floco Eterno", 0, 1, 1, true, new Color(190, 230, 250)),
         new Item("caixinha", "Caixinha de Música", 0, 1, 1, true, new Color(170, 120, 200)),
-        new Item("semente_arvore", "Semente da Grande Árvore", 0, 1, 1, true, new Color(120, 230, 180))
+        new Item("semente_arvore", "Semente da Grande Árvore", 0, 1, 1, true, new Color(120, 230, 180)),
+        new Item("aquario", "Aquário Raro", 0, 2, 1, true, new Color(90, 170, 220)),
+        new Item("quadro_insetos", "Quadro de Insetos", 0, 1, 1, true, new Color(150, 110, 70))
     };
     final Game game;
     int coins;
@@ -84,6 +86,8 @@ final class HomeDecor {
             case 20 -> game.stage >= ChapterSeven.FINAL;
             case 21, 22, 23 -> game.puzzles.opened[id - 21];
             case 24 -> game.stage >= ChapterEight.FINAL;
+            case 26 -> game.museum.fishWing();
+            case 27 -> game.museum.bugWing();
             default -> game.stage >= Story.FINAL;
         };
     }
@@ -377,6 +381,21 @@ final class HomeDecor {
                 a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
                 a.setColor(color); a.fillRect(7, 14, 18, 12); a.setColor(color.darker()); a.fillRect(7, 10, 18, 5);
                 a.setColor(new Color(230, 200, 90)); a.fillRect(24, 18, 4, 2);
+            }
+            case 26 -> {                                                         // aquário com os peixes raros
+                int aw = w - 6;
+                a.setColor(new Color(120, 90, 60)); a.fillRect(2, 24, aw + 2, 7);
+                a.setColor(new Color(150, 210, 240, 200)); a.fillRect(3, 6, aw, 18);
+                a.setColor(new Color(60, 120, 170)); a.drawRect(3, 6, aw, 18);
+                Color[] fish = {new Color(232, 112, 92), new Color(246, 196, 60), new Color(120, 90, 210)};
+                for (int k = 0; k < 3; k++) game.life.drawFish(a, 8 + k * (aw / 3), 11 + (k % 2) * 5, 9, fish[k]);
+                a.setColor(new Color(70, 150, 90)); a.fillRect(aw - 3, 14, 2, 10);
+            }
+            case 27 -> {                                                         // quadro de insetos na parede
+                a.setColor(color); a.fillRect(3, 4, 26, 24);
+                a.setColor(new Color(245, 238, 220)); a.fillRect(6, 7, 20, 18);
+                Color[] bugs = {new Color(250, 230, 90), new Color(220, 50, 50), new Color(70, 140, 230), new Color(120, 255, 190)};
+                for (int k = 0; k < 4; k++) { a.setColor(bugs[k]); a.fillOval(8 + (k % 2) * 10, 9 + (k / 2) * 8, 6, 5); }
             }
             case 25 -> {                                                         // vaso com a semente brilhando
                 a.setColor(new Color(170, 100, 70)); a.fillRect(9, 20, 14, 10); a.fillRect(7, 18, 18, 3);

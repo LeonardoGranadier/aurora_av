@@ -39,6 +39,9 @@ final class Explorer implements Feature {
         new Achievement("ano", "Um Ano em Aurora", "Viveu as quatro estações da vila.", g -> g.day() + 1 > Seasons.LENGTH * 3),
         new Achievement("chef", "Chef de Aurora", "Cozinhou todas as receitas.", g -> g.cooking.cooked.size() == Cooking.RECIPES.length),
         new Achievement("aniversario", "Quem Ama Lembra", "Deu um presente de aniversário a um morador.", g -> !g.seasons.birthdayGifts.isEmpty()),
+        new Achievement("lendario", "Pescador Lendário", "Pescou os oito peixes raros de Aurora.", g -> g.museum.allFish()),
+        new Achievement("insetos", "Amigo dos Insetos", "Pegou os dez insetos de Aurora.", g -> g.museum.allBugs()),
+        new Achievement("curador", "Curador do Museu", "Completou as duas alas do Museu de Aurora.", g -> g.museum.complete()),
         new Achievement("gato", "Amigo do Bolinha", "Fez carinho no Bolinha em sete dias diferentes.", g -> g.cat.petDays >= 7)
     );
 
@@ -129,7 +132,8 @@ final class Explorer implements Feature {
             int n = ACHIEVEMENTS.size(), old = cardSel;
             if (key == KeyEvent.VK_LEFT) cardSel = (cardSel + n - 1) % n;
             else if (key == KeyEvent.VK_RIGHT) cardSel = (cardSel + 1) % n;
-            else if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) cardSel = (cardSel + (n + 1) / 2) % n;
+            else if (key == KeyEvent.VK_UP) cardSel = (cardSel + n - (n + 2) / 3) % n;
+            else if (key == KeyEvent.VK_DOWN) cardSel = (cardSel + (n + 2) / 3) % n;
             else if (act || key == KeyEvent.VK_ESCAPE || key == KeyEvent.VK_C) { game.audio.sfx("back"); game.state = returnState; game.down.clear(); return; }
             if (cardSel != old) game.audio.sfx("select");
             return;
@@ -219,13 +223,13 @@ final class Explorer implements Feature {
         };
         for (int i = 0; i < rows.length - 1; i++) game.life.text(g, rows[i], 166, 142 + i * 22, 420, i == 0 ? 16 : 14);
         game.life.text(g, rows[rows.length - 1], 166, 142 + (rows.length - 1) * 22, 420, 11);
-        // medalhas
-        int cols = (ACHIEVEMENTS.size() + 1) / 2, step = Math.min(66, 548 / cols);
+        // medalhas: três fileiras de brasões
+        int cols = (ACHIEVEMENTS.size() + 2) / 3, step = Math.min(56, 552 / cols);
         for (int i = 0; i < ACHIEVEMENTS.size(); i++) {
-            int x = 50 + (i % cols) * step, y = 282 + (i / cols) * 58;
+            int x = 46 + (i % cols) * step, y = 272 + (i / cols) * 42;
             boolean got = unlocked.contains(ACHIEVEMENTS.get(i).id());
-            medal(g, x + 8, y, got, i);
-            if (i == cardSel) { g.setColor(new Color(200, 60, 50)); g.setStroke(new BasicStroke(3)); g.drawOval(x + 3, y - 5, 50, 50); g.setStroke(new BasicStroke(1)); }
+            game.icons.draw(g, ACHIEVEMENTS.get(i).id(), x + (step - 38) / 2, y, 38, got);
+            if (i == cardSel) { g.setColor(new Color(200, 60, 50)); g.setStroke(new BasicStroke(3)); g.drawOval(x + (step - 38) / 2 - 2, y - 2, 42, 42); g.setStroke(new BasicStroke(1)); }
         }
         Achievement a = ACHIEVEMENTS.get(cardSel);
         boolean got = unlocked.contains(a.id());
@@ -235,15 +239,4 @@ final class Explorer implements Feature {
 
     int chapter() { return chapterOf(game.stage); }
     static int chapterOf(int s) { return s < 4 ? 1 : s < 8 ? 2 : s <= 15 ? 3 : s <= 21 ? 4 : s < 28 ? 5 : s < 32 ? 6 : s < 36 ? 7 : s < 42 ? 8 : 9; }
-
-    void medal(Graphics2D g, int x, int y, boolean got, int index) {
-        Color[] colors = {new Color(241, 196, 65), new Color(120, 200, 230), new Color(230, 130, 110), new Color(150, 210, 140)};
-        Color c = colors[index % colors.length];
-        g.setColor(got ? c.darker() : new Color(190, 198, 205)); g.fillOval(x, y, 40, 40);
-        g.setColor(got ? c : new Color(215, 222, 228)); g.fillOval(x + 4, y + 4, 32, 32);
-        g.setColor(got ? new Color(255, 255, 255, 230) : new Color(160, 168, 176));
-        g.setFont(new Font("SansSerif", Font.BOLD, 18));
-        String mark = got ? "★" : "?";
-        g.drawString(Lang.t(mark), x + 20 - g.getFontMetrics().stringWidth(Lang.t(mark)) / 2, y + 27);
-    }
 }

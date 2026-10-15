@@ -39,7 +39,7 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27, SLOTS_SCREEN = 28;
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27, SLOTS_SCREEN = 28, MUSEUM = 29, RADIO = 30;
     static final String VERSION = "1.0.0";
     /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
     static final boolean DEV = Boolean.getBoolean("aurora.dev");
@@ -94,6 +94,9 @@ public class Game extends JPanel implements KeyListener {
     final ChapterSeven chapterSeven = new ChapterSeven(this);
     final ChapterEight chapterEight = new ChapterEight(this);
     final ChapterNine chapterNine = new ChapterNine(this);
+    final Museum museum = new Museum(this);
+    final AchievementIcons icons = new AchievementIcons(this);
+    final Radio radio = new Radio(this);
     final Puzzles puzzles = new Puzzles(this);
     final SaveSlots saveSlots = new SaveSlots(this);
     final Hints hints = new Hints(this);
@@ -104,7 +107,7 @@ public class Game extends JPanel implements KeyListener {
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, chapterNine, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, chapterNine, museum, radio, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -223,6 +226,8 @@ public class Game extends JPanel implements KeyListener {
         for (VillageLife.Fish f : VillageLife.FISH) Lang.addNames(f.name());
         Lang.addNames(VillageLife.BELL_NAMES); Lang.addNames(Gardening.NAMES); Lang.addNames(Seasons.NAMES); Lang.addNames(Seasons.FESTIVALS);
         Lang.addNames(WEEKDAYS); Lang.addNames(Weather.NAMES); Lang.addNames(ChapterEight.DAY_NAMES); Lang.addNames(ChapterSeven.GUEST_NAMES); Lang.addNames(ChapterNine.LANTERN_NAMES);
+        for (Museum.Species m : Museum.FISH) Lang.addNames(m.name());
+        for (Museum.Species m : Museum.BUGS) Lang.addNames(m.name());
         for (Cooking.Recipe r : Cooking.RECIPES) Lang.addNames(r.name());
         Lang.addNames(Cooking.EFFECT_NAMES);
         for (HomeDecor.Item i : HomeDecor.ITEMS) Lang.addNames(i.name());
@@ -480,6 +485,8 @@ public class Game extends JPanel implements KeyListener {
 
     String musicFor() {
         if (state == TITLE || state == CONFIRM || state == SLOTS_SCREEN) return "titulo";
+        String onRadio = radio.music();
+        if (onRadio != null) return onRadio;
         boolean n = isNight();
         return switch (map.name) {
             case "Casa" -> "casa";
@@ -690,6 +697,8 @@ public class Game extends JPanel implements KeyListener {
             "Salvar e ir ao título"));
         if (map.name.equals("Casa")) opts.add(5, "Decorar casa");
         opts.add(5, "Previsão do tempo");
+        opts.add(5, "Rádio de Aurora");
+        if (museum.net) opts.add(5, "Coleção do Museu");
         opts.add(5, "Calendário");
         opts.add(1, "Pedir uma dica");
         opts.add(3, "Lancheira");
@@ -752,6 +761,8 @@ public class Game extends JPanel implements KeyListener {
             case "Laços de Aurora" -> bonds.openJournal(MENU);
             case "Decorar casa" -> home.openDecor(MENU);
             case "Previsão do tempo" -> weather.open(MENU);
+            case "Rádio de Aurora" -> radio.open(MENU);
+            case "Coleção do Museu" -> museum.openFromMenu();
             case "Mapa de Aurora" -> worldMap.open(MENU);
             case "Diário de Aventuras" -> journal.open(MENU);
             case "Volumes de áudio" -> soundscape.open();
