@@ -32,7 +32,8 @@ final class HomeDecor {
         new Item("partitura", "Partitura Perdida", 0, 1, 1, true, new Color(240, 230, 200)),
         new Item("estrela_gruta", "Estrela da Gruta", 0, 1, 1, true, new Color(200, 220, 255)),
         new Item("floco", "Floco Eterno", 0, 1, 1, true, new Color(190, 230, 250)),
-        new Item("caixinha", "Caixinha de Música", 0, 1, 1, true, new Color(170, 120, 200))
+        new Item("caixinha", "Caixinha de Música", 0, 1, 1, true, new Color(170, 120, 200)),
+        new Item("semente_arvore", "Semente da Grande Árvore", 0, 1, 1, true, new Color(120, 230, 180))
     };
     final Game game;
     int coins;
@@ -82,6 +83,7 @@ final class HomeDecor {
             case 19 -> game.stage >= ChapterSix.DONE;
             case 20 -> game.stage >= ChapterSeven.FINAL;
             case 21, 22, 23 -> game.puzzles.opened[id - 21];
+            case 24 -> game.stage >= ChapterEight.FINAL;
             default -> game.stage >= Story.FINAL;
         };
     }
@@ -375,6 +377,12 @@ final class HomeDecor {
                 a.setColor(new Color(137, 105, 74)); a.fillRect(3, 26, 26, 5);
                 a.setColor(color); a.fillRect(7, 14, 18, 12); a.setColor(color.darker()); a.fillRect(7, 10, 18, 5);
                 a.setColor(new Color(230, 200, 90)); a.fillRect(24, 18, 4, 2);
+            }
+            case 25 -> {                                                         // vaso com a semente brilhando
+                a.setColor(new Color(170, 100, 70)); a.fillRect(9, 20, 14, 10); a.fillRect(7, 18, 18, 3);
+                a.setColor(new Color(120, 230, 180, 90)); a.fillOval(6, 3, 20, 20);
+                a.setColor(color); a.fillOval(12, 9, 8, 9);
+                a.setColor(new Color(70, 150, 90)); a.fillRect(15, 4, 2, 6); a.fillOval(16, 3, 6, 4);
             }
             default -> { }
         }

@@ -1,0 +1,43 @@
+// Build do SteamPipe para o Aventura em Aurora (veja STEAM.md).
+// 1. Troque 1000000 pelo seu App ID e 1000001/2/3 pelos IDs dos depots (Windows, Linux, macOS).
+// 2. Gere as pastas dist/AventuraEmAurora-<sistema>-steam (GitHub Actions > Run workflow, ou
+//    "sh empacotar.sh --steam --portatil" em cada sistema) e coloque as tres em dist/.
+// 3. steamcmd +login <usuario> +run_app_build "$(pwd)/steam/app_build.vdf" +quit
+"AppBuild"
+{
+	"AppID" "1000000"
+	"Desc" "Aventura em Aurora 1.0.0"
+	"ContentRoot" "../dist/"
+	"BuildOutput" "output/"
+	"SetLive" ""
+	"Depots"
+	{
+		"1000001"
+		{
+			"FileMapping"
+			{
+				"LocalPath" "AventuraEmAurora-windows-steam/AventuraEmAurora/*"
+				"DepotPath" "."
+				"Recursive" "1"
+			}
+		}
+		"1000002"
+		{
+			"FileMapping"
+			{
+				"LocalPath" "AventuraEmAurora-linux-steam/AventuraEmAurora/*"
+				"DepotPath" "."
+				"Recursive" "1"
+			}
+		}
+		"1000003"
+		{
+			"FileMapping"
+			{
+				"LocalPath" "AventuraEmAurora-mac-steam/*"
+				"DepotPath" "."
+				"Recursive" "1"
+			}
+		}
+	}
+}

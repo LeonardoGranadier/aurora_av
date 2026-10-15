@@ -50,6 +50,11 @@ final class Hints implements Feature {
         {"As placas pedem peso.", "Empurre as pedras andando contra elas.", "Duas pedras vão primeiro para o lado e depois para cima; a do caminho só sobe. A pedra do eco recomeça."},
         {"Alguém toca música no coreto.", "Atravesse a ponte do riacho.", "Fale com a Lia no coreto, ao norte do riacho."},
         {"O Lucas precisa saber da irmã.", "Ele está na praça da vila.", "Fale com o Lucas na Vila Aurora."},
+        {"A Cintila chama lá do alto.", "O Pico Estrelado fica no topo da trilha da montanha.", "Durma até a noite e fale com a Cintila no alto do Pico Estrelado."},
+        {"Raízes antigas abriram passagem.", "O Jardim das Constelações fica ao norte da Trilha dos Vagalumes.", "Siga o caminho do jardim até a borda norte e atravesse as raízes."},
+        {"Cada lanterna pede um presente diferente.", "Flor do quintal, peixe do estoque, prato da lancheira e a canção gravada na pedra.", "Sem flor? Há uma margarida silvestre ao sul da floresta. Sem prato? A Mamãe dá uma sopa."},
+        {"A Grande Árvore desperta sob as estrelas.", "Ela fica no centro da Floresta Antiga.", "Descanse na fogueira da floresta até a noite e fale com a Grande Árvore."},
+        {"Alguém em casa vai querer saber.", "A Mamãe está em casa, na Vila Aurora.", "Volte para casa e fale com a Mamãe."},
         {"Aurora ainda tem muito a explorar.", "Procure conchas secretas, trocas, enigmas e receitas.", "O Cartão do Explorador (C) mostra as conquistas que faltam."}
     };
 

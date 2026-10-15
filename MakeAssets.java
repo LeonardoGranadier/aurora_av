@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.Random;
 
 /**
- * Gera sprites de pixel art provisórios na pasta assets/.
+ * Gera os sprites de pixel art na pasta assets/ (personagens em Characters.java, tiles principais em Tiles.java).
  * Rodar:  javac MakeAssets.java && java MakeAssets
  * Depois é só substituir qualquer PNG pelo seu próprio (mesmo nome de arquivo).
  */
@@ -28,6 +28,8 @@ public class MakeAssets {
             for (int x = 0; x < i.getWidth(); x++)
                 if (Math.hypot(x + 0.5 - cx, y + 0.5 - cy) <= r) px(i, x, y, c);
     }
+    interface Saver { void save(BufferedImage image, String name) throws Exception; }
+
     static void save(BufferedImage i, String name) throws Exception {
         BufferedImage o = canvas(i.getWidth() * SCALE, i.getHeight() * SCALE);
         for (int y = 0; y < o.getHeight(); y++)
@@ -308,48 +310,9 @@ public class MakeAssets {
         }
     }
 
-    // ---------- Personagens (folha 3 colunas x 4 linhas: baixo, cima, esquerda, direita) ----------
-    static void frame(BufferedImage im, int ox, int oy, int d, int f, Color body, Color hair, Color legs, boolean cap) {
-        Color skin = c(245, 205, 165), dark = c(25, 25, 35);
-        int ll = f == 1 ? 2 : 3, rl = f == 2 ? 2 : 3;               // pernas alternando
-        rect(im, ox + 5, oy + 11, 2, ll, legs); rect(im, ox + 9, oy + 11, 2, rl, legs);
-        rect(im, ox + 5, oy + 11 + ll, 2, 1, dark); rect(im, ox + 9, oy + 11 + rl, 2, 1, dark);
-        rect(im, ox + 4, oy + 6, 8, 5, body);                        // tronco
-        rect(im, ox + 3, oy + 7, 1, 3, body.darker()); rect(im, ox + 12, oy + 7, 1, 3, body.darker());
-        rect(im, ox + 5, oy + 1, 6, 6, skin);                        // cabeça
-        if (d == 1) rect(im, ox + 5, oy + 1, 6, 6, hair);
-        else {
-            rect(im, ox + 5, oy + 1, 6, 2, hair);
-            if (d == 2) rect(im, ox + 10, oy + 1, 1, 5, hair);
-            if (d == 3) rect(im, ox + 5, oy + 1, 1, 5, hair);
-        }
-        if (cap) {
-            rect(im, ox + 5, oy + 1, 6, 2, hair);
-            Color brim = hair.darker();
-            if (d == 0) rect(im, ox + 5, oy + 3, 6, 1, brim);
-            if (d == 2) rect(im, ox + 3, oy + 3, 4, 1, brim);
-            if (d == 3) rect(im, ox + 9, oy + 3, 4, 1, brim);
-        }
-        if (d == 0) { px(im, ox + 6, oy + 4, dark); px(im, ox + 9, oy + 4, dark); }
-        if (d == 2) px(im, ox + 6, oy + 4, dark);
-        if (d == 3) px(im, ox + 9, oy + 4, dark);
-    }
-
-    static void person(String name, Color body, Color hair, Color legs, boolean cap) throws Exception {
-        BufferedImage sheet = canvas(S * 3, S * 4);
-        for (int d = 0; d < 4; d++) for (int f = 0; f < 3; f++) frame(sheet, f * S, d * S, d, f, body, hair, legs, cap);
-        save(sheet, name);
-    }
-
+    // ---------- Personagens: Characters.java (moldes 16x16 com contorno, rosto e caminhada) ----------
     static void characters() throws Exception {
-        person("player", c(50, 80, 170), c(220, 50, 50), c(60, 60, 90), true);
-        person("mae", c(200, 90, 150), c(110, 70, 40), c(200, 90, 150), false);
-        person("prof", c(240, 240, 240), c(200, 200, 200), c(70, 70, 90), false);
-        person("marinho", c(40, 90, 160), c(235, 235, 235), c(50, 60, 90), true);
-        person("capita", c(40, 140, 150), c(240, 240, 240), c(50, 60, 80), true);
-        person("eremita", c(110, 80, 60), c(215, 215, 215), c(60, 50, 40), false);
-        person("montanhista", c(200, 60, 60), c(50, 60, 130), c(50, 60, 80), true);
-        person("lenhador", c(170, 60, 40), c(90, 55, 30), c(70, 60, 50), false);
+        for (var e : Characters.all().entrySet()) save(Characters.sheet(e.getValue()), e.getKey());   // veja Characters.java
 
         BufferedImage i = canvas(S, S);
         disc(i, 8, 8, 7, new Color(255, 230, 120, 90));
@@ -362,6 +325,7 @@ public class MakeAssets {
     public static void main(String[] args) throws Exception {
         new File("assets").mkdirs();
         tiles();
+        Tiles.generate(MakeAssets::save);        // tiles principais redesenhados (substituem os de tiles())
         characters();
         System.out.println("Sprites gerados em assets/");
     }

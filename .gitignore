@@ -24,3 +24,7 @@ assets/audio/
 *.iml
 .DS_Store
 *~
+
+# Steam: App ID local para testes e saida do steamcmd
+steam_appid.txt
+steam/output/

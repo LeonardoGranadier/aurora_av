@@ -42,6 +42,14 @@ jobs:
         with:
           name: AventuraEmAurora-${{ matrix.sistema }}
           path: dist/AventuraEmAurora-${{ matrix.sistema }}
+      - name: Gerar pacote da Steam (só ao rodar manualmente)
+        if: github.event_name == 'workflow_dispatch'
+        run: sh empacotar.sh --steam --portatil
+      - uses: actions/upload-artifact@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          name: AventuraEmAurora-${{ matrix.sistema }}-steam
+          path: dist/AventuraEmAurora-${{ matrix.sistema }}-steam
       - name: Enviar para a itch.io (opcional)
         if: github.ref == 'refs/heads/main' && env.BUTLER_API_KEY != '' && vars.ITCH_PROJECT != ''
         run: |

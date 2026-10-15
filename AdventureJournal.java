@@ -6,8 +6,8 @@ import java.util.List;
 /** Campaign history derived from progress; optional clues require an actual conversation. */
 final class AdventureJournal {
     static final String[] TITLES = {"A Luz do Farol", "O Chamado da Capitã", "A Ilha das Estrelas", "A Estrela Cadente", "O Jardim das Constelações",
-        "A Canção da Maré", "O Festival do Céu", "A Melodia da Semana"};
-    static final int[] START = {0, 4, 8, 15, 22, 28, 32, 36}, END = {4, 8, 15, 21, 28, 32, 36, 42};
+        "A Canção da Maré", "O Festival do Céu", "A Melodia da Semana", "O Eclipse de Aurora"};
+    static final int[] START = {0, 4, 8, 15, 22, 28, 32, 36, 42}, END = {4, 8, 15, 21, 28, 32, 36, 42, 47};
     static final String[] SUMMARIES = {
         "A carta levou você até Seu Marinho. A Concha Brilhante devolveu a luz ao farol.",
         "O bilhete da Capitã Estrela revelou um mapa partido. Os três fragmentos foram reunidos.",
@@ -16,7 +16,8 @@ final class AdventureJournal {
         "O jardim voltou a florescer. Cintila ofereceu uma Flor-Constelação, agora compartilhada com Mamãe.",
         "Três conchas cantoras ensinaram a canção da Maré. Tocada na ponta do recife, ela trouxe a baleia guardiã de volta.",
         "Sete amigos subiram ao Pico Estrelado. Sob uma chuva de estrelas, Aurora inteira celebrou o Festival do Céu.",
-        "As melodias da semana abriram o caminho até o Vale dos Ecos. A ponte subiu, e Lia voltou para os braços do Lucas."
+        "As melodias da semana abriram o caminho até o Vale dos Ecos. A ponte subiu, e Lia voltou para os braços do Lucas.",
+        "Na Floresta Antiga, uma flor, um peixe, um prato e uma canção acenderam as lanternas. A Grande Árvore desfez o eclipse, e uma aurora tomou o céu."
     };
     static final String[] CLUES = {"garrafa", "capita", "mural", "prof", "garden_sign", "garden_mural"};
     static final String[] CLUE_NAMES = {"Bilhete da Capitã", "Os fragmentos", "Inscrição do templo", "O caminho do jardim", "Marco da trilha", "Inscrição do jardim"};

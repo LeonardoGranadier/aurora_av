@@ -74,14 +74,13 @@ public class ChapterEightTest {
         check(!g.vis(npc(g, ChapterEight.VALLEY, "lia_vale")) && g.vis(npc(g, "Vila Aurora", "lia")), "Lia goes home");
         lucas = g.life.resident("lucas"); lucas.sleeping = false; lucas.walking = false;
         meet(g, "Vila Aurora", "lucas"); finish(g);
-        check(g.stage == Story.FINAL && g.state == Game.CREDITS && g.credits.ending, "Chapter 8 ending rolls credits");
-        g.credits.scroll = 380; VillageLifeTest.screenshot(g, "credits-ch8"); tap(g, KeyEvent.VK_Z);
-        check(g.home.unlocked(24) && g.worldMap.destinations().isEmpty(), "Music box unlocked; campaign complete");
+        check(g.stage == ChapterEight.FINAL && g.state == Game.PLAY, "Chapter 8 ends without credits: chapter 9 follows");
+        check(g.home.unlocked(24) && g.worldMap.destinations().contains("Pico Estrelado"), "Music box unlocked; Cintila calls next");
         meet(g, "Vila Aurora", "lia"); check(g.dlg != null && g.dlg[0].contains("melodia de hoje"), "Lia shares the day's melody"); finish(g);
         g.journal.open(Game.PLAY); g.journal.page = 7; check(g.journal.entries().stream().anyMatch(l -> l.startsWith("Melodias tocadas")), "Journal chapter 8");
         tap(g, KeyEvent.VK_ESCAPE);
         Properties old = g.readSave(); old.remove("creditos.etapa"); old.setProperty("creditos.final", "true");
-        g.credits.load(old); check(g.credits.seenAt == Story.FINAL, "Finished save keeps credits seen");
+        g.stage = Story.FINAL; g.credits.load(old); check(g.credits.seenAt == Story.FINAL, "Finished save keeps credits seen");
         old.setProperty("fase", "36"); g.stage = 36; g.credits.load(old); check(g.credits.seenAt == ChapterSeven.FINAL, "Previous version saw credits at chapter 7");
     }
 

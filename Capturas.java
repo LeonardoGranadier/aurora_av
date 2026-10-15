@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 /**
  * Ferramenta: gera as imagens da página da loja em loja/ (fica fora do pacote do jogo).
  *   capa.png (630x500), icone.png (512x512) e capturas/NN-nome-pt.png / -en.png em 1280x960 (cenas em 2x).
+ *   steam/: cápsulas nos tamanhos da Steam (cabeçalho, pequena, principal, vertical, biblioteca, herói e logo).
  * Rodar na pasta do projeto, numa partida descartável:  java -Daurora.dados=$(mktemp -d) -cp .build Capturas
  */
 public class Capturas {
@@ -71,14 +72,90 @@ public class Capturas {
         for (String id : new String[]{"farol", "mapa", "marujo", "estrela_mar", "cintila", "album", "sinos"}) g.explorer.unlocked.add(id);
         g.explorer.playSeconds = 3 * 3600 + 1240; g.home.coins = 340; g.explorer.openCard(Game.PLAY);
         save(frame(g, true), "capturas/08-cartao" + sfx); g.state = Game.PLAY;
+        // 9. Floresta Antiga com as lanternas acesas
+        g.explorer.unlocked.clear();
+        g.stage = ChapterNine.TREE; g.chapterNine.lit = 15; g.travel(ChapterNine.FOREST, 12, 8); at(g, 7, 10); g.dir = 1; g.frame = 200;
+        save(frame(g, false), "capturas/09-floresta" + sfx);
+        // 10. aurora sobre a vila
+        g.stage = Story.FINAL; g.travel("Vila Aurora", 15, 11); at(g, 8, 22); g.frame = 900;
+        save(frame(g, false), "capturas/10-aurora" + sfx);
+    }
+
+    /** A cena das cápsulas: o farol sob a aurora, em 2x (1280x960), sem HUD. */
+    static BufferedImage capsuleScene(Game g) {
+        Lang.set("pt"); g.registerNames();
+        g.newGame(); g.state = Game.PLAY; g.stage = Story.FINAL; g.refreshObjects();
+        g.travel("Praia Azul", 19, 9); at(g, 4, 23); g.frame = 420;
+        return frame(g, false);
+    }
+
+    /** Recorta a cena na proporção pedida (centrada em focusX/focusY) e amplia sem borrar os pixels. */
+    static BufferedImage crop(BufferedImage scene, int w, int h, double focusX, double focusY, boolean alpha) {
+        double ratio = (double) w / h;
+        int cw = scene.getWidth(), ch = (int) Math.round(cw / ratio);
+        if (ch > scene.getHeight()) { ch = scene.getHeight(); cw = (int) Math.round(ch * ratio); }
+        int x = (int) Math.max(0, Math.min(scene.getWidth() - cw, focusX * scene.getWidth() - cw / 2.0));
+        int y = (int) Math.max(0, Math.min(scene.getHeight() - ch, focusY * scene.getHeight() - ch / 2.0));
+        BufferedImage out = new BufferedImage(w, h, alpha ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+        Graphics2D c = out.createGraphics();
+        c.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        c.drawImage(scene, 0, 0, w, h, x, y, x + cw, y + ch, null);
+        c.dispose();
+        return out;
+    }
+
+    /** Título com sombra e, se couber, o subtítulo, na faixa inferior (ou centrado quando bottom é falso). */
+    static void title(BufferedImage img, double scale, boolean bottom, boolean subtitle, boolean shade) {
+        int w = img.getWidth(), h = img.getHeight();
+        Graphics2D c = img.createGraphics();
+        c.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        c.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        if (shade) {
+            c.setPaint(new GradientPaint(0, h * 0.45f, new Color(8, 10, 40, 0), 0, h, new Color(8, 10, 40, 225)));
+            c.fillRect(0, (int) (h * 0.45), w, h);
+        }
+        String text = "Aventura em Aurora";
+        int size = (int) Math.round(Math.min(w / 10.0, h / 4.5) * scale);
+        c.setFont(new Font("Serif", Font.BOLD, size));
+        FontMetrics fm = c.getFontMetrics();
+        while (fm.stringWidth(text) > w * 0.9 && size > 8) { size--; c.setFont(new Font("Serif", Font.BOLD, size)); fm = c.getFontMetrics(); }
+        int y = bottom ? (int) (h - (subtitle ? size * 0.95 : size * 0.45)) : h / 2 + fm.getAscent() / 3;
+        int x = (w - fm.stringWidth(text)) / 2, off = Math.max(2, size / 18);
+        c.setColor(new Color(0, 0, 0, 160)); c.drawString(text, x + off, y + off);
+        c.setColor(new Color(255, 240, 200)); c.drawString(text, x, y);
+        if (subtitle) {
+            String sub = "uma pequena história de exploração";
+            c.setFont(new Font("Serif", Font.ITALIC, Math.max(12, size * 2 / 5))); fm = c.getFontMetrics();
+            c.setColor(new Color(255, 255, 255, 225)); c.drawString(sub, (w - fm.stringWidth(sub)) / 2, y + (int) (size * 0.62));
+        }
+        c.dispose();
+    }
+
+    /** Imagens da Steam (tamanhos de 2024): cápsulas com título, herói sem texto e logo transparente. */
+    static void steam(Game g) throws Exception {
+        BufferedImage scene = capsuleScene(g);
+        double fx = 0.62, fy = 0.3;                           // farol e aurora
+        BufferedImage img;
+        img = crop(scene, 920, 430, fx, fy, false); title(img, 1, true, true, true); save(img, "steam/cabecalho-920x430.png");
+        img = crop(scene, 462, 174, fx, fy, false); title(img, 1.25, true, false, true); save(img, "steam/capsula-pequena-462x174.png");
+        img = crop(scene, 1232, 706, fx, fy, false); title(img, 1, true, true, true); save(img, "steam/capsula-principal-1232x706.png");
+        img = crop(scene, 748, 896, fx, fy, false); title(img, 1.5, true, true, true); save(img, "steam/capsula-vertical-748x896.png");
+        img = crop(scene, 600, 900, fx, fy, false); title(img, 1.45, true, true, true); save(img, "steam/biblioteca-600x900.png");
+        img = crop(scene, 3840, 1240, fx, 0.2, false); save(img, "steam/heroi-3840x1240.png");
+        img = crop(scene, 1438, 810, fx, fy, false); save(img, "steam/fundo-1438x810.png");
+        BufferedImage logo = new BufferedImage(1280, 720, BufferedImage.TYPE_INT_ARGB);
+        title(logo, 1.4, false, false, false); save(logo, "steam/logo-1280x720.png");
+        BufferedImage community = new BufferedImage(184, 184, BufferedImage.TYPE_INT_RGB);
+        Graphics2D c = community.createGraphics();
+        c.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        c.drawImage(ImageIO.read(new File(OUT, "icone.png")), 0, 0, 184, 184, null); c.dispose();
+        save(community, "steam/icone-comunidade-184x184.png");
     }
 
     /** Capa 630x500: a praia à noite com o farol e o título. */
     static void cover(Game g) throws Exception {
         Lang.set("pt"); g.registerNames();
-        g.newGame(); g.state = Game.PLAY; g.stage = 21; g.refreshObjects();
-        g.travel("Praia Azul", 19, 9); at(g, 4, 23); g.frame = 420;
-        BufferedImage scene = frame(g, false);
+        BufferedImage scene = capsuleScene(g);
         BufferedImage cover = new BufferedImage(630, 500, BufferedImage.TYPE_INT_RGB);
         Graphics2D c = cover.createGraphics();
         c.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -122,7 +199,7 @@ public class Capturas {
         SwingUtilities.invokeAndWait(() -> {
             try {
                 Game g = new Game();
-                scenes(g, "pt"); scenes(g, "en"); cover(g); icon(g);
+                scenes(g, "pt"); scenes(g, "en"); cover(g); icon(g); steam(g);
                 System.exit(0);
             } catch (Exception e) { e.printStackTrace(); System.exit(1); }
         });

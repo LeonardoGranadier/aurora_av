@@ -93,16 +93,18 @@ public class Game extends JPanel implements KeyListener {
     final ChapterSix chapterSix = new ChapterSix(this);
     final ChapterSeven chapterSeven = new ChapterSeven(this);
     final ChapterEight chapterEight = new ChapterEight(this);
+    final ChapterNine chapterNine = new ChapterNine(this);
     final Puzzles puzzles = new Puzzles(this);
     final SaveSlots saveSlots = new SaveSlots(this);
     final Hints hints = new Hints(this);
     final WorldLife worldLife = new WorldLife(this);
     final Gamepad gamepad = new Gamepad(this);
+    final Steam steam = new Steam(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, chapterNine, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -178,7 +180,7 @@ public class Game extends JPanel implements KeyListener {
             case '.', 'F', '#' -> {
                 if (!img(g, praia ? "sand" : snowy ? "snow" : "grass", x, y)) return false;
                 if (c == 'F' && !snowy) img(g, "flower", x, y);
-                if (c == '#') img(g, snowy ? "pine" : "tree", x, y);
+                if (c == '#') img(g, snowy || m.name.equals(ChapterNine.FOREST) ? "pine" : "tree", x, y);
                 return true;
             }
             case '~' -> { return img(g, (frame / 30 + tx + ty) % 2 == 0 ? "water1" : "water2", x, y); }
@@ -220,7 +222,7 @@ public class Game extends JPanel implements KeyListener {
         Lang.addNames(Bonds.NAMES); Lang.addNames(Bonds.REWARDS); Lang.addNames(Bonds.TITLES);
         for (VillageLife.Fish f : VillageLife.FISH) Lang.addNames(f.name());
         Lang.addNames(VillageLife.BELL_NAMES); Lang.addNames(Gardening.NAMES); Lang.addNames(Seasons.NAMES); Lang.addNames(Seasons.FESTIVALS);
-        Lang.addNames(WEEKDAYS); Lang.addNames(Weather.NAMES); Lang.addNames(ChapterEight.DAY_NAMES); Lang.addNames(ChapterSeven.GUEST_NAMES);
+        Lang.addNames(WEEKDAYS); Lang.addNames(Weather.NAMES); Lang.addNames(ChapterEight.DAY_NAMES); Lang.addNames(ChapterSeven.GUEST_NAMES); Lang.addNames(ChapterNine.LANTERN_NAMES);
         for (Cooking.Recipe r : Cooking.RECIPES) Lang.addNames(r.name());
         Lang.addNames(Cooking.EFFECT_NAMES);
         for (HomeDecor.Item i : HomeDecor.ITEMS) Lang.addNames(i.name());
@@ -270,6 +272,7 @@ public class Game extends JPanel implements KeyListener {
         long now = System.nanoTime();
         double elapsed = Math.min(0.25, (now - last) / 1e9);
         last = now;
+        steam.update(elapsed);
         while (elapsed > 0.05) { step(0.05); elapsed -= 0.05; }
         step(elapsed);
     }
@@ -491,6 +494,7 @@ public class Game extends JPanel implements KeyListener {
             case "Templo Estrelado" -> "templo";
             case "Trilha dos Vagalumes" -> n ? "floresta_noite" : seasonal("floresta");
             case ChapterEight.VALLEY -> "vale";
+            case ChapterNine.FOREST -> "vale";
             case ChapterSix.REEF -> n ? "ilha_noite" : "ilha_dia";
             case "Jardim das Constelações" -> "jardim";
             default -> "vila_dia";
@@ -1182,7 +1186,8 @@ public class Game extends JPanel implements KeyListener {
         int dia = (int) (time / 1440) + 1;
         String obj = Lang.t("Objetivo:") + " " + Lang.t(Story.OBJECTIVES[stage]) + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
             : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)"
-            : stage == ChapterEight.BELLS ? " (" + chapterEight.count() + "/" + ChapterEight.DAYS_NEEDED + ")" : "");
+            : stage == ChapterEight.BELLS ? " (" + chapterEight.count() + "/" + ChapterEight.DAYS_NEEDED + ")"
+            : stage == ChapterNine.LANTERNS ? " (" + chapterNine.count() + "/4)" : "");
         Lang.markDone(List.of(obj));
         g.setFont(new Font("SansSerif", Font.PLAIN, 12));
         String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
@@ -1422,6 +1427,7 @@ public class Game extends JPanel implements KeyListener {
             try (InputStream in = Files.newInputStream(GameFiles.data("video.properties"))) { video.load(in); } catch (Exception ignored) {}
             if (Boolean.parseBoolean(video.getProperty("telaCheia"))) game.toggleFullscreen();
             game.gamepad.start();                                         // controle, se a biblioteca estiver em lib/
+            game.steam.start();                                           // conquistas, na versão da Steam
         });
     }
 }

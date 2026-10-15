@@ -37,6 +37,11 @@ PUBLICAR (itch.io)
   sh empacotar.sh --portatil gera a pasta com Java embutido do seu sistema. No GitHub, a automacao
   .github/workflows/pacotes.yml roda os testes e gera os pacotes de Windows, macOS e Linux a cada envio.
 
+PUBLICAR (Steam)
+  STEAM.md tem o passo a passo: imagens em loja/steam/, conquistas (Steam.java, steamworks4j opcional),
+  build do SteamPipe (steam/app_build.vdf), Steam Cloud e roteiro do trailer.
+  sh empacotar.sh --steam --portatil gera a pasta com a biblioteca da Steam (ou rode a automacao manualmente).
+
 IDIOMA / LANGUAGE
   Portugues e ingles. Troque em "Idioma" no titulo ou no menu de pausa (fica salvo em idioma.properties).
   Na primeira vez, o jogo usa o idioma do sistema. Para escolher na linha de comando: -Daurora.idioma=en
@@ -108,7 +113,7 @@ CARTAS
   as cartas chegam na manha seguinte, ate duas por dia. A bandeira vermelha indica carta nova.
   Algumas trazem moedas, guardadas na primeira leitura.
 
-(Opcional) Regerar os sprites provisorios:   java MakeAssets
+(Opcional) Regerar os sprites:   java MakeAssets   (personagens em Characters.java, tiles em Tiles.java)
 (Opcional) Gravar a musica/efeitos como WAV: java Audio     (veja a secao AUDIO)
 
 CONTROLES
@@ -272,7 +277,13 @@ HISTORIA (8 capitulos)
            em 3 dias diferentes (cada dia da semana tem a sua; a tela mostra as notas). A rocha no fundo da
            Gruta do Eco se abre para o Vale dos Ecos. Empurre as tres pedras sobre as placas (ande contra elas)
            para erguer a ponte; a pedra do eco recoloca tudo. Fale com Lia no coreto e depois com o Lucas.
-           Fim da campanha, creditos e a Caixinha de Musica para a casa.
+           Recompensa: a Caixinha de Musica para a casa.
+
+  Cap. 9 - O Eclipse de Aurora: depois do cap. 8, fale com Cintila no Pico Estrelado a noite. As raizes
+           ao norte do Jardim das Constelacoes abrem a Floresta Antiga. Acenda as 4 lanternas: uma flor (ha
+           uma margarida silvestre no sul da floresta), um peixe do estoque, um prato (a Mamae da uma sopa) e
+           a cancao gravada na pedra. A noite, fale com a Grande Arvore e depois com a Mamae, em casa.
+           Fim da campanha, creditos, a Semente da Grande Arvore e uma aurora no ceu de todas as noites.
 
   Partidas antigas sem nome: ao Continuar, a Mamae pergunta o nome e o tratamento uma vez (Esc pula).
 
@@ -347,9 +358,10 @@ ORGANIZACAO DO CODIGO
   Inventory.java   caixa de itens (tecla I)
   Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
   Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat,
-  ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
+  ChapterSix/Seven/Eight/Nine, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
   Lang.java        idiomas: todo texto desenhado passa por Lang.t (dicionario em assets/lang/)
   Gamepad.java     controle (Jamepad por reflexao, opcional) · WorldLife.java efeitos de ambiente
+  Steam.java       conquistas da Steam (steamworks4j por reflexao, opcional; sem ela nao faz nada)
   Capturas.java    ferramenta: imagens da loja (fora do pacote do jogo)
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)

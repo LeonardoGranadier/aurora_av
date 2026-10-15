@@ -89,6 +89,10 @@ final class Mailbox implements Feature {
         new Letter("lia_carta", "Lia", "Uma melodia por dia", 0, g -> g.stage >= ChapterEight.BELLS,
             g -> "Se esta carta chegou até você, é porque o Lucas encontrou um amigo. Cada dia da semana tem a sua melodia; "
                 + "o caderno está com ele. Toque no sino da praça, um dia de cada vez. Os ecos sabem o caminho. Com carinho, Lia."),
+        new Letter("coruja_carta", "Coruja Sábia", "Sob a aurora", 30, g -> g.stage >= ChapterNine.FINAL,
+            g -> "Huu. Esta carta veio no bico, então perdoe a letra. A Grande Árvore dorme tranquila de novo, e a floresta "
+                + "deixa a passagem aberta para você. Volte quando quiser; as lanternas acendem sozinhas para os amigos. "
+                + "Mando 30 moedas que achei nos ninhos. Não pergunte de quem eram."),
         new Letter("vila_obrigado", "Moradores de Aurora", "Obrigado!", 100, g -> g.observatory.complete(),
             g -> "O observatório está aberto e a vila nunca esteve tão bonita: lanternas, flores, uma luneta na praia... "
                 + "Juntamos 100 moedas como agradecimento. Volte à noite e olhe as estrelas com a gente! "

@@ -82,7 +82,7 @@ final class ChapterSeven implements Feature {
             game.say(n.name, "Esqueceu a comida? Leve mais uma Sopa de Lambari. E agasalhe-se, o Pico é frio!");
             return true;
         }
-        if (id.equals("ceu_cintila")) {
+        if (id.equals("ceu_cintila") && game.stage != ChapterNine.START) {
             if (game.stage == CLIMB) {
                 if (!hasDish()) { game.say("Cintila", "Tin! Falta só o banquete. Cozinhe algo no fogão de casa, ou peça uma sopa para a Mamãe!"); return true; }
                 int dish = 0; while (game.cooking.dishes[dish] == 0) dish++;

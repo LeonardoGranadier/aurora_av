@@ -11,7 +11,7 @@ Tudo o que a página precisa está nesta pasta. Imagens geradas por `Capturas.ja
 | Preço | "No payments" para o lançamento, ou "Pay what you want" com mínimo 0 |
 | Capa | `capa.png` (630 × 500) |
 | Ícone / avatar | `icone.png` (512 × 512) |
-| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 02, 01, 04, 03, 07, 05, 06, 08 |
+| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 10, 02, 01, 09, 04, 03, 07, 05, 06, 08 |
 | Plataformas | Windows, macOS, Linux (pacotes portáteis, Java embutido) |
 | Tags | pixel-art, cozy, exploration, story-rich, fishing, farming, cooking, singleplayer, 2d, relaxing, top-down, wholesome |
 | Idiomas | Português (Brasil), English |
@@ -30,12 +30,12 @@ Tudo o que a página precisa está nesta pasta. Imagens geradas por `Capturas.ja
 Tudo começa com uma carta da Mamãe. Logo você está devolvendo a luz ao farol, decifrando o mapa de uma capitã, velejando até uma ilha de estrelas e ajudando a **Cintila**, uma estrelinha que caiu na montanha, a voltar para casa.
 
 **O que você encontra em Aurora**
-- **8 capítulos** de história, com quebra-cabeças de cenário, campos de gelo, braseiros, um jardim de constelações e uma baleia que canta.
+- **9 capítulos** de história, com quebra-cabeças de cenário, campos de gelo, braseiros, um jardim de constelações, uma baleia que canta e uma floresta antiga sob o eclipse.
 - **Uma vila viva**: moradores com rotinas, conversas, aniversários, pedidos e cinco corações de amizade.
 - **Estações do ano** que mudam a paisagem, os peixes, as flores, a música e o festival de sábado.
 - **Pesca** com álbum de 8 espécies, **jardinagem** no quintal, **culinária** com receitas ensinadas pelos amigos e uma **casa** para decorar.
 - **Segredos**: 12 conchas escondidas, uma corrente de trocas, enigmas opcionais e um observatório para restaurar.
-- **Cartas** que chegam pela manhã, um **diário** com dicas em camadas e um **Cartão do Explorador** com 24 conquistas.
+- **Cartas** que chegam pela manhã, um **diário** com dicas em camadas e um **Cartão do Explorador** com 25 conquistas.
 - Música e efeitos **sintetizados por código**, com trilhas de dia, de noite e de cada estação.
 
 **Acessível de verdade**: teclas remapeáveis, controle, texto grande, velocidade do texto, opção de reduzir movimento e minijogos que mostram as notas em cores para jogar sem som.
@@ -49,12 +49,12 @@ Feito com carinho, inspirado em Pokémon de Game Boy, Zelda, Harvest Moon, Stard
 It all starts with a letter from Mom. Soon you're bringing light back to the lighthouse, piecing together a captain's map, sailing to an island of stars and helping **Cintila**, a little star who fell on the mountain, find her way home.
 
 **What you'll find in Aurora**
-- **8 story chapters** with environmental puzzles, ice fields, braziers, a constellation garden and a singing whale.
+- **9 story chapters** with environmental puzzles, ice fields, braziers, a constellation garden, a singing whale and an ancient forest under an eclipse.
 - **A living village**: villagers with routines, chats, birthdays, requests and five hearts of friendship.
 - **Seasons** that change the landscape, the fish, the flowers, the music and the Saturday festival.
 - **Fishing** with an 8-species album, **gardening** in your backyard, **cooking** with recipes taught by friends, and a **home** to decorate.
 - **Secrets**: 12 hidden shells, a trading chain, optional puzzles and an observatory to restore.
-- **Letters** that arrive in the morning, a **journal** with layered hints and an **Explorer Card** with 24 achievements.
+- **Letters** that arrive in the morning, a **journal** with layered hints and an **Explorer Card** with 25 achievements.
 - Music and sound effects **synthesized in code**, with day, night and seasonal tracks.
 
 **Truly accessible**: remappable keys, controller support, large text, text speed, reduced motion, and minigames that show notes in colors so you can play without sound.
