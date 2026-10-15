@@ -6,7 +6,9 @@ Material pronto nesta pasta:
 
 | Arquivo | Uso |
 |---|---|
-| `gifs/aventura-em-aurora-pt.gif` / `-en.gif` | GIF principal (≈16 s): vila, pesca, barco e aurora. Para posts e para o topo da descrição na itch.io |
+| `gifs/aventura-em-aurora-pt-leve.gif` / `-en-leve.gif` | **GIF principal leve (1,5 MB)**: vila, pesca, barco e aurora. Use este no devlog da itch.io (limite de 3 MB) e em redes com limite de tamanho |
+| `gifs/aventura-em-aurora-pt.mp4` / `-en.mp4` | O mesmo trecho em vídeo MP4 (0,8 MB, 1280 × 960): o mais nítido, para X, Bluesky, Reddit e Discord |
+| `gifs/aventura-em-aurora-pt.gif` / `-en.gif` | Versão completa do GIF (7 MB), para lugares sem limite de tamanho |
 | `gifs/vila-pt.gif` / `-en.gif` | Passeio pela vila na primavera |
 | `gifs/pesca-pt.gif` / `-en.gif` | Minijogo de pesca, da boia à captura |
 | `gifs/alto-mar.gif` | A Gaivota navegando (sem texto na tela: serve para os dois idiomas) |
@@ -16,6 +18,14 @@ Material pronto nesta pasta:
 
 Os GIFs são gerados pelo próprio jogo (`Gifs.java`): depois de uma atualização visual, rode
 `java -Daurora.dados=$(mktemp -d) -cp .build Gifs` (com o jogo compilado em `.build/` por `sh jogar.sh --compilar`).
+As versões leves e o MP4 saem do GIF completo com o ffmpeg:
+
+```
+cd loja/gifs && for l in pt en; do
+  ffmpeg -y -i aventura-em-aurora-$l.gif -vf "scale=1280:960:flags=neighbor,format=yuv420p" -c:v libx264 -preset slow -crf 20 -movflags +faststart aventura-em-aurora-$l.mp4
+  ffmpeg -y -i aventura-em-aurora-$l.gif -vf "fps=10,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" aventura-em-aurora-$l-leve.gif
+done
+```
 
 ## Ordem sugerida
 
@@ -30,9 +40,11 @@ mostre o jogo (GIF) em vez de só um link; não poste o mesmo texto em vários l
 
 ---
 
-## Devlog de lançamento na itch.io (Edit game › Devlog › Create devlog)
+## Devlog de lançamento na itch.io (aba Devlog › Write a new post)
 
-**Título:** Aventura em Aurora 1.0 está no ar! 🌅
+**Título:** Aventura em Aurora 1.0 está no ar! 🌅 · **Post type:** Major Update or Launch · **Cover image:** `capa.png`
+
+Nos anexos (Attachments), deixe os três pacotes `aventura-em-aurora-windows/mac/linux` (versão 1.0.0).
 
 > Depois de muitos meses, **Aventura em Aurora** chegou à versão 1.0!
 >
@@ -49,7 +61,7 @@ mostre o jogo (GIF) em vez de só um link; não poste o mesmo texto em vários l
 >
 > Obrigado por jogar! 💛
 
-*(Anexe `gifs/aventura-em-aurora-pt.gif` no começo do texto.)*
+*(No começo do texto, use o botão de imagem do editor com `gifs/aventura-em-aurora-pt-leve.gif`: a itch.io aceita até 3 MB.)*
 
 **English version (same devlog, below the Portuguese text):**
 
@@ -69,13 +81,13 @@ mostre o jogo (GIF) em vez de só um link; não poste o mesmo texto em vários l
 >
 > Qualquer opinião ajuda muito, principalmente se vocês travarem em alguma parte!
 
-*(Anexe `gifs/aventura-em-aurora-pt.gif`.)*
+*(Anexe `gifs/aventura-em-aurora-pt-leve.gif` ou o vídeo `gifs/aventura-em-aurora-pt.mp4`.)*
 
 ---
 
 ## Reddit (em inglês)
 
-Use **um** destes por dia, sempre com o GIF anexado como mídia do post (não como link).
+Use **um** destes por dia, sempre com o vídeo (`aventura-em-aurora-en.mp4`) ou um GIF anexado como mídia do post (não como link).
 
 **r/IndieGaming** — título:
 > After months of work, I finished my first game: a cozy pixel-art adventure about a dark lighthouse and a fallen star
@@ -100,7 +112,7 @@ Primeiro comentário (cole logo depois de postar):
 
 Um por dia, cada um com o GIF indicado.
 
-1. (`aventura-em-aurora-en.gif`)
+1. (`aventura-em-aurora-en.mp4`)
 > My cozy pixel-art adventure Aventura em Aurora is out! 🌅 A seaside village, a dark lighthouse and a fallen star. Free on itch.io 👇
 > https://lgcal65.itch.io/aventura-em-aurora
 > #indiegame #pixelart #cozygames #gamedev
