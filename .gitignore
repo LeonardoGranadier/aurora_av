@@ -28,3 +28,6 @@ assets/audio/
 # Steam: App ID local para testes e saida do steamcmd
 steam_appid.txt
 steam/output/
+
+# Travas de editores (LibreOffice/OnlyOffice) enquanto um arquivo esta aberto
+.~lock.*#
