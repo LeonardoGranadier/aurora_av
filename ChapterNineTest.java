@@ -61,7 +61,7 @@ public class ChapterNineTest {
         meet(g, "Casa", "mae"); finish(g);
         check(g.stage == Story.FINAL && g.state == Game.CREDITS && g.credits.ending, "Chapter 9 ending rolls credits");
         g.credits.scroll = 380; VillageLifeTest.screenshot(g, "credits-ch9"); tap(g, KeyEvent.VK_Z);
-        check(g.home.unlocked(HomeDecor.ITEMS.length - 1) && g.worldMap.destinations().isEmpty(), "Seed unlocked; campaign complete");
+        check(g.home.unlocked(25) && g.worldMap.destinations().isEmpty(), "Seed unlocked; campaign complete");
         check(Mailbox.LETTERS.stream().anyMatch(l -> l.id().equals("coruja_carta") && l.when().test(g)), "Owl letter");
         g.journal.open(Game.PLAY); check(g.journal.page == 8, "Journal chapter 9"); tap(g, KeyEvent.VK_ESCAPE);
         check(Explorer.chapterOf(ChapterNine.LANTERNS) == 9, "Chapter number");

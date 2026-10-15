@@ -79,6 +79,11 @@ public class Capturas {
         // 10. aurora sobre a vila
         g.stage = Story.FINAL; g.travel("Vila Aurora", 15, 11); at(g, 8, 22); g.frame = 900;
         save(frame(g, false), "capturas/10-aurora" + sfx);
+        // 11. museu com peixes raros
+        g.museum.net = true; for (int i : new int[]{0, 2, 3, 5, 7}) g.museum.fish[i] = 1;
+        g.museum.donated = 0b10101; g.museum.tab = 0; g.museum.selected = 7; g.museum.status = "";
+        g.travel("Vila Aurora", 27, 8); at(g, 9, 10); g.museum.openScreen();
+        save(frame(g, true), "capturas/11-museu" + sfx); g.state = Game.PLAY;
     }
 
     /** A cena das cápsulas: o farol sob a aurora, em 2x (1280x960), sem HUD. */
@@ -150,6 +155,20 @@ public class Capturas {
         c.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         c.drawImage(ImageIO.read(new File(OUT, "icone.png")), 0, 0, 184, 184, null); c.dispose();
         save(community, "steam/icone-comunidade-184x184.png");
+        // conquistas: 256x256, colorida e cinza (a Steam pede as duas), com o nome de API do Steam.java
+        for (Explorer.Achievement a : Explorer.ACHIEVEMENTS) {
+            String name = Steam.apiName(a.id());
+            save(upscale(g.icons.icon(a.id(), true), 256), "steam/conquistas/" + name + ".png");
+            save(upscale(g.icons.icon(a.id(), false), 256), "steam/conquistas/" + name + "_cinza.png");
+        }
+    }
+
+    static BufferedImage upscale(BufferedImage src, int size) {
+        BufferedImage out = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D c = out.createGraphics();
+        c.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+        c.drawImage(src, 0, 0, size, size, null); c.dispose();
+        return out;
     }
 
     /** Capa 630x500: a praia à noite com o farol e o título. */

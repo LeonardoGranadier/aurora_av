@@ -48,6 +48,14 @@ pedra do eco, pegadas que exigem a Lanterna e respeitam a ordem, bau que exige o
 a musica de cada estacao e os tres espacos de save (novo jogo em espaco livre, ultimo jogado,
 carregar, substituir com confirmacao, apagar um so espaco).
 
+## Museu, radio e icones
+
+`CollectionTest` cobre o museu fechado antes do capitulo 1, a rede, insetos que dependem de
+estacao, hora e chuva (e somem no dia em que sao pegos), peixes raros no lugar dos comuns (neblina
+na praia, lago da trilha), doacoes com moedas, alas completas, conquistas, persistencia, a colecao
+pelo menu, o radio (faixa bloqueada, faixa tocando em casa, jornal de 112 dias com festa aos
+sabados) e os icones (um diferente por conquista, versao cinza, navegacao do cartao).
+
 ## Steam
 
 `SteamTest` confere que, sem a steamworks4j, a ponte fica desligada; que cada conquista vira um

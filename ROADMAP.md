@@ -50,6 +50,8 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ **Capítulo 8, A Melodia da Semana**: melodias por dia da semana, Vale dos Ecos e ponte de pedras; novo final.
 - ✅ **Capítulo 9, O Eclipse de Aurora**: Floresta Antiga, 4 lanternas (flor, peixe, prato e canção), Grande Árvore,
   aurora boreal no céu noturno depois do final, Coruja Sábia, nova conquista (25) e novo final com créditos.
+- ✅ **Museu de Aurora**: 8 peixes raros (estação, hora, clima e lugar), 10 insetos com rede, doações com moedas,
+  Aquário Raro, Quadro de Insetos e 3 conquistas (28 no total), com brasões próprios para cada conquista.
 - ✅ **Enigmas opcionais**: pedras empurráveis (Ruínas do Vale), pegadas reveladas pela Lanterna, baú que o Cristal derrete.
 
 ## 4. Encantos (P2)
@@ -58,7 +60,7 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 - ✅ Lanternas e canteiros na vila, luneta na praia, constelações no observatório.
 - ✅ Gato da vila, gaivotas, vagalumes, borboletas, pétalas, folhas, peixes pulando e conversas entre moradores.
 - ✅ Música própria de cada estação na vila e na floresta.
-- ⏳ Rádio com músicas e notícias da vila (estilo Pokégear).
+- ✅ **Rádio de Aurora** (estilo Pokégear): músicas de cada região visitada tocando em casa e o jornal do dia.
 
 ## 5. Distribuição e divulgação 🧑
 

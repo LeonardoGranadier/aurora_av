@@ -34,7 +34,7 @@ Imagens geradas por `Capturas.java` (rode `java -Daurora.dados=$(mktemp -d) -cp 
 | `fundo-1438x810.png` | Page Background (opcional) |
 | `icone-comunidade-184x184.png` | Community Icon |
 
-- **Capturas**: `loja/capturas/*-pt.png` e `*-en.png` (1280x960, mínimo de 5). Ordem sugerida: 10, 02, 01, 09, 04, 03, 07, 05, 06, 08.
+- **Capturas**: `loja/capturas/*-pt.png` e `*-en.png` (1280x960, mínimo de 5). Ordem sugerida: 10, 02, 01, 09, 11, 04, 03, 07, 05, 06, 08.
 - **Textos**: reaproveite `loja/PAGINA-ITCH.md` (pt e en). Descrição curta com até 300 caracteres.
 - **Idiomas**: Português (Brasil) e Inglês, interface e legendas (o jogo não tem vozes).
 - **Etiquetas sugeridas**: Cozy, Adventure, Exploration, Pixel Graphics, Top-Down, Fishing, Cooking, Puzzle,
@@ -72,8 +72,9 @@ Use a música da própria cena (o jogo sintetiza o áudio). Grave em 1280x960 ou
 
 `Steam.java` envia as conquistas do Cartão do Explorador quando o jogo roda pela Steam (sem a biblioteca ou sem
 a Steam aberta, não faz nada; a versão da itch.io não leva a biblioteca). Partidas antigas sincronizam ao abrir.
-Cadastre em *Stats & Achievements* exatamente estes nomes de API (ícones 256x256: tire de `loja/capturas/` ou
-peça a um artista):
+Cadastre em *Stats & Achievements* exatamente estes nomes de API. Os ícones 256x256 já estão em
+`loja/steam/conquistas/`: `ACH_X.png` (conquistada) e `ACH_X_cinza.png` (bloqueada), gerados por `Capturas.java`
+a partir de `AchievementIcons.java` (os mesmos brasões do Cartão do Explorador).
 
 | Nome de API | Nome | Descrição |
 |---|---|---|
@@ -101,6 +102,9 @@ peça a um artista):
 | `ACH_ANO` | Um Ano em Aurora | Viveu as quatro estações da vila. |
 | `ACH_CHEF` | Chef de Aurora | Cozinhou todas as receitas. |
 | `ACH_ANIVERSARIO` | Quem Ama Lembra | Deu um presente de aniversário a um morador. |
+| `ACH_LENDARIO` | Pescador Lendário | Pescou os oito peixes raros de Aurora. |
+| `ACH_INSETOS` | Amigo dos Insetos | Pegou os dez insetos de Aurora. |
+| `ACH_CURADOR` | Curador do Museu | Completou as duas alas do Museu de Aurora. |
 | `ACH_GATO` | Amigo do Bolinha | Fez carinho no Bolinha em sete dias diferentes. |
 
 O `SteamTest` garante que todo id vira um nome de API único e válido. Para testar fora da Steam, crie
@@ -128,7 +132,7 @@ Preferências de vídeo, idioma e acessibilidade ficam de fora de propósito (s�
 
 - [ ] Página "Em breve" publicada e aprovada.
 - [ ] Build aprovado na revisão (a Valve leva alguns dias úteis).
-- [ ] Conquistas cadastradas, com ícones, e testadas pela Steam.
+- [ ] Conquistas cadastradas (ícones em `loja/steam/conquistas/`) e testadas pela Steam.
 - [ ] Steam Cloud configurado e testado (jogar no PC, continuar em outro).
 - [ ] Teste com 5 a 10 pessoas que nunca jogaram (ROADMAP, seção 1).
 - [ ] Preço e desconto de lançamento definidos; data anunciada.
