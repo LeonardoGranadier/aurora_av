@@ -64,7 +64,9 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 
 - ✅ Página pronta em `loja/` (textos pt/en, capa, ícone, capturas) e pacotes portáteis automáticos pelo GitHub Actions.
 - **itch.io** primeiro (aceita o .zip e os instaladores; "pague quanto quiser"; coleta opiniões cedo).
-- **Steam** depois: taxa por jogo, página com capturas e trailer; conquistas e nuvem pedem Steamworks (ex.: steamworks4j).
+- **Steam** depois: ✅ conquistas pela steamworks4j (`Steam.java`, opcional), ✅ cápsulas em `loja/steam/`,
+  ✅ build do SteamPipe (`steam/app_build.vdf`, `empacotar.sh --steam`), ✅ roteiro do trailer e Steam Cloud sem código.
+  Passo a passo em [STEAM.md](STEAM.md). 🧑 conta, taxa, App ID, ícones das conquistas e revisão da Valve.
 - **Página da loja**: capturas em 2x (F12 gera fotos em 2x), GIF da pesca e do festival, trailer de 30–60 s.
 - ✅ **Tradução para inglês**, com troca no título e no menu, dicionário em `assets/lang/en.tsv` e `LangTest`
   garantindo que nenhum texto fique sem tradução. ⏳ Espanhol: basta criar `assets/lang/es.tsv` e acrescentar "es" em `Lang.CODES`.

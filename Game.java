@@ -99,6 +99,7 @@ public class Game extends JPanel implements KeyListener {
     final Hints hints = new Hints(this);
     final WorldLife worldLife = new WorldLife(this);
     final Gamepad gamepad = new Gamepad(this);
+    final Steam steam = new Steam(this);
     final Seasons seasons = new Seasons(this);
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
@@ -271,6 +272,7 @@ public class Game extends JPanel implements KeyListener {
         long now = System.nanoTime();
         double elapsed = Math.min(0.25, (now - last) / 1e9);
         last = now;
+        steam.update(elapsed);
         while (elapsed > 0.05) { step(0.05); elapsed -= 0.05; }
         step(elapsed);
     }
@@ -1425,6 +1427,7 @@ public class Game extends JPanel implements KeyListener {
             try (InputStream in = Files.newInputStream(GameFiles.data("video.properties"))) { video.load(in); } catch (Exception ignored) {}
             if (Boolean.parseBoolean(video.getProperty("telaCheia"))) game.toggleFullscreen();
             game.gamepad.start();                                         // controle, se a biblioteca estiver em lib/
+            game.steam.start();                                           // conquistas, na versão da Steam
         });
     }
 }

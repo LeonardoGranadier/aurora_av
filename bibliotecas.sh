@@ -1,6 +1,7 @@
 #!/bin/sh
 # Baixa as bibliotecas opcionais para lib/ (conferindo o SHA-1 publicado no Maven Central).
 # Hoje: Jamepad (controles via SDL2). Sem elas, o jogo funciona só com o teclado.
+#   sh bibliotecas.sh --steam   também a steamworks4j em lib/steam/ (conquistas da Steam; só para a versão da Steam)
 set -eu
 
 game_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
@@ -20,4 +21,11 @@ fetch() {   # caminho no repositório, arquivo, sha1
 }
 fetch com/badlogicgames/jamepad/jamepad/2.30.0.0 jamepad-2.30.0.0.jar 45560285a49564bcb1fc62e147ca8b577eab6012
 fetch com/badlogicgames/gdx/gdx-jnigen-loader/2.2.0 gdx-jnigen-loader-2.2.0.jar f8bff67f1788d5f52fb8c21b2cdcee3b93dfb069
+for option in "$@"; do
+    if [ "$option" = "--steam" ]; then
+        mkdir -p steam && cd steam
+        fetch com/code-disaster/steamworks4j/steamworks4j/1.10.0 steamworks4j-1.10.0.jar 3ae4ff1df5049da707ba9392cacd1ce4c826854f
+        cd ..
+    fi
+done
 printf '%s\n' 'Bibliotecas prontas em lib/.'

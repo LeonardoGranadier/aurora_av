@@ -11,7 +11,7 @@ Tudo o que a página precisa está nesta pasta. Imagens geradas por `Capturas.ja
 | Preço | "No payments" para o lançamento, ou "Pay what you want" com mínimo 0 |
 | Capa | `capa.png` (630 × 500) |
 | Ícone / avatar | `icone.png` (512 × 512) |
-| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 02, 01, 04, 03, 07, 05, 06, 08 |
+| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 10, 02, 01, 09, 04, 03, 07, 05, 06, 08 |
 | Plataformas | Windows, macOS, Linux (pacotes portáteis, Java embutido) |
 | Tags | pixel-art, cozy, exploration, story-rich, fishing, farming, cooking, singleplayer, 2d, relaxing, top-down, wholesome |
 | Idiomas | Português (Brasil), English |

@@ -48,6 +48,12 @@ pedra do eco, pegadas que exigem a Lanterna e respeitam a ordem, bau que exige o
 a musica de cada estacao e os tres espacos de save (novo jogo em espaco livre, ultimo jogado,
 carregar, substituir com confirmacao, apagar um so espaco).
 
+## Steam
+
+`SteamTest` confere que, sem a steamworks4j, a ponte fica desligada; que cada conquista vira um
+nome de API unico (ACH_...); e, com uma Steam falsa, que cada conquista e enviada uma vez, que as
+novas sao enviadas depois e que um erro da Steam desliga a ponte em vez de derrubar o jogo.
+
 ## Capitulo 9
 
 `ChapterNineTest` joga o capitulo 9: Cintila no Pico a noite, raizes que se abrem, passagem

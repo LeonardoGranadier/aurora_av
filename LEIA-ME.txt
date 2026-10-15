@@ -37,6 +37,11 @@ PUBLICAR (itch.io)
   sh empacotar.sh --portatil gera a pasta com Java embutido do seu sistema. No GitHub, a automacao
   .github/workflows/pacotes.yml roda os testes e gera os pacotes de Windows, macOS e Linux a cada envio.
 
+PUBLICAR (Steam)
+  STEAM.md tem o passo a passo: imagens em loja/steam/, conquistas (Steam.java, steamworks4j opcional),
+  build do SteamPipe (steam/app_build.vdf), Steam Cloud e roteiro do trailer.
+  sh empacotar.sh --steam --portatil gera a pasta com a biblioteca da Steam (ou rode a automacao manualmente).
+
 IDIOMA / LANGUAGE
   Portugues e ingles. Troque em "Idioma" no titulo ou no menu de pausa (fica salvo em idioma.properties).
   Na primeira vez, o jogo usa o idioma do sistema. Para escolher na linha de comando: -Daurora.idioma=en
@@ -353,9 +358,10 @@ ORGANIZACAO DO CODIGO
   Inventory.java   caixa de itens (tecla I)
   Feature.java     interface dos sistemas novos: Game chama reset/save/load/talk/draw... em Game.features
   Explorer, SecretShells, TradeQuest, Observatory, Mailbox, Credits, Seasons, Cooking, VillageCat,
-  ChapterSix/Seven/Eight, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
+  ChapterSix/Seven/Eight/Nine, Puzzles (pedras, pegadas, gelo), MelodyScreen, SaveSlots, Hints
   Lang.java        idiomas: todo texto desenhado passa por Lang.t (dicionario em assets/lang/)
   Gamepad.java     controle (Jamepad por reflexao, opcional) · WorldLife.java efeitos de ambiente
+  Steam.java       conquistas da Steam (steamworks4j por reflexao, opcional; sem ela nao faz nada)
   Capturas.java    ferramenta: imagens da loja (fora do pacote do jogo)
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
