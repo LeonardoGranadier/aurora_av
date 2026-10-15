@@ -35,7 +35,8 @@ final class HomeDecor {
         new Item("caixinha", "Caixinha de Música", 0, 1, 1, true, new Color(170, 120, 200)),
         new Item("semente_arvore", "Semente da Grande Árvore", 0, 1, 1, true, new Color(120, 230, 180)),
         new Item("aquario", "Aquário Raro", 0, 2, 1, true, new Color(90, 170, 220)),
-        new Item("quadro_insetos", "Quadro de Insetos", 0, 1, 1, true, new Color(150, 110, 70))
+        new Item("quadro_insetos", "Quadro de Insetos", 0, 1, 1, true, new Color(150, 110, 70)),
+        new Item("esqueleto", "Esqueleto em Miniatura", 0, 1, 1, true, new Color(226, 214, 186))
     };
     final Game game;
     int coins;
@@ -88,6 +89,7 @@ final class HomeDecor {
             case 24 -> game.stage >= ChapterEight.FINAL;
             case 26 -> game.museum.fishWing();
             case 27 -> game.museum.bugWing();
+            case 28 -> game.museum.fossilWing();
             default -> game.stage >= Story.FINAL;
         };
     }
@@ -396,6 +398,14 @@ final class HomeDecor {
                 a.setColor(new Color(245, 238, 220)); a.fillRect(6, 7, 20, 18);
                 Color[] bugs = {new Color(250, 230, 90), new Color(220, 50, 50), new Color(70, 140, 230), new Color(120, 255, 190)};
                 for (int k = 0; k < 4; k++) { a.setColor(bugs[k]); a.fillOval(8 + (k % 2) * 10, 9 + (k / 2) * 8, 6, 5); }
+            }
+            case 28 -> {                                                         // esqueleto de dinossauro num pedestal
+                a.setColor(new Color(120, 90, 60)); a.fillRect(3, 26, 26, 5);
+                a.setColor(color); a.setStroke(new BasicStroke(2));
+                a.drawLine(8, 18, 22, 16); a.drawLine(22, 16, 27, 8); a.drawLine(8, 18, 3, 22);
+                for (int k = 0; k < 4; k++) a.drawLine(10 + k * 3, 18, 10 + k * 3, 13);
+                a.drawLine(11, 18, 10, 26); a.drawLine(19, 17, 20, 26);
+                a.fillOval(25, 5, 6, 5); a.setStroke(new BasicStroke(1));
             }
             case 25 -> {                                                         // vaso com a semente brilhando
                 a.setColor(new Color(170, 100, 70)); a.fillRect(9, 20, 14, 10); a.fillRect(7, 18, 18, 3);

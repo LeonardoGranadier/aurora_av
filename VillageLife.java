@@ -180,7 +180,7 @@ final class VillageLife {
     void cast() {
         if (!rod) { game.say("", "A água se mexe... O Tio Beto, na vila, deve ter uma vara sobrando."); return; }
         List<Integer> pool = availableFish();
-        rare = game.museum.roll();                                             // peixe raro do museu, no lugar de um comum
+        rare = game.museum.roll(!pool.isEmpty());                                             // peixe raro do museu, no lugar de um comum
         if (pool.isEmpty() && rare < 0) { game.say("", "As águas estão quietas. Talvez em outro horário, ou depois de uma nova aventura."); return; }
         fishIndex = pool.isEmpty() ? 0 : game.weather.chooseFish(pool, random);
         fishPhase = WAIT; fishTimer = 1.8 + random.nextDouble() * 2.8; fishElapsed = 0;

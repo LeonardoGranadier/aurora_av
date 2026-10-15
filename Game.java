@@ -39,7 +39,7 @@ public class Game extends JPanel implements KeyListener {
     static final int GARDENING = 15;
     static final int ORDERS = 16;
     static final int ACCESSIBILITY = 17, HANDOFF = 18;
-    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27, SLOTS_SCREEN = 28, MUSEUM = 29, RADIO = 30;
+    static final int NAMING = 19, CARD = 20, MAIL = 21, CREDITS = 22, TRADE = 23, OBSERVATORY = 24, CALENDAR = 25, COOKING = 26, SONG = 27, SLOTS_SCREEN = 28, MUSEUM = 29, RADIO = 30, BOAT = 31;
     static final String VERSION = "1.0.0";
     /** Atalhos de desenvolvimento (T avança 2h): java -Daurora.dev=true Game. jogar.sh já liga. */
     static final boolean DEV = Boolean.getBoolean("aurora.dev");
@@ -94,6 +94,7 @@ public class Game extends JPanel implements KeyListener {
     final ChapterSeven chapterSeven = new ChapterSeven(this);
     final ChapterEight chapterEight = new ChapterEight(this);
     final ChapterNine chapterNine = new ChapterNine(this);
+    final Boat boat = new Boat(this);
     final Museum museum = new Museum(this);
     final AchievementIcons icons = new AchievementIcons(this);
     final Radio radio = new Radio(this);
@@ -107,7 +108,7 @@ public class Game extends JPanel implements KeyListener {
     final Cooking cooking = new Cooking(this);
     final VillageCat cat = new VillageCat(this);
     /** Sistemas ligados pela interface Feature, na ordem em que recebem cada gancho. */
-    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, chapterNine, museum, radio, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
+    final List<Feature> features = List.of(melody, chapterSix, chapterSeven, chapterEight, chapterNine, boat, museum, radio, puzzles, saveSlots, hints, shells, trades, observatory, mail, explorer, credits, seasons, cooking, cat, worldLife);
     double dlgChars;                // letras já mostradas na página atual do diálogo (efeito de máquina de escrever)
     String itemGetKey; double itemGetT;   // pose de "item obtido" sobre a cabeça do jogador
     boolean photo;                  // desenhando uma foto: sem HUD, diálogos nem avisos
@@ -228,6 +229,7 @@ public class Game extends JPanel implements KeyListener {
         Lang.addNames(WEEKDAYS); Lang.addNames(Weather.NAMES); Lang.addNames(ChapterEight.DAY_NAMES); Lang.addNames(ChapterSeven.GUEST_NAMES); Lang.addNames(ChapterNine.LANTERN_NAMES);
         for (Museum.Species m : Museum.FISH) Lang.addNames(m.name());
         for (Museum.Species m : Museum.BUGS) Lang.addNames(m.name());
+        for (Museum.Species m : Museum.FOSSILS) Lang.addNames(m.name());
         for (Cooking.Recipe r : Cooking.RECIPES) Lang.addNames(r.name());
         Lang.addNames(Cooking.EFFECT_NAMES);
         for (HomeDecor.Item i : HomeDecor.ITEMS) Lang.addNames(i.name());
@@ -502,6 +504,8 @@ public class Game extends JPanel implements KeyListener {
             case "Trilha dos Vagalumes" -> n ? "floresta_noite" : seasonal("floresta");
             case ChapterEight.VALLEY -> "vale";
             case ChapterNine.FOREST -> "vale";
+            case Boat.SEA -> n ? "praia_noite" : "praia_dia";
+            case Boat.TURTLE -> n ? "ilha_noite" : "ilha_dia";
             case ChapterSix.REEF -> n ? "ilha_noite" : "ilha_dia";
             case "Jardim das Constelações" -> "jardim";
             default -> "vila_dia";
@@ -927,6 +931,7 @@ public class Game extends JPanel implements KeyListener {
         festival.drawDecorations(g, camX, camY);
         weather.drawShelter(g, camX, camY);
         chapter.drawWorld(g, camX, camY);
+        for (Feature f : features) f.drawGround(g, camX, camY);
         home.drawFurniture(g, camX, camY, 0);
         // entidades (ordenadas por y)
         home.drawFurniture(g, camX, camY, 1);
@@ -1149,27 +1154,58 @@ public class Game extends JPanel implements KeyListener {
     }
 
     void drawMenu(Graphics2D g) {
-        g.setColor(new Color(0, 0, 0, 130)); g.fillRect(0, 0, W, H);
-        int step = Math.min(38, (H - 100) / Math.max(1, opts.size()));
-        int bw = 300, bh = 70 + opts.size() * step, bx = (W - bw) / 2, by = (H - bh) / 2;
-        g.setColor(new Color(255, 255, 255, 242)); g.fillRoundRect(bx, by, bw, bh, 18, 18);
-        g.setColor(new Color(40, 40, 60)); g.setStroke(new BasicStroke(4)); g.drawRoundRect(bx, by, bw, bh, 18, 18); g.setStroke(new BasicStroke(1));
-        g.setFont(new Font("SansSerif", Font.BOLD, 18)); center(g, "Pausa", by + 34);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 17));
+        g.setColor(new Color(0, 0, 0, 110)); g.fillRect(0, 0, W, H);
+        int step = Math.min(22, (H - 70) / Math.max(1, opts.size()));
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
+        int bw = 220;
+        for (String o : opts) bw = Math.max(bw, g.getFontMetrics().stringWidth(Lang.t(o)) + 56);
+        int bh = 44 + opts.size() * step, bx = W - bw - 10, by = Math.max(8, (H - bh) / 2);
+        Ui.window(g, bx, by, bw, bh);
+        g.setFont(new Font("SansSerif", Font.BOLD, 14)); Ui.text(g, Lang.t("Pausa"), bx + 16, by + 24, Ui.GOLD);
+        g.setColor(Ui.alpha(Ui.EDGE, 90)); g.fillRect(bx + 12, by + 31, bw - 24, 1);
+        g.setFont(new Font("SansSerif", Font.BOLD, 13));
         for (int i = 0; i < opts.size(); i++) {
+            int y = by + 50 + i * step;
             boolean sel = i == menuSel;
-            g.setColor(sel ? new Color(200, 60, 50) : new Color(40, 40, 60));
-            g.drawString(Lang.t((sel ? "▶ " : "    ") + opts.get(i)), bx + 36, by + 72 + i * step);
+            if (sel) { g.setColor(new Color(255, 255, 255, 30)); g.fillRect(bx + 8, y - step + 6, bw - 16, step); Ui.cursor(g, bx + 14, y - 4); }
+            Ui.text(g, Lang.t(opts.get(i)), bx + 30, y, sel ? Ui.GOLD : Ui.TEXT);
         }
     }
 
     void drawToast(Graphics2D g) {
         if (toastT <= 0) return;
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        int tw = g.getFontMetrics().stringWidth(Lang.t(toastTxt)) + 28, a = (int) (Math.min(1, toastT) * 230);
-        g.setColor(new Color(20, 20, 40, a)); g.fillRoundRect(W - tw - 12, H - 44, tw, 28, 14, 14);
-        g.setColor(new Color(255, 255, 255, a)); g.drawString(Lang.t(toastTxt), W - tw + 2, H - 25);
+        g.setFont(new Font("SansSerif", Font.BOLD, 12));
+        int tw = g.getFontMetrics().stringWidth(Lang.t(toastTxt)) + 28;
+        Composite old = g.getComposite();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) Math.min(1, toastT)));
+        Ui.window(g, W - tw - 8, H - 58, tw, 30);
+        Ui.text(g, Lang.t(toastTxt), W - tw + 6, H - 38, Ui.TEXT);
+        g.setComposite(old);
     }
+
+    /** Barra de controles no pé da tela: teclas como botões (as do jogador, ou as do controle se houver um). */
+    void controlsBar(Graphics2D g) {
+        boolean pad = gamepad.connected;
+        String[][] items = pad
+            ? new String[][]{{"✚", "Mover"}, {"RT", "Correr"}, {"A", "Falar"}, {"X", "Itens"}, {"LB", "Lanche"}, {"Y", "Cartão"}, {"Start", "Menu"}}
+            : new String[][]{{"↑↓←→", "Mover"}, {"Shift", "Correr"}, {keyName(4), "Falar"}, {keyName(5), "Itens"},
+                {keyName(19), "Lanche"}, {keyName(18), "Cartão"}, {"Esc", "Menu"}};
+        g.setFont(new Font("SansSerif", Font.BOLD, 10));
+        FontMetrics fm = g.getFontMetrics();
+        int total = 0;
+        for (String[] it : items) total += Math.max(15, fm.stringWidth(it[0]) + 8) + 4 + fm.stringWidth(Lang.t(it[1])) + 14;
+        total -= 14;
+        g.setColor(Ui.alpha(Ui.INK, 205)); g.fillRect(0, H - 22, W, 22);
+        g.setColor(Ui.alpha(Ui.EDGE, 120)); g.fillRect(0, H - 22, W, 1);
+        int x = (W - total) / 2;
+        for (String[] it : items) {
+            x += Ui.key(g, it[0], x, H - 18) + 4;
+            g.setFont(new Font("SansSerif", Font.BOLD, 10));
+            Ui.text(g, Lang.t(it[1]), x, H - 7, Ui.TEXT);
+            x += fm.stringWidth(Lang.t(it[1])) + 14;
+        }
+    }
+    String keyName(int logical) { return KeyEvent.getKeyText(access.keys[logical]); }
 
     void drawSnow(Graphics2D g) {                                          // neve caindo (determinística, sem estado)
         for (int i = 0; i < 110; i++) {
@@ -1198,38 +1234,48 @@ public class Game extends JPanel implements KeyListener {
     void hud(Graphics2D g) {
         int hh = (int) hour(), mm = (int) ((hour() - hh) * 60);
         int dia = (int) (time / 1440) + 1;
-        String obj = Lang.t("Objetivo:") + " " + Lang.t(Story.OBJECTIVES[stage]) + (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
+        String counter = (stage == 6 ? " (" + Integer.bitCount(frags) + "/3)" : stage == 9 ? " (" + Integer.bitCount(bye) + "/2)" : stage == 12 ? " (" + brasas + "/3)" : stage == 23 ? " (" + Integer.bitCount(chapter.seeds) + "/3)"
             : stage == ChapterSix.LISTEN ? " (" + Integer.bitCount(chapterSix.heard) + "/3)" : stage == ChapterSeven.INVITE ? " (" + chapterSeven.count() + "/7)"
             : stage == ChapterEight.BELLS ? " (" + chapterEight.count() + "/" + ChapterEight.DAYS_NEEDED + ")"
             : stage == ChapterNine.LANTERNS ? " (" + chapterNine.count() + "/4)" : "");
-        Lang.markDone(List.of(obj));
-        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        String heading = String.format("%s  •  %s %d (%s)  %02d:%02d  •  %s", map.name, seasons.name(), Seasons.dayOfSeason(dia), weekday(dia), hh, mm, weather.label());
-        int bw = Math.max(280, g.getFontMetrics().stringWidth(Lang.t(obj)) + 32);
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        bw = Math.max(bw, g.getFontMetrics().stringWidth(Lang.t(heading)) + 56);
-        g.setColor(new Color(0, 0, 0, 150));
-        g.fillRoundRect(8, 8, bw, 46, 12, 12);
-        g.setColor(isNight() ? new Color(200, 210, 255) : new Color(255, 220, 80)); // sol / lua
-        g.fillOval(16, 16, 14, 14);
-        if (isNight()) { g.setColor(new Color(0, 0, 0, 200)); g.fillOval(21, 14, 14, 14); }
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("SansSerif", Font.BOLD, 13));
-        g.drawString(Lang.t(heading), 40, 27);
-        g.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        g.setColor(new Color(255, 240, 170));
-        g.drawString(Lang.t(obj), 16, 46);
-        if (dlg == null && state == PLAY) {
-            g.setColor(new Color(255, 255, 255, 170));
-            g.drawString(Lang.t("Setas: mover | Shift: correr | Z: falar | I: itens | K: lancheira | C: cartão | ESC: menu"), 12, H - 10);
-        }
+        String goal = Lang.done(Lang.t(Story.OBJECTIVES[stage]) + counter);
+        // janela do lugar: nome, data, hora e clima
+        String place = Lang.t(map.name);
+        String date = Lang.done(Lang.t(seasons.name()) + " " + Seasons.dayOfSeason(dia) + " · " + Lang.t(weekday(dia)));
+        boolean starry = isNight() && weather.label().equals("Sol");               // noite de tempo bom: céu limpo
+        String clock = String.format("%02d:%02d", hh, mm), sky = Lang.t(starry ? "Céu limpo" : weather.label());
+        g.setFont(new Font("SansSerif", Font.BOLD, 14)); int placeW = g.getFontMetrics().stringWidth(place);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 11)); FontMetrics small = g.getFontMetrics();
+        int infoW = small.stringWidth(date + "   " + clock + "   ") + 16 + small.stringWidth(sky);
+        int pw = Math.max(placeW + 34, infoW + 20);
+        Ui.window(g, 6, 6, pw, 46);
+        Ui.sky(g, 15, 15, isNight());
+        g.setFont(new Font("SansSerif", Font.BOLD, 14)); Ui.text(g, place, 33, 25, Ui.TEXT);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        int ix = 15;
+        Ui.text(g, date, ix, 42, Ui.SOFT); ix += small.stringWidth(date + "   ");
+        Ui.text(g, clock, ix, 42, Ui.GOLD); ix += small.stringWidth(clock + "   ");
+        if (starry) Ui.star(g, ix, 31); else Ui.weather(g, ix, 31, weather.label(), weather.current());
+        Ui.text(g, sky, ix + 16, 42, Ui.SOFT);
+        // janela do objetivo, à direita
+        g.setFont(new Font("SansSerif", Font.PLAIN, 11)); FontMetrics fm = g.getFontMetrics();
+        int ow = Math.min(W - pw - 22, 330), textW = ow - 22;
+        List<String> lines = wrap(goal, fm, textW);
+        if (lines.size() > 2) { lines = new ArrayList<>(lines.subList(0, 2)); lines.set(1, lines.get(1) + "…"); }
+        int ox = W - ow - 6, oh = 24 + lines.size() * 14;
+        Ui.window(g, ox, 6, ow, oh);
+        g.setFont(new Font("SansSerif", Font.BOLD, 10)); Ui.text(g, "★ " + Lang.t("OBJETIVO"), ox + 11, 19, Ui.GOLD);
+        g.setFont(new Font("SansSerif", Font.PLAIN, 11));
+        for (int i = 0; i < lines.size(); i++) Ui.text(g, lines.get(i), ox + 11, 33 + i * 14, Ui.TEXT);
+        if (dlg == null && state == PLAY) controlsBar(g);
         if (bannerT > 0) {
             g.setFont(new Font("SansSerif", Font.BOLD, 16));
-            int tw = g.getFontMetrics().stringWidth(Lang.t(banner)) + 40, a = (int) (Math.min(1, bannerT) * 220);
-            g.setColor(new Color(20, 20, 40, a));
-            g.fillRoundRect((W - tw) / 2, 66, tw, 34, 16, 16);
-            g.setColor(new Color(255, 230, 140, Math.min(255, a + 35)));
-            g.drawString(Lang.t(banner), (W - tw) / 2 + 20, 88);
+            int tw = g.getFontMetrics().stringWidth(Lang.t(banner)) + 44, a = (int) (Math.min(1, bannerT) * 238);
+            Composite old = g.getComposite();
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, Math.min(1f, (float) bannerT)));
+            Ui.window(g, (W - tw) / 2, 74, tw, 36, a);
+            Ui.text(g, Lang.t(banner), (W - tw) / 2 + 22, 98, Ui.GOLD);
+            g.setComposite(old);
         }
     }
 

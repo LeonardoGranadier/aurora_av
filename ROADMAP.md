@@ -52,6 +52,12 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
   aurora boreal no céu noturno depois do final, Coruja Sábia, nova conquista (25) e novo final com créditos.
 - ✅ **Museu de Aurora**: 8 peixes raros (estação, hora, clima e lugar), 10 insetos com rede, doações com moedas,
   Aquário Raro, Quadro de Insetos e 3 conquistas (28 no total), com brasões próprios para cada conquista.
+- ✅ **Barco próprio (a Gaivota)**: conserto por 150 moedas, carta náutica, Alto-mar com 4 peixes de águas fundas e
+  a Ilha da Tartaruga.
+- ✅ **Fósseis**: pá do professor depois de 3 doações, terra que brilha em 14 lugares (um terço por dia), 8 fósseis com
+  comentário do professor, Esqueleto em Miniatura e 2 conquistas novas (30 no total).
+- ✅ **HUD clássico**: janelas com moldura de RPG para lugar/data/clima e objetivo, barra de controles com teclas
+  desenhadas (ou botões do controle), faixas, avisos e menu de pausa no mesmo estilo.
 - ✅ **Enigmas opcionais**: pedras empurráveis (Ruínas do Vale), pegadas reveladas pela Lanterna, baú que o Cristal derrete.
 
 ## 4. Encantos (P2)

@@ -11,7 +11,7 @@ Tudo o que a página precisa está nesta pasta. Imagens geradas por `Capturas.ja
 | Preço | "No payments" para o lançamento, ou "Pay what you want" com mínimo 0 |
 | Capa | `capa.png` (630 × 500) |
 | Ícone / avatar | `icone.png` (512 × 512) |
-| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 10, 02, 01, 09, 11, 04, 03, 07, 05, 06, 08 |
+| Capturas | `capturas/*-pt.png` ou `*-en.png` (1280 × 960). Ordem sugerida: 10, 02, 12, 01, 09, 11, 04, 03, 07, 05, 06, 08 |
 | Plataformas | Windows, macOS, Linux (pacotes portáteis, Java embutido) |
 | Tags | pixel-art, cozy, exploration, story-rich, fishing, farming, cooking, singleplayer, 2d, relaxing, top-down, wholesome |
 | Idiomas | Português (Brasil), English |
@@ -33,9 +33,9 @@ Tudo começa com uma carta da Mamãe. Logo você está devolvendo a luz ao farol
 - **9 capítulos** de história, com quebra-cabeças de cenário, campos de gelo, braseiros, um jardim de constelações, uma baleia que canta e uma floresta antiga sob o eclipse.
 - **Uma vila viva**: moradores com rotinas, conversas, aniversários, pedidos e cinco corações de amizade.
 - **Estações do ano** que mudam a paisagem, os peixes, as flores, a música e o festival de sábado.
-- **Pesca** com álbum de 8 espécies e **8 peixes raros**, **10 insetos** para pegar com a rede, um **museu** para completar, **jardinagem** no quintal, **culinária** com receitas ensinadas pelos amigos e uma **casa** para decorar.
+- **Pesca** com álbum de 8 espécies e **12 peixes raros**, **10 insetos** para pegar com a rede, **8 fósseis** para desenterrar, um **museu** para completar, um **barco** para navegar até o alto-mar e ilhas pequenas, **jardinagem** no quintal, **culinária** com receitas ensinadas pelos amigos e uma **casa** para decorar.
 - **Segredos**: 12 conchas escondidas, uma corrente de trocas, enigmas opcionais e um observatório para restaurar.
-- **Cartas** que chegam pela manhã, um **diário** com dicas em camadas e um **Cartão do Explorador** com 28 conquistas.
+- **Cartas** que chegam pela manhã, um **diário** com dicas em camadas e um **Cartão do Explorador** com 30 conquistas.
 - Um **rádio** em casa com as músicas de cada região e o jornal do dia (clima, festas, aniversários e dicas).
 - Música e efeitos **sintetizados por código**, com trilhas de dia, de noite e de cada estação.
 
@@ -53,9 +53,9 @@ It all starts with a letter from Mom. Soon you're bringing light back to the lig
 - **9 story chapters** with environmental puzzles, ice fields, braziers, a constellation garden, a singing whale and an ancient forest under an eclipse.
 - **A living village**: villagers with routines, chats, birthdays, requests and five hearts of friendship.
 - **Seasons** that change the landscape, the fish, the flowers, the music and the Saturday festival.
-- **Fishing** with an 8-species album and **8 rare fish**, **10 bugs** to catch with a net, a **museum** to complete, **gardening** in your backyard, **cooking** with recipes taught by friends, and a **home** to decorate.
+- **Fishing** with an 8-species album and **12 rare fish**, **10 bugs** to catch with a net, **8 fossils** to dig up, a **museum** to complete, a **boat** to sail to the open sea and little islands, **gardening** in your backyard, **cooking** with recipes taught by friends, and a **home** to decorate.
 - **Secrets**: 12 hidden shells, a trading chain, optional puzzles and an observatory to restore.
-- **Letters** that arrive in the morning, a **journal** with layered hints and an **Explorer Card** with 28 achievements.
+- **Letters** that arrive in the morning, a **journal** with layered hints and an **Explorer Card** with 30 achievements.
 - A **radio** at home with every region's music and the daily news (weather, festivals, birthdays and tips).
 - Music and sound effects **synthesized in code**, with day, night and seasonal tracks.
 

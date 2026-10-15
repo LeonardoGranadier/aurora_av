@@ -41,7 +41,9 @@ final class Explorer implements Feature {
         new Achievement("aniversario", "Quem Ama Lembra", "Deu um presente de aniversário a um morador.", g -> !g.seasons.birthdayGifts.isEmpty()),
         new Achievement("lendario", "Pescador Lendário", "Pescou os oito peixes raros de Aurora.", g -> g.museum.allFish()),
         new Achievement("insetos", "Amigo dos Insetos", "Pegou os dez insetos de Aurora.", g -> g.museum.allBugs()),
-        new Achievement("curador", "Curador do Museu", "Completou as duas alas do Museu de Aurora.", g -> g.museum.complete()),
+        new Achievement("paleontologo", "Paleontólogo", "Desenterrou os oito fósseis de Aurora.", g -> g.museum.allFossils()),
+        new Achievement("marinheiro", "Marinheiro da Gaivota", "Consertou o próprio barco e navegou até o Alto-mar.", g -> g.boat.owned && g.worldMap.visited.contains(Boat.SEA)),
+        new Achievement("curador", "Curador do Museu", "Completou as três alas do Museu de Aurora.", g -> g.museum.complete()),
         new Achievement("gato", "Amigo do Bolinha", "Fez carinho no Bolinha em sete dias diferentes.", g -> g.cat.petDays >= 7)
     );
 

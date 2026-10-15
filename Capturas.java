@@ -81,9 +81,12 @@ public class Capturas {
         save(frame(g, false), "capturas/10-aurora" + sfx);
         // 11. museu com peixes raros
         g.museum.net = true; for (int i : new int[]{0, 2, 3, 5, 7}) g.museum.fish[i] = 1;
-        g.museum.donated = 0b10101; g.museum.tab = 0; g.museum.selected = 7; g.museum.status = "";
+        for (int i : new int[]{0, 2, 4}) g.museum.given[Museum.FISH_WING][i] = true; g.museum.tab = 0; g.museum.selected = 7; g.museum.status = "";
         g.travel("Vila Aurora", 27, 8); at(g, 9, 10); g.museum.openScreen();
         save(frame(g, true), "capturas/11-museu" + sfx); g.state = Game.PLAY;
+        // 12. a Gaivota no Alto-mar
+        g.boat.owned = true; g.travel(Boat.SEA, 9, 7); at(g, 10, 17); g.dir = 0; g.frame = 300;
+        save(frame(g, false), "capturas/12-alto-mar" + sfx);
     }
 
     /** A cena das cápsulas: o farol sob a aurora, em 2x (1280x960), sem HUD. */
