@@ -383,7 +383,7 @@ ORGANIZACAO DO CODIGO
   Boat.java        barco, carta nautica, Alto-mar e Ilha da Tartaruga · Ui.java janelas no estilo classico
   Museum.java      museu, peixes raros, insetos e fosseis · Radio.java radio de casa · AchievementIcons.java brasoes
   Steam.java       conquistas da Steam (steamworks4j por reflexao, opcional; sem ela nao faz nada)
-  Capturas.java    ferramenta: imagens da loja (fora do pacote do jogo)
+  Capturas.java    ferramenta: imagens da loja · Gifs.java GIFs de gameplay (ambos fora do pacote do jogo)
                    sistemas inspirados nos classicos
                    (veja ESTUDO-DE-DESIGN.md)
   GameFiles.java   onde ficam saves, preferencias e assets; Aurora.java e o lancador da versao distribuida
