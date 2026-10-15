@@ -1,4 +1,5 @@
 AVENTURA EM AURORA  -  precisa de JDK 17+
+Jogue a versao pronta (Windows, macOS, Linux, com Java embutido): https://lgcal65.itch.io/aventura-em-aurora
 
 Rodar (dentro desta pasta):
   sh jogar.sh
@@ -31,7 +32,7 @@ VIDA NO MUNDO
   folhas no outono, peixes pulando nas aguas e conversas curtas entre moradores proximos.
   Com "reduzir movimento", esses efeitos nao aparecem.
 
-PUBLICAR (itch.io)
+PUBLICAR (itch.io)  -  https://lgcal65.itch.io/aventura-em-aurora
   loja/PAGINA-ITCH.md tem textos (pt/en), tags, controles e o passo a passo. Imagens em loja/ (capa, icone,
   capturas em 2x nos dois idiomas), geradas por Capturas.java.
   sh empacotar.sh --portatil gera a pasta com Java embutido do seu sistema. No GitHub, a automacao

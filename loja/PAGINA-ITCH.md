@@ -1,5 +1,7 @@
 # Página da itch.io — Aventura em Aurora
 
+Publicada: https://lgcal65.itch.io/aventura-em-aurora (versão 1.0.0, 15/10/2026).
+
 Tudo o que a página precisa está nesta pasta. Imagens geradas por `Capturas.java` (veja o fim do arquivo).
 
 | Campo da itch.io | Valor |
@@ -77,7 +79,7 @@ Made with care, inspired by Game Boy Pokémon, Zelda, Harvest Moon, Stardew Vall
 ## Enviar os arquivos
 1. Gere os pacotes portáteis: o GitHub faz isso sozinho a cada envio para o `main` (aba **Actions** › execução mais recente › **Artifacts**: `AventuraEmAurora-windows`, `-mac`, `-linux`). Localmente: `sh empacotar.sh --portatil` gera o do seu sistema.
 2. Na página do jogo na itch.io, em **Uploads**, envie cada zip e marque a plataforma correspondente.
-3. (Opcional) Envio automático: crie uma chave em itch.io › Settings › API keys, salve no GitHub como segredo `BUTLER_API_KEY` e crie a variável `ITCH_PROJECT` com `seu-usuario/aventura-em-aurora`. A partir daí, cada envio para o `main` atualiza os três canais (`windows`, `mac`, `linux`).
+3. (Opcional) Envio automático: crie uma chave em itch.io › Settings › API keys, salve no GitHub como segredo `BUTLER_API_KEY` e crie a variável `ITCH_PROJECT` com `lgcal65/aventura-em-aurora`. A partir daí, cada envio para o `main` atualiza os três canais (`windows`, `mac`, `linux`).
 4. macOS: o pacote não é assinado; na primeira vez o jogador abre com clique direito › Abrir. Vale avisar na página.
 
 ## Regerar as imagens

@@ -71,7 +71,8 @@ As ideias vindas dos clássicos estão explicadas em [ESTUDO-DE-DESIGN.md](ESTUD
 ## 5. Distribuição e divulgação 🧑
 
 - ✅ Página pronta em `loja/` (textos pt/en, capa, ícone, capturas) e pacotes portáteis automáticos pelo GitHub Actions.
-- **itch.io** primeiro (aceita o .zip e os instaladores; "pague quanto quiser"; coleta opiniões cedo).
+- ✅ **itch.io**: versão 1.0.0 publicada em 15/10/2026 em https://lgcal65.itch.io/aventura-em-aurora. Com o segredo `BUTLER_API_KEY` e a variável
+  `ITCH_PROJECT`, cada merge na `main` envia os três pacotes com a versão de `Game.VERSION`.
 - **Steam** depois: ✅ conquistas pela steamworks4j (`Steam.java`, opcional), ✅ cápsulas em `loja/steam/`,
   ✅ build do SteamPipe (`steam/app_build.vdf`, `empacotar.sh --steam`), ✅ roteiro do trailer e Steam Cloud sem código.
   Passo a passo em [STEAM.md](STEAM.md). 🧑 conta, taxa, App ID, ícones das conquistas e revisão da Valve.
